@@ -23,7 +23,7 @@ class Home extends Component {
 
                             <div className="row home-style-2-bg">
                                     <div className="col-3">
-                                        <img src="/images/medbuddy_icon.png" alt="MedBuddy" width="50" height="50" />
+                                        <img src="/images/medbuddy_icon.png" alt="MedBuddy" width="55" height="50" />
                                     </div>
                                     <div className="col-9 home-style-2">MedBuddy</div>
                             </div>

@@ -4,6 +4,7 @@ import News from './NewsComponent'
 import Forum from './ForumComponent'
 import Login from './LoginComponent'
 import About from './AboutComponent'
+import Consult from './ConsultComponent'
 import { Switch, Route, Redirect } from 'react-router-dom'
 
 class Main extends Component {
@@ -19,6 +20,7 @@ class Main extends Component {
                     <Route path="/home" component={() => <Home />} />
                     <Route path="/news" component={() => <News />} />
                     <Route path="/forum" component={() => <Forum />} />
+                    <Route path="/consult" component={() => <Consult />} />
                     <Route path="/about" component={() => <About />} />
                     <Route path="/login" component={() => <Login />} />
                     <Redirect to="/home" />
