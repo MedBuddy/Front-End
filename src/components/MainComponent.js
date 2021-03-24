@@ -7,8 +7,12 @@ import About from './AboutComponent'
 import { Switch, Route, Redirect } from 'react-router-dom'
 
 class Main extends Component {
+    componentDidMount() {
+        document.body.style.backgroundColor = "rgba(0, 172, 177, 1)"
+    }
+    render()
+    {
 
-    render(){
         return (
             <>
                 <Switch>

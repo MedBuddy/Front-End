@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Sura&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Stardos+Stencil&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+Pro&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani&display=swap');
+
+.home-style-1
+{
+    font-family: Sura;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 40px;
+    text-align: center;
+    color: #FFFFFF;
+}
+.home-style-2
+{
+    font-family: Stardos Stencil;
+    font-size: 36px;
+}
+.home-style-2-bg
+{
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 15px;
+    width: fit-content;
+}
+.home-style-3
+{
+    font-family: Source Serif Pro;
+    font-size: 20px;
+}
+.home-style-4
+{
+    font-family: Rajdhani;
+    font-size: 24px;
+}
+.home-card
+{
+    background-color: rgba(255, 255, 255, 0.75);
+    width: 200px;
+    height: 200px;
+    border-radius: 10px;
+}
+.home-style-5
+{
+    font-family: Sura;
+    font-weight: bold;
+    font-size: 40px;
+    text-align: center;
+}
+.home-style-6
+{
+    font-family: Sura;
+    font-weight: bold;
+    font-size: 25px;
+    text-align: center;
+}
+.home-style-7
+{
+    font-family: Sura;
+    font-weight: bold;
+    font-size: 28px;
+    text-align: center;
+}
+
+.home-style-8
+{
+    font-family: Stardos Stencil;
+    font-size: 24px;
+    text-align: center;
+    
+}

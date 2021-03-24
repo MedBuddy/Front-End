@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+.navbar-dark
+{
+    background-color: rgba(15, 206, 206, 1);
+    height: 64px;
+    z-index: 2;
+}
+.loginbtn
+{
+    background-color: #0086D1;
+}
+.header-style-1
+{
+    font-family: Roboto;
+    font-weight: bold;
+    font-size: 18px;
+}
