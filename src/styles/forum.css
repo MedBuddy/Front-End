@@ -1,0 +1,48 @@
+.forum-fire-image{
+    width:50px;
+}
+.forum-trend{
+    font-size:40px;
+    font-family: 'Times New Roman', Times, serif;
+    font-style: italic;
+    font-weight: bold;
+}
+Input[type=submit]:hover{
+    background-color:aquamarine ;
+    border-radius: 20px;
+}
+Input[type=search]{
+    border-radius: 20px;
+}
+.forum-card
+{
+    background-color: rgba(255, 255, 255, 0.75);
+    width: 200px;
+    height: 200px;
+    border-radius: 10px;
+}
+.forum-card-title
+{
+    font-family: Sura;
+    font-weight: bold;
+    font-size: 40px;
+    text-align: center;
+}
+.forum-card-text
+{
+    font-family: Sura;
+    font-weight: bold;
+    font-size: 28px;
+    text-align: center;
+}
+.forum-button{
+    font-size: 20px;
+    border-radius: 30px;
+}
+#button-back{
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+#forum-textarea-id{
+    width:300px;
+}
