@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Stardos+Stencil&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
 .login-style-1
 {
@@ -52,4 +53,8 @@
 {
     color: rgba(41, 22, 255, 1);
 
+}
+Form
+{
+    font-family: Roboto;
 }

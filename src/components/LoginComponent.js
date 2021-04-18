@@ -45,37 +45,79 @@ class Login extends Component {
                         <div className="col-9 login-style-1">MedBuddy</div>
                     </div>
 
-                    <div className="row justify-content-center mt-3">
-                        
-                        <Form className="login-form-bg" onSubmit={this.handleLogin}>
-                            <FormGroup row className="justify-content-center mt-2">
-                                <img src="/images/medbuddy_icon.png" alt="MedBuddy" width="116" height="107" />
-                            </FormGroup>
-                            <FormGroup row>
-                                    <Label htmlFor="username">Username</Label>
-                                    <Input type="text" className="login-input-box" id="username" name="username" placeholder="Username" autoComplete="off" required value={this.state.username} onChange={this.handleInputChange} />
-                            </FormGroup>
-                            <FormGroup row>
-                                    <Label htmlFor="Password">Password</Label>
-                                    <Input type="password" className="login-input-box" id="password" name="password" placeholder="Password" autoComplete="off" required value={this.state.password} onChange={this.handleInputChange} />
-                            </FormGroup>
-                            <FormGroup row className="mt-4">
-                                    <Label htmlFor="logintype">Login as</Label>
-                                    <Input className="col-8 ml-auto" type="select" id="logintype" name="logintype" required value={this.state.logintype} onChange={this.handleInputChange} >
-                                        <i className="fas fa-chevron-down"></i>
-                                        <option>user</option>
-                                        <option>doctor</option>
-                                        <option>admin</option>
-                                    </Input>
-                            </FormGroup>
-                            <FormGroup row className="justify-content-center mt-4">
-                                <Input type="submit" value="Login" className="login-submit-btn" />
-                            </FormGroup>
-                            <FormGroup row className="justify-content-center">
-                                <Label>New User? </Label>
-                                <a href="" className="ml-2">Sign Up</a>
-                            </FormGroup>
-                        </Form>
+                    <div className="row justify-content-center align-items-center">
+                        <div className="col-4">
+                            <img src="/images/login-left.svg" alt="login-leftimg" width="354" height="300" />
+                        </div>
+                        <div className="col-4">
+                            <Form className="login-form-bg" onSubmit={this.handleLogin}>
+                                <FormGroup row className="justify-content-center mt-2">
+                                    <img src="/images/medbuddy_icon.png" alt="MedBuddy" width="116" height="107" />
+                                </FormGroup>
+                                <FormGroup row>
+                                        <Label htmlFor="username">Username</Label>
+                                        <Input type="text" className="login-input-box" id="username" name="username" placeholder="Username" autoComplete="off" required value={this.state.username} onChange={this.handleInputChange} />
+                                </FormGroup>
+                                <FormGroup row>
+                                        <Label htmlFor="password">Password</Label>
+                                        <Input type="password" className="login-input-box" id="password" name="password" placeholder="Password" autoComplete="off" required value={this.state.password} onChange={this.handleInputChange} />
+                                </FormGroup>
+                                <FormGroup row className="mt-4">
+                                        <Label htmlFor="logintype">Login as</Label>
+                                        <Input className="col-8 ml-auto" type="select" id="logintype" name="logintype" required value={this.state.logintype} onChange={this.handleInputChange} >
+                                            <i className="fas fa-chevron-down"></i>
+                                            <option>user</option>
+                                            <option>doctor</option>
+                                            <option>admin</option>
+                                        </Input>
+                                </FormGroup>
+                                <FormGroup row className="justify-content-center mt-4">
+                                    <Input type="submit" value="Login" className="login-submit-btn" />
+                                </FormGroup>
+                                <FormGroup row className="justify-content-center">
+                                    <Label>New User? </Label>
+                                    <a href="" className="ml-2">Sign Up</a>
+                                </FormGroup>
+                            </Form>
+                            {/*<Form className="login-form-bg" onSubmit={this.handleLogin}>
+                                <FormGroup row className="justify-content-center mt-2">
+                                    <b>Sign Up</b>
+                                </FormGroup>
+                                <FormGroup row>
+                                        <Label htmlFor="username">Email Address</Label>
+                                        <Input type="email" className="login-input-box" id="email" name="email" placeholder="Email" autoComplete="off" required value={this.state.username} onChange={this.handleInputChange} />
+                                </FormGroup>
+                                <FormGroup row>
+                                        <Label htmlFor="username">Username</Label>
+                                        <Input type="text" className="login-input-box" id="username" name="username" placeholder="Username" autoComplete="off" required value={this.state.username} onChange={this.handleInputChange} />
+                                </FormGroup>
+                                <FormGroup row>
+                                        <Label htmlFor="password">Password</Label>
+                                        <Input type="password" className="login-input-box" id="password" name="password" placeholder="Password" autoComplete="off" required value={this.state.password} onChange={this.handleInputChange} />
+                                </FormGroup>
+                                <FormGroup row>
+                                        <Label htmlFor="confirmpassword">Password</Label>
+                                        <Input type="password" className="login-input-box" id="confirmpassword" name="confirmpassword" placeholder="Confirm Password" autoComplete="off" required value={this.state.password} onChange={this.handleInputChange} />
+                                </FormGroup>
+                                <FormGroup row className="mt-4">
+                                        <Label htmlFor="logintype">Account</Label>
+                                        <Input className="col-8 ml-auto" type="select" id="logintype" name="logintype" required value={this.state.logintype} onChange={this.handleInputChange} >
+                                            <i className="fas fa-chevron-down"></i>
+                                            <option>user</option>
+                                            <option>doctor</option>
+                                        </Input>
+                                </FormGroup>
+                                <FormGroup row className="justify-content-center mt-4">
+                                    <Input type="submit" value="Sign up" className="login-submit-btn" />
+                                </FormGroup>
+                                <FormGroup row className="justify-content-center ">
+                                    <a href="" className="ml-2">Back to login</a>
+                                </FormGroup>
+                            </Form> */}
+                        </div>
+                        <div className="col-4">
+                            <img src="/images/login-right.svg" alt="login-rightimg" width="304" height="281" />
+                        </div>
                     </div>
 
                 </div>
