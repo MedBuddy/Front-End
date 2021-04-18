@@ -7,11 +7,11 @@
     font-style: italic;
     font-weight: bold;
 }
-Input[type=submit]:hover{
+.forum-submit:hover{
     background-color:aquamarine ;
     border-radius: 20px;
 }
-Input[type=search]{
+.forum-search{
     border-radius: 20px;
 }
 .forum-card

@@ -16,12 +16,12 @@ class Forum extends Component {
                                     <div className="col-4 mt-2 forum-trend">Trending Today</div>
                                     <div class="col-4  mt-4">
                                         <Form>
-                                            <Input type="search" class="forum-search" name="searchBar" id="searchBarId" placeholder="Search topics" />
+                                            <Input type="search" className="forum-search" name="searchBar" id="searchBarId" placeholder="Search topics" />
                                         </Form>
                                     </div>
                                     <div class="col-2  mt-4">
                                         <Form>
-                                            <Input type="submit" class="forum-search-button" name="searchButton" id="searchButtonId" value="Search" />
+                                            <Input type="submit" className="forum-submit" name="searchButton" id="searchButtonId" value="Search" />
                                         </Form>
                                     </div>
                 </div>
@@ -40,7 +40,7 @@ class Forum extends Component {
                                     <CardTitle className="forum-card-title">Title 2</CardTitle>
                                     <CardText className="forum-card-text">This is a Card text</CardText>
                                 </CardBody>
-                            </Card>  
+                        </Card>  
                     </div>
                     <div className="col-3 offset-1">
                         <Card className="forum-card">
@@ -48,18 +48,18 @@ class Forum extends Component {
                                     <CardTitle className="forum-card-title">Title 3</CardTitle>
                                     <CardText className="forum-card-text">This is a Card text</CardText>
                                 </CardBody>
-                            </Card>  
+                        </Card>  
                     </div>
                 </div>
                 <div className="row mt-5 ">
                     <div className="col-2 bg-light" id="button-back">
-                        <Input type="submit" value="Most Popular" name="most-popular" id="most-popular-id" />
+                        <Input type="submit" className="forum-submit" value="Most Popular" name="most-popular" id="most-popular-id" />
                     </div>
                     <div className="col-2 bg-light" id="button-back">
-                        <Input type="submit" value="Highest Votes" name="highest-votes" id="highest-votes-id" />
+                        <Input type="submit" className="forum-submit" value="Highest Votes" name="highest-votes" id="highest-votes-id" />
                     </div>
                     <div className="col-2 bg-light" id="button-back">
-                        <Input type="submit" value="Latest Talks" name="latest-talks" id="latest-talks-id"/>
+                        <Input type="submit" className="forum-submit" value="Latest Talks" name="latest-talks" id="latest-talks-id"/>
                     </div>
                 </div>
                 </div>
