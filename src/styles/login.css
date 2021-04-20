@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Stardos+Stencil&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Kalam&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Balsamiq+Sans&display=swap');
 
 .login-style-1
 {
@@ -17,17 +17,20 @@
 {
     background-color: rgba(255, 255, 255, 0.5);
     border-radius: 15px;
-    
 }
 .login-submit-btn
 {
-    width: 200px;
-    background-color: #03CBD1;
-    border-radius: 50px;
+    /* width: 200px; */
+    background-color: rgb(0,172,177);
+    /* border-radius: 50px; */
+    transition-duration: 0.4s;
+    color: white;
 }
 .login-submit-btn:hover
 {
     background-color: rgba(255, 255, 255, 0.5);
+    transition-duration: 0.4s;
+    color: black;
 }
 .login-input-box
 {
@@ -52,11 +55,7 @@
 .login-copyright
 {
     color: rgba(41, 22, 255, 1);
-
-}
-Form
-{
-    font-family: Roboto;
+    text-align: center;
 }
 
 .login-activate-tab
@@ -65,12 +64,15 @@ Form
     font-weight: bold;
     cursor: pointer;
     text-align: center;
+    border-radius: 15px 15px 0 0;
+    font-family: Balsamiq Sans;
 }
 .login-navitem
 {
     text-align: center;
     cursor: pointer;
     border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+    font-family: Balsamiq Sans;
 }
 .login-form-header
 {
@@ -81,12 +83,14 @@ Form
 {
     width: 100%;
 }
+
 .login-form-padding
 {
     padding-right: 30px;
     padding-left: 30px;
+    font-family: Balsamiq Sans;
 }
 .row-content
 {
-    min-height: 90vh;
+    min-height: 89vh;
 }
