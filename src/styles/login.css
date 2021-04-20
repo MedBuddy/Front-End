@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Stardos+Stencil&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kalam&display=swap');
 
 .login-style-1
 {
@@ -16,8 +17,7 @@
 {
     background-color: rgba(255, 255, 255, 0.5);
     border-radius: 15px;
-    padding-left: 40px;
-    padding-right: 40px;
+    
 }
 .login-submit-btn
 {
@@ -57,4 +57,36 @@
 Form
 {
     font-family: Roboto;
+}
+
+.login-activate-tab
+{
+    background: rgba(255, 255, 255, 0.5);
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+}
+.login-navitem
+{
+    text-align: center;
+    cursor: pointer;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+}
+.login-form-header
+{
+    text-align: center;
+    font-family: Kalam;
+}
+.login-nav
+{
+    width: 100%;
+}
+.login-form-padding
+{
+    padding-right: 30px;
+    padding-left: 30px;
+}
+.row-content
+{
+    min-height: 90vh;
 }
