@@ -29,7 +29,6 @@
 .login-submit-btn:hover
 {
     background-color: rgba(255, 255, 255, 0.5);
-    transition-duration: 0.4s;
     color: black;
 }
 .login-input-box
@@ -83,7 +82,10 @@
 {
     width: 100%;
 }
-
+.login-nav > * 
+{
+    padding: 10px;
+}
 .login-form-padding
 {
     padding-right: 30px;
@@ -93,4 +95,9 @@
 .row-content
 {
     min-height: 89vh;
+}
+.error
+{
+    color: red;
+    font-size: 14px;
 }
