@@ -18,15 +18,17 @@
     background-color: rgba(255, 255, 255, 0.5);
     border-radius: 15px;
 }
-.login-submit-btn
+.login-btns
 {
     /* width: 200px; */
     background-color: rgb(0,172,177);
     /* border-radius: 50px; */
     transition-duration: 0.4s;
     color: white;
+    outline: none;
+    border: none;
 }
-.login-submit-btn:hover
+.login-btns:hover
 {
     background-color: rgba(255, 255, 255, 0.5);
     color: black;
@@ -103,4 +105,54 @@
 {
     color: red;
     font-size: 14px;
+    min-height: 20px;
+}
+.signup-line
+{
+    width: 100px;
+    height: 2px;
+    background-color: rgba(255, 255, 255, 0.6);
+}
+.signup-steps
+{
+    background-color: white;
+    text-align: center;
+    border-radius: 50%;
+    cursor: context-menu;
+    --dim: 25px;
+    width: var(--dim);
+    height: var(--dim);
+}
+.signup-completed-steps
+{
+    background-color: rgba(0,0,255,0.6);
+    text-align: center;
+    border-radius: 50%;
+    cursor: context-menu;
+    --dim: 25px;
+    width: var(--dim);
+    height: var(--dim);
+    color: white;
+}
+.signup-completed-line
+{
+    width: 100px;
+    height: 2px;
+    background-color: rgba(0,0,255,0.5);
+}
+
+.btn-disabled
+{
+    cursor: no-drop;
+    background-color: rgb(80, 146, 158) !important;
+    border: none;
+    color: white;
+}
+.login-form-height
+{
+    height: 420px;
+}
+.signup-form-content
+{
+    height: 280px;
 }

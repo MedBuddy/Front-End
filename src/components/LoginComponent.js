@@ -1,17 +1,29 @@
 import React, { Component } from 'react'
-import { Form,FormGroup,Label,Input,Nav,NavItem,TabContent,TabPane } from 'reactstrap'
+import { Form,FormGroup,Label,Input,Nav,NavItem,TabContent,TabPane,Button } from 'reactstrap'
 import '../styles/login.css'
 
 const emailRegex = [
     {
+        regex: /.+/,
+        error: 'Email is required'
+    },
+    {
         regex: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
-        error: 'Invalid Email!'
+        error: 'Invalid Email'
     }
 ]
 const usernameRegex = [
     {
-        regex: /^[a-zA-Z].{7,}$/,
-        error: 'Username should start with a letter and contain atleast 8 characters'
+        regex: /.+/,
+        error: 'Username is required'
+    },
+    {
+        regex: /^[a-zA-Z].*$/,
+        error: 'Username should start with a letter'
+    },
+    {
+        regex: /^.{8,}$/,
+        error: 'Username should contain atleast 8 characters'
     },
     {
         regex: /^[a-zA-Z0-9_]*$/,
@@ -19,6 +31,10 @@ const usernameRegex = [
     }
 ]
 const passwordRegex = [
+    {
+        regex: /.+/,
+        error: 'Password is required'
+    },
     {
         regex: /^[a-zA-Z0-9_@#$&]*$/,
         error: 'Password should contain only letters,numbers,_,@,#,$,&'
@@ -45,13 +61,15 @@ class Login extends Component {
                 username:'',
                 password:'',
                 confirmpassword:''
-            }
+            },
+            step: 1
         }
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
         this.changeForm = this.changeForm.bind(this);
         this.showPassword = this.showPassword.bind(this);
         this.handleSignupSubmit = this.handleSignupSubmit.bind(this);
+        this.changeStep = this.changeStep.bind(this);
     }
 
     handleInputChange(event) {
@@ -66,6 +84,8 @@ class Login extends Component {
         event.preventDefault();
     }
     changeForm(form) {
+        if(form === this.state.formtype)
+            return
         let errors = {
             email: '',
             username: '',
@@ -79,20 +99,18 @@ class Login extends Component {
             password:'',
             confirmpassword:'',
             logintype:'user',
-            errors: errors
+            errors: errors,
+            step:1
         });
-        
+        document.getElementById('showpassword').checked=false
     }
     showPassword(event)
     {
-        if(event.target.checked===true)
-        {
+        if(event.target.checked)
             document.getElementById('password').type="text"
-        }
         else
-        {
             document.getElementById('password').type="password"
-        }   
+        
     }
     handleSignupSubmit(event)
     {
@@ -124,7 +142,9 @@ class Login extends Component {
                 break
             }
         }
-        if(this.state.confirmpassword !== this.state.password)
+        if(this.state.confirmpassword === '')
+            errors.confirmpassword = 'Password is required'
+        else if(this.state.confirmpassword !== this.state.password)
             errors.confirmpassword = 'Passwords don\'t match'
         let isError = false
         for(let field in errors){
@@ -141,6 +161,146 @@ class Login extends Component {
         }
 
         alert('Current State is: ' + JSON.stringify(this.state))
+    }
+
+    changeStep(step){
+        this.setState({
+            step: step
+        })
+    }
+
+    displayStepper(){
+        return (
+            <div className="container mt-3">
+                <div className="row justify-content-center">
+                    <div className={(this.state.step>=1)?"signup-completed-steps":"signup-steps"}>1</div>
+                    <div className="align-self-center">
+                        <div className={(this.state.step>=2)?"signup-completed-line":"signup-line"}></div>
+                    </div>
+                    <div className={(this.state.step>=2)?"signup-completed-steps":"signup-steps"}>2</div>
+                    <div className="align-self-center">
+                        <div className={(this.state.step>=3)?"signup-completed-line":"signup-line"}></div>
+                    </div>
+                    <div className={(this.state.step>=3)?"signup-completed-steps":"signup-steps"}>3</div>
+                </div>
+            </div> 
+        )
+    }
+
+    signupForm(){
+        if(this.state.step === 1)
+        {
+            return (
+                <div className="signup-form-content">
+                    <FormGroup row>
+                        <Label htmlFor="email" className="col-12">Email Address</Label>
+                        <Input type="text" className="login-input-box col-12" id="email" name="email" 
+                                placeholder="Email" autoComplete="off" value={this.state.email} 
+                                onChange={this.handleInputChange} />
+                        <span className="col-12 error">{ this.state.errors.email }</span>
+                    </FormGroup>
+                    <FormGroup row>
+                        <Label htmlFor="username" className="col-12">Username</Label>
+                        <Input type="text" className="login-input-box" id="username" name="username" 
+                                placeholder="Username" autoComplete="off" value={this.state.username} 
+                                onChange={this.handleInputChange} />
+                        <span className="col-12 error">{ this.state.errors.username }</span>
+                    </FormGroup>
+                    <FormGroup row className="mt-4">
+                        <Label htmlFor="logintype" className="col-4">Type</Label>
+                        <Input className="col-8 ml-auto" type="select" id="logintype" name="logintype" 
+                                value={this.state.logintype} onChange={this.handleInputChange} >
+                            <i className="fas fa-chevron-down"></i>
+                            <option>user</option>
+                            <option>doctor</option>
+                        </Input>
+                    </FormGroup>
+                </div>
+            )
+        }
+        else if(this.state.step === 2)
+        {
+            return(
+                <div className="signup-form-content">
+                    <FormGroup row>
+                        <Label htmlFor="password" className="col-12">Password</Label>
+                        <Input type="password" className="login-input-box" id="password" name="password" 
+                                placeholder="Password" autoComplete="off" value={this.state.password} 
+                                onChange={this.handleInputChange} />
+                        <span className="col-12 error">{ this.state.errors.password }</span>
+                    </FormGroup>
+                    <FormGroup row>
+                        <Label htmlFor="confirmpassword" className="col-12">Confirm Password</Label>
+                        <Input type="password" className="login-input-box" id="confirmpassword" name="confirmpassword" 
+                                placeholder="Confirm Password" autoComplete="off" value={this.state.confirmpassword} 
+                                onChange={this.handleInputChange} />
+                        <span className="col-12 error">{ this.state.errors.confirmpassword }</span>
+                    </FormGroup>        
+                </div>
+            )
+        }
+    }
+
+    displaySignupButton(){
+        return (
+            <FormGroup row className="justify-content-center mt-4">
+                <div className="col-3">
+                    <Button className={this.state.step !== 1?"btn login-btns":"btn-disabled"} 
+                            disabled={this.state.step === 1} onClick={() => this.changeStep(1)}>
+                        <i class="fa fa-arrow-left"></i>
+                    </Button>
+                </div>
+                <div className="col-5">
+                    <Input type="submit" value="Sign up" className={this.state.step !== 1?"btn login-btns mb-3":"btn-disabled"} 
+                            disabled={this.state.step === 1} />
+                </div>
+                <div className="col-3">
+                    <Button className={this.state.step === 1?"btn login-btns":"btn-disabled"} 
+                            disabled={this.state.step !== 1} onClick={() => this.changeStep(2)}>
+                        <i class="fa fa-arrow-right"></i>
+                    </Button>
+                </div>
+            </FormGroup>
+        )
+    }
+
+    loginForm(){
+        return (
+            <Form className="mt-3 login-form-padding signup-form-content" onSubmit={this.handleLoginSubmit}>
+                <FormGroup row>
+                        <Label htmlFor="username" className="col-12">Username</Label>
+                        <Input type="text" className="login-input-box col-12" id="username" name="username" 
+                                placeholder="Username" autoComplete="off" required value={this.state.username} 
+                                onChange={this.handleInputChange} />
+                </FormGroup>
+                <FormGroup row>
+                        <Label htmlFor="password" className="col-12">Password</Label>
+                        <Input type="password" className="login-input-box col-12" id="password" name="password" 
+                                placeholder="Password" autoComplete="off" required value={this.state.password} 
+                                onChange={this.handleInputChange} />
+                </FormGroup>
+                <FormGroup row>
+                    <Input type="checkbox" id="showpassword" className="ml-1" onClick={this.showPassword} 
+                             />
+                    <Label htmlFor="showpassword" className="ml-4"> Show Password</Label>
+                </FormGroup>
+                <FormGroup row className="mt-2">
+                    <Label htmlFor="logintype" className="col-4">Login as</Label>
+                    <Input className="col-8" type="select" id="logintype" name="logintype" required 
+                            value={this.state.logintype} onChange={this.handleInputChange}>
+                        <i className="fas fa-chevron-down"></i>
+                        <option>user</option>
+                        <option>doctor</option>
+                        <option>admin</option>
+                    </Input>
+                </FormGroup>
+                <FormGroup row className="justify-content-center mt-4">
+                    <div className="col-5">
+                        <Input type="submit" value="Login" className="btn login-btns mb-3" />
+                    </div>
+                </FormGroup>
+            </Form>
+        )
     }
 
     render(){
@@ -162,104 +322,25 @@ class Login extends Component {
                         <div className="col-4 login-form-bg">
                             <div className="row">
                                 <Nav className="login-nav">
-                                        <NavItem className={(this.state.formtype==='login')?'login-activate-tab col-6':'login-navitem col-6'} 
-                                                onClick={() => this.changeForm('login')} >
-                                            Login
-                                        </NavItem>
-                                        <NavItem className={(this.state.formtype==='signup')?'login-activate-tab col-6':'login-navitem col-6'} 
-                                                onClick={() => this.changeForm('signup')} >
-                                            Sign Up
-                                        </NavItem>
+                                    <NavItem className={(this.state.formtype==='login')?'login-activate-tab col-6':'login-navitem col-6'} 
+                                            onClick={() => this.changeForm('login')} >
+                                        Login
+                                    </NavItem>
+                                    <NavItem className={(this.state.formtype==='signup')?'login-activate-tab col-6':'login-navitem col-6'} 
+                                            onClick={() => this.changeForm('signup')} >
+                                        Sign Up
+                                    </NavItem>
                                 </Nav>
                             </div>
                             <TabContent activeTab={this.state.formtype}>
-                                <TabPane tabId='login'>
-                                    <Form className="mt-3 login-form-padding" onSubmit={this.handleLoginSubmit}>
-                                        {/* <FormGroup row className="justify-content-center mt-2">
-                                            <img src="/images/medbuddy_icon.png" alt="MedBuddy" width="116" height="107" className="mt-1" />
-                                        </FormGroup> */}
-                                        <h1 className="login-form-header"><b>Login</b></h1>
-                                        <FormGroup row>
-                                                <Label htmlFor="username" className="col-12">Username</Label>
-                                                <Input type="text" className="login-input-box col-12" id="username" name="username" 
-                                                        placeholder="Username" autoComplete="off" required value={this.state.username} 
-                                                        onChange={this.handleInputChange} />
-                                        </FormGroup>
-                                        <FormGroup row>
-                                                <Label htmlFor="password" className="col-12">Password</Label>
-                                                <Input type="password" className="login-input-box col-12" id="password" name="password" 
-                                                        placeholder="Password" autoComplete="off" required value={this.state.password} 
-                                                        onChange={this.handleInputChange} />
-                                        </FormGroup>
-                                        <FormGroup row>
-                                            <Input type="checkbox" id="showpassword" className="ml-1" onClick={this.showPassword} />
-                                            <Label htmlFor="showpassword" className="ml-4"> Show Password</Label>
-                                        </FormGroup>
-                                        <FormGroup row className="mt-4">
-                                            <Label htmlFor="logintype" className="col-4">Login as</Label>
-                                            <Input className="col-8" type="select" id="logintype" name="logintype" required 
-                                                    value={this.state.logintype} onChange={this.handleInputChange} >
-                                                <i className="fas fa-chevron-down"></i>
-                                                <option>user</option>
-                                                <option>doctor</option>
-                                                <option>admin</option>
-                                            </Input>
-                                        </FormGroup>
-                                        <FormGroup row className="justify-content-center mt-4">
-                                            <div className="col-5">
-                                                <Input type="submit" value="Login" className="btn login-submit-btn mb-3" />
-                                            </div>
-                                        </FormGroup>
-                                    </Form>
+                                <TabPane tabId='login' className="login-form-height">
+                                    { this.loginForm() }
                                 </TabPane>
-                                <TabPane tabId='signup'>
+                                <TabPane tabId='signup' className="login-form-height">
+                                    {this.displayStepper() }
                                     <Form className="mt-3 login-form-padding" onSubmit={this.handleSignupSubmit}>
-                                        {/* <FormGroup row className="justify-content-center mt-2">
-                                            <img src="/images/medbuddy_icon.png" alt="MedBuddy" width="116" height="107" className="mt-1" />
-                                        </FormGroup> */}
-                                        <h1 className="login-form-header"><b>Sign Up</b></h1>
-                                        <FormGroup row>
-                                                <Label htmlFor="email" className="col-12">Email Address</Label>
-                                                <Input type="text" className="login-input-box col-12" id="email" name="email" 
-                                                        placeholder="Email" autoComplete="off" required value={this.state.email} 
-                                                        onChange={this.handleInputChange} />
-                                                <span className="col-12 error">{ this.state.errors.email }</span>
-                                        </FormGroup>
-                                        <FormGroup row>
-                                                <Label htmlFor="username" className="col-12">Username</Label>
-                                                <Input type="text" className="login-input-box" id="username" name="username" 
-                                                        placeholder="Username" autoComplete="off" required value={this.state.username} 
-                                                        onChange={this.handleInputChange} />
-                                                <span className="col-12 error">{ this.state.errors.username }</span>
-                                        </FormGroup>
-                                        <FormGroup row>
-                                                <Label htmlFor="password" className="col-12">Password</Label>
-                                                <Input type="password" className="login-input-box" id="password" name="password" 
-                                                        placeholder="Password" autoComplete="off" required value={this.state.password} 
-                                                        onChange={this.handleInputChange} />
-                                                <span className="col-12 error">{ this.state.errors.password }</span>
-                                        </FormGroup>
-                                        <FormGroup row>
-                                                <Label htmlFor="confirmpassword" className="col-12">Confirm Password</Label>
-                                                <Input type="password" className="login-input-box" id="confirmpassword" name="confirmpassword" 
-                                                        placeholder="Confirm Password" autoComplete="off" required value={this.state.confirmpassword} 
-                                                        onChange={this.handleInputChange} />
-                                                <span className="col-12 error">{ this.state.errors.confirmpassword }</span>
-                                        </FormGroup>
-                                        <FormGroup row className="mt-4">
-                                                <Label htmlFor="logintype" className="col-4">Type</Label>
-                                                <Input className="col-8 ml-auto" type="select" id="logintype" name="logintype" required 
-                                                        value={this.state.logintype} onChange={this.handleInputChange} >
-                                                    <i className="fas fa-chevron-down"></i>
-                                                    <option>user</option>
-                                                    <option>doctor</option>
-                                                </Input>
-                                        </FormGroup>
-                                        <FormGroup row className="justify-content-center mt-4">
-                                            <div className="col-5">
-                                                <Input type="submit" value="Sign up" className="btn login-submit-btn mb-3" />
-                                            </div>
-                                        </FormGroup>
+                                        { this.signupForm() }
+                                        { this.displaySignupButton() }
                                     </Form>
                                 </TabPane>
                             </TabContent>
