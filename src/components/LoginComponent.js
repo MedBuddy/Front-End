@@ -66,14 +66,22 @@ class Login extends Component {
         event.preventDefault();
     }
     changeForm(form) {
+        let errors = {
+            email: '',
+            username: '',
+            password: '',
+            confirmpassword: ''
+        }
         this.setState({
             formtype: form,
             email:'',
             username:'',
             password:'',
             confirmpassword:'',
-            logintype:'user'
+            logintype:'user',
+            errors: errors
         });
+        
     }
     showPassword(event)
     {
@@ -188,14 +196,14 @@ class Login extends Component {
                                             <Label htmlFor="showpassword" className="ml-4"> Show Password</Label>
                                         </FormGroup>
                                         <FormGroup row className="mt-4">
-                                                <Label htmlFor="logintype" className="col-4">Login as</Label>
-                                                <Input className="col-8" type="select" id="logintype" name="logintype" required 
-                                                        value={this.state.logintype} onChange={this.handleInputChange} >
-                                                    <i className="fas fa-chevron-down"></i>
-                                                    <option>user</option>
-                                                    <option>doctor</option>
-                                                    <option>admin</option>
-                                                </Input>
+                                            <Label htmlFor="logintype" className="col-4">Login as</Label>
+                                            <Input className="col-8" type="select" id="logintype" name="logintype" required 
+                                                    value={this.state.logintype} onChange={this.handleInputChange} >
+                                                <i className="fas fa-chevron-down"></i>
+                                                <option>user</option>
+                                                <option>doctor</option>
+                                                <option>admin</option>
+                                            </Input>
                                         </FormGroup>
                                         <FormGroup row className="justify-content-center mt-4">
                                             <div className="col-5">
