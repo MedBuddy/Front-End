@@ -1,9 +1,7 @@
-
 import React, { Component } from 'react'
 import Header from './HeaderComponent'
 import { Card,CardBody,CardTitle,CardText } from 'reactstrap'
 import '../styles/home.css'
-
 
 class Home extends Component {
     

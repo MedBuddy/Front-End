@@ -80,8 +80,64 @@ class Login extends Component {
         });
     }
     handleLoginSubmit(event) {
-        alert('Current State is: ' + JSON.stringify(this.state));
-        event.preventDefault();
+        const userRegex = /^[a-zA-Z][a-zA-Z0-9]{7,}$/
+        const passRegex = /^[a-zA-Z0-9_@#$&]{8,}$/
+        let errors = {
+            username: '',
+            password: '',
+            email: '',
+            confirmpassword: ''
+        }
+        if(!userRegex.test(this.state.username))
+            errors.username = 'Invalid Username'
+        else if(!passRegex.test(this.state.password))
+            errors.password = 'Invalid Password'
+        else{
+            let type
+            switch(this.state.logintype){
+                case 'user': type = 1; break;
+                case 'doctor': type = 2; break;
+                case 'admin': type = 3; break;
+                default: break;
+            }
+            const user = {
+                userId: this.state.username,
+                password: this.state.password,
+                type: type
+            }
+            fetch('account/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(user)
+            })
+            .then(response => {
+                if(response.ok)
+                    return response
+                else{
+                    let error = new Error('Error: ' + response.status + ': ' + response.statusText)
+                    error.response = response
+                    throw error
+                }
+            }, err => {
+                let error = new Error(err)
+                throw error
+            })
+            .then(response => response.json())
+            .then(response => {
+                if(response.resCode === -1)
+                    errors.username = response.msg
+                else if(response.resCode === 0)
+                    errors.password = response.msg
+                else{
+                    localStorage.setItem('userToken', response.token)
+                    localStorage.setItem('username', response.username)
+                    window.location.href = '/'
+                }
+            })
+        }
+        event.preventDefault()
     }
     changeForm(form) {
         if(form === this.state.formtype)
@@ -251,7 +307,7 @@ class Login extends Component {
                     </Button>
                 </div>
                 <div className="col-5">
-                    <Input type="submit" value="Sign up" className={this.state.step !== 1?"btn login-btns mb-3":"btn-disabled"} 
+                    <Input type="submit" value="Sign up" className={this.state.step !== 1?"btn login-btns":"btn-disabled"} 
                             disabled={this.state.step === 1} />
                 </div>
                 <div className="col-3">
@@ -270,23 +326,24 @@ class Login extends Component {
                 <FormGroup row>
                         <Label htmlFor="username" className="col-12">Username</Label>
                         <Input type="text" className="login-input-box col-12" id="username" name="username" 
-                                placeholder="Username" autoComplete="off" required value={this.state.username} 
+                                placeholder="Username" autoComplete="off" value={this.state.username} 
                                 onChange={this.handleInputChange} />
+                        <span className="col-12 error">{ this.state.errors.username }</span>
                 </FormGroup>
                 <FormGroup row>
                         <Label htmlFor="password" className="col-12">Password</Label>
                         <Input type="password" className="login-input-box col-12" id="password" name="password" 
-                                placeholder="Password" autoComplete="off" required value={this.state.password} 
+                                placeholder="Password" autoComplete="off" value={this.state.password} 
                                 onChange={this.handleInputChange} />
+                        <span className="col-12 error">{ this.state.errors.password }</span>
                 </FormGroup>
                 <FormGroup row>
-                    <Input type="checkbox" id="showpassword" className="ml-1" onClick={this.showPassword} 
-                             />
+                    <Input type="checkbox" id="showpassword" className="ml-1" onClick={this.showPassword} />
                     <Label htmlFor="showpassword" className="ml-4"> Show Password</Label>
                 </FormGroup>
                 <FormGroup row className="mt-2">
                     <Label htmlFor="logintype" className="col-4">Login as</Label>
-                    <Input className="col-8" type="select" id="logintype" name="logintype" required 
+                    <Input className="col-8" type="select" id="logintype" name="logintype" 
                             value={this.state.logintype} onChange={this.handleInputChange}>
                         <i className="fas fa-chevron-down"></i>
                         <option>user</option>

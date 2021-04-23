@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Navbar,NavbarBrand,Nav,NavItem,Collapse,NavbarToggler } from 'reactstrap';
+import { Navbar,NavbarBrand,Nav,NavItem,Collapse,NavbarToggler,Button } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import '../styles/header.css';
 
@@ -8,9 +8,11 @@ class Header extends Component {
     {
         super(props);
         this.state={
-            isNavOpen:false
+            isNavOpen:false,
+            username: localStorage.getItem('username')
         };
         this.toggleNav=this.toggleNav.bind(this);
+        this.logout = this.logout.bind(this);
     }
     
     toggleNav()
@@ -21,6 +23,44 @@ class Header extends Component {
             }
         );
     }
+
+    logout(){
+        localStorage.removeItem('username')
+        localStorage.removeItem('userToken')
+        this.setState({
+            username: null
+        })
+    }
+
+    displayBtns(){      
+        if(!this.state.username){
+            return (
+                <NavItem>
+                    <NavLink className="nav-link loginbtn" to="/login">
+                        <span className="fa fa-sign-in fa-lg"></span> Login
+                    </NavLink>
+                </NavItem>
+            )
+        }
+        else{
+            return (
+                <>
+                    <NavItem>
+                        <div className="header-user">
+                            <img src="http://localhost:4000/images/user-default.jpg" alt="user-img" className="header-img"></img>
+                            <span className="header-username">{ this.state.username }</span>
+                        </div>
+                    </NavItem>
+                    <NavItem>
+                        <Button className="nav-link logoutbtn" onClick={this.logout}>
+                            <span className="fa fa-sign-out fa-lg"></span> Logout
+                        </Button>
+                    </NavItem>
+                </>
+            )
+        }
+    }
+
     render(){
         return (
             <>
@@ -65,12 +105,7 @@ class Header extends Component {
                         
                     </Nav>
                     <Nav navbar className="ml-auto">
-                        <NavItem>
-                            <NavLink className="nav-link loginbtn" to="/login">
-                                <span className="fa fa-sign-in fa-lg"></span> Login
-                            </NavLink>
-                        </NavItem>
-
+                        { this.displayBtns() }
                     </Nav>
                     </Collapse>
                 </div>

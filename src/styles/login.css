@@ -20,9 +20,7 @@
 }
 .login-btns
 {
-    /* width: 200px; */
     background-color: rgb(0,172,177);
-    /* border-radius: 50px; */
     transition-duration: 0.4s;
     color: white;
     outline: none;

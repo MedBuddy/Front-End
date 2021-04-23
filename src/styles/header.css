@@ -16,3 +16,22 @@
     font-weight: bold;
     font-size: 18px;
 }
+.header-user 
+{
+    margin-right: 10px;
+}
+.header-user > * {
+    margin: 5px
+}
+.header-img 
+{
+    width: 30px;
+    height: 30px;
+}
+.logoutbtn
+{
+    outline: none;
+    border: none;
+    background-color: #0086D1;
+    border-radius: 0;
+}
