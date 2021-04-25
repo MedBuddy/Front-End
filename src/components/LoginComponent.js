@@ -199,6 +199,7 @@ class Login extends Component {
             loginPageMsg: ''
         });
         document.getElementById('showpassword').checked = false
+        document.getElementById('password').type="password"
     }
     showPassword(event)
     {
@@ -425,21 +426,60 @@ class Login extends Component {
     }
 
     displayStepper(){
-        return (
-            <div className="container mt-3">
-                <div className="row justify-content-center">
-                    <div className={(this.state.step>=1)?"signup-completed-steps":"signup-steps"}>1</div>
-                    <div className="align-self-center">
-                        <div className={(this.state.step>=2)?"signup-completed-line":"signup-line"}></div>
+        if(this.state.step === 1)
+        {
+            return (
+                <div className="container mt-3">
+                    <div className="row justify-content-center">
+                        <div className="signup-completed-steps">1</div>
+                        <div className="align-self-center">
+                            <div className="signup-line"></div>
+                        </div>
+                        <div className="signup-steps">2</div>
+                        <div className="align-self-center">
+                            <div className="signup-line"></div>
+                        </div>
+                        <div className="signup-steps">3</div>
                     </div>
-                    <div className={(this.state.step>=2)?"signup-completed-steps":"signup-steps"}>2</div>
-                    <div className="align-self-center">
-                        <div className={(this.state.step>=3)?"signup-completed-line":"signup-line"}></div>
+                </div> 
+            )
+        }
+        else if(this.state.step === 2)
+        {
+            return (
+                <div className="container mt-3">
+                    <div className="row justify-content-center">
+                    <div className="signup-completed-steps"><i class="fa fa-check"></i></div>
+                        <div className="align-self-center">
+                            <div className="signup-completed-line"></div>
+                        </div>
+                        <div className="signup-completed-steps">2</div>
+                        <div className="align-self-center">
+                            <div className="signup-line"></div>
+                        </div>
+                        <div className="signup-steps">3</div>
                     </div>
-                    <div className={(this.state.step>=3)?"signup-completed-steps":"signup-steps"}>3</div>
-                </div>
-            </div> 
-        )
+                </div> 
+            )
+        }
+        else
+        {
+            return (
+                <div className="container mt-3">
+                    <div className="row justify-content-center">
+                    <div className="signup-completed-steps"><i class="fa fa-check"></i></div>
+                        <div className="align-self-center">
+                            <div className="signup-completed-line"></div>
+                        </div>
+                        <div className="signup-completed-steps"><i class="fa fa-check"></i></div>
+                        <div className="align-self-center">
+                            <div className="signup-completed-line"></div>
+                        </div>
+                        <div className="signup-completed-steps">3</div>
+                    </div>
+                </div> 
+            )
+        }
     }
 
     signupForm(){

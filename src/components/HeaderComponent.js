@@ -30,6 +30,7 @@ class Header extends Component {
         this.setState({
             username: null
         })
+        window.location.reload()
     }
 
     displayBtns(){      
