@@ -1,48 +1,58 @@
-.forum-fire-image{
-    width:50px;
-}
-.forum-trend{
-    font-size:40px;
-    font-family: 'Times New Roman', Times, serif;
-    font-style: italic;
-    font-weight: bold;
-}
-.forum-submit:hover{
-    background-color:aquamarine ;
-    border-radius: 20px;
-}
-.forum-search{
-    border-radius: 20px;
-}
-.forum-card
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+.forum-trending-today
 {
-    background-color: rgba(255, 255, 255, 0.75);
-    width: 200px;
-    height: 200px;
+    font-family: roboto;
+    font-weight: bold;
+    font-size: 24px;
+}
+.forum-search
+{
+    border-radius: 150px;
+}
+.forum-discussion-sort
+{
+    background-color: rgba(255, 255, 255, 0.5);
+    padding-top: 13px;
+    padding-bottom: 13px;
+}
+.forum-discussion-sort-heading
+{
+    font-family: roboto;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+}
+.forum-discussion-sort-heading:hover
+{
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+.forum-discussion
+{
+    font-family: roboto;
+    font-weight: bold;
+    font-size: 24px;
+}
+.forum-ask-question,.forum-ask-question:hover
+{
+    padding-top: 5px;
+    padding-bottom: 5px; 
+    font-family: roboto;
+    font-weight: bold;
+    font-size: 24px;
+    text-decoration: none;
+    color: black;
+}
+
+.forum-ask-question-bg
+{
     border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.6);
 }
-.forum-card-title
+.forum-ask-question-bg:hover
 {
-    font-family: Sura;
-    font-weight: bold;
-    font-size: 40px;
-    text-align: center;
-}
-.forum-card-text
-{
-    font-family: Sura;
-    font-weight: bold;
-    font-size: 28px;
-    text-align: center;
-}
-.forum-button{
-    font-size: 20px;
-    border-radius: 30px;
-}
-#button-back{
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
-#forum-textarea-id{
-    width:300px;
+    background-color: rgba(255, 255, 255, 0.7);
 }
