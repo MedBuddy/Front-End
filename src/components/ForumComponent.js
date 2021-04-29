@@ -8,17 +8,49 @@ class Forum extends Component {
     {
         super(props);
         this.state = {
-
+            questions: []
         }
         this.searchTopic = this.searchTopic.bind(this);
+        this.fetchDiscussions = this.fetchDiscussions.bind(this);
+    }
+
+    componentDidMount(){
+        this.fetchDiscussions()
     }
 
     searchTopic(event)
     {
-        if(event.charCode===13)
+        if(event.charCode === 13)
         {
             alert('enter pressed')
         }
+    }
+    
+    fetchDiscussions()
+    {
+        fetch('queries/', {
+            method:'GET'
+        })
+        .then((response) => {
+                if(response.ok)
+                    return response
+                else
+                {
+                    let error = new Error('Error: ' + response.status + ': ' + response.statusText)
+                    error.response = response
+                    throw error
+                }
+            }, err => {
+                let error = new Error(err)
+                throw error
+            })
+            .then(response => response.json())
+            .then((response) => {
+                this.setState({
+                    questions: response
+                })
+                console.log(this.state.questions)
+            })
     }
 
     render(){
@@ -100,13 +132,14 @@ class Forum extends Component {
                         
                         <div className="col-md-3 offset-md-1 ">
                             <div className="forum-ask-question-bg">
-                                <a href="" className="forum-ask-question">Ask Your question</a>
+                                <div className="forum-ask-question">Ask Your question</div>
                             </div>
                         </div>
                     </div>
                     <div className="row mt-4">
                         <div className="col-12 forum-discussion">
                             Discussions
+                            {this.fetchDiscussions}
                         </div>
                     </div>
                 </div>

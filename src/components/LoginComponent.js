@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 import { Form,FormGroup,Label,Input,Nav,NavItem,TabContent,TabPane,Button } from 'reactstrap'
 import '../styles/login.css'
 
@@ -328,10 +329,9 @@ class Login extends Component {
 
     handleOTP(event){
         const otpRegex = /^[0-9]{6}$/
-        let otpError = 'Invalid OTP'
         if(!otpRegex.test(this.state.otp)){
             this.setState({
-                otpError: otpError
+                otpError: 'Invalid OTP'
             })
         }
         else{
@@ -363,7 +363,7 @@ class Login extends Component {
             .then(response => {
                 if(response.resCode === 0){
                     this.setState({
-                        otpError: otpError
+                        otpError: 'Invalid OTP'
                     })
                 }
                 else{
@@ -371,7 +371,8 @@ class Login extends Component {
                         this.changeForm('login')
                         this.setState({
                             loginPageMsg: 'Account created successfully!',
-                            userId: ''
+                            userId: '',
+                            otpError: ''
                         })
                     }
                     else{
@@ -384,9 +385,6 @@ class Login extends Component {
                 }
             })
         }
-        this.setState({
-            otpError: otpError
-        })
         event.preventDefault()
     }
 
@@ -656,14 +654,14 @@ class Login extends Component {
         return (
             <>
                 <div className="container">
-                    
-                    <div className="row login-style-1-bg mt-3">
-                        <div className="col-3">
-                            <img src="/images/medbuddy_icon.png" alt="MedBuddy" width="55" height="50" />
+                    <Link to="/" className="login-icon-link">
+                        <div className="row login-style-1-bg mt-3">
+                            <div className="col-3">
+                                <img src="/images/medbuddy_icon.png" alt="MedBuddy" width="55" height="50" />
+                            </div>
+                            <div className="col-9 login-style-1">MedBuddy</div>
                         </div>
-                        <div className="col-9 login-style-1">MedBuddy</div>
-                    </div>
-
+                    </Link>
                     <div className="row justify-content-center align-items-center row-content">
                         <div className="col-4">
                             <img src="/images/login-left.svg" alt="login-leftimg" width="354" height="300" />

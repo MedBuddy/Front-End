@@ -7,6 +7,12 @@
     font-family: Stardos Stencil;
     font-size: 36px;
 }
+.login-icon-link
+{
+    text-decoration: none !important;
+    color: rgba(0,0,0,0.8) !important;
+}
+
 .login-style-1-bg
 {
     background-color: rgba(255, 255, 255, 0.5);
