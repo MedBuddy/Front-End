@@ -37,7 +37,7 @@ class Header extends Component {
         if(!this.state.username){
             return (
                 <NavItem>
-                    <NavLink className="nav-link loginbtn" to="/login">
+                    <NavLink className="nav-link header-loginbtn" to="/login">
                         <span className="fa fa-sign-in fa-lg"></span> Login
                     </NavLink>
                 </NavItem>

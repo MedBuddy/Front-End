@@ -83,7 +83,11 @@ class Login extends Component {
         this.handleFileInput = this.handleFileInput.bind(this)
         this.handleFileSubmit = this.handleFileSubmit.bind(this)
     }
-
+    componentDidMount()
+    {
+        if(localStorage.getItem('userToken'))
+            window.location.href = "/";
+    }
     getType(type){
         switch(type){
             case 'user': return 1

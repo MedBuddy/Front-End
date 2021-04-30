@@ -6,9 +6,23 @@
     height: 64px;
     z-index: 2;
 }
-.loginbtn
+.header-loginbtn
 {
-    background-color: #0086D1;
+    outline: none;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    border-radius: 5px;
+    color: rgba(255, 255, 255, 0.9) !important;
+    transition-duration: 0.4s;
+}
+.header-loginbtn:hover
+{
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    color: rgba(15, 206, 206, 1) !important;
+}
+.header-loginbtn:active
+{
+    transform: scale(0.9);
 }
 .header-style-1
 {
@@ -31,7 +45,17 @@
 .logoutbtn
 {
     outline: none;
-    border: none;
-    background-color: #0086D1;
-    border-radius: 0;
+    background-color: rgba(15, 206, 206, 1);
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    border-radius: 5px;
+    color: rgba(255, 255, 255, 0.9) !important;
+    transition-duration: 0.4s;
+}
+.logoutbtn:hover
+{
+    
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    color: rgba(15, 206, 206, 1) !important;
+    
 }
