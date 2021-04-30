@@ -1,0 +1,80 @@
+.about-container1{
+    background-color: #2483DB;
+}
+.about-container2{
+    background-color: #2483DB;
+}
+.about-photo{
+    border-radius: 200px;
+    width:150px;
+}
+.about-image1{
+    width:400px;
+    padding-left: 0px;    
+}
+.about-image2{
+    padding-top:10px;
+    width:300px;
+    padding-right: 100px;
+}
+.about-image3{
+    width:250px;
+}
+.about-image4{
+    padding-left: 0px;
+    width:300px;
+}
+.about-heading{
+    font-size: 50px;
+    font-family: PT Serif Caption;
+    color:white;
+}
+.about-label1{
+    font-size: 24px;
+    font-family: Roboto;
+    color:white;
+    padding-left: 40px;
+}
+.about-label2{
+    font-size: 24px;
+    font-family: Roboto;
+    color:white;
+    padding-left: 40px;
+}
+.about-input2{
+    height:100px;
+}
+.first-card{
+    padding-left: 100px;
+    padding-top: 60px;
+}
+.second-card{
+    padding-top: 130px;
+    padding-left: 50px;
+}
+.third-card{
+    padding-left: 100px;
+}
+.about-list{
+    text-align: left;
+}
+.about-card
+{
+    background-color: #72D49F;
+    width: 200px;
+    height: 300px;
+}
+.about-card-text
+{
+    background-color: azure;
+    font-family: Sura;
+    font-weight: bold;
+    font-size: 20px;
+    text-align: center;
+}
+.about-submit-button{
+    background-color: black;
+    font-size: 24;
+    font-family: Roboto;
+    color:white;
+}
