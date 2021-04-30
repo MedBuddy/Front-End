@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Header from './HeaderComponent';
 import  '../styles/forum.css';
-import { Input,Card,CardBody,CardText } from 'reactstrap';
+import { Input,Card,CardBody,CardText,Media } from 'reactstrap';
 
 class Forum extends Component {
     constructor(props)
@@ -52,7 +52,22 @@ class Forum extends Component {
                 console.log(this.state.questions)
             })
     }
-
+    renderDiscussions()
+    {
+        const questions=this.state.questions;
+        
+        return(
+            questions.map((question) => {
+                <Media>
+                    <Media body className="ml-5">
+                        <Media heading>{question.title}</Media>
+                        <p>{question.content}</p>
+                        <a href="">View entire discussion</a>
+                    </Media>
+                </Media>
+            })
+        )
+    }
     render(){
         return (
             <>
@@ -139,7 +154,11 @@ class Forum extends Component {
                     <div className="row mt-4">
                         <div className="col-12 forum-discussion">
                             Discussions
-                            {this.fetchDiscussions}
+                        </div>
+                        <div className="col-12">
+                            <Media list>
+                                {this.renderDiscussions()}
+                            </Media>
                         </div>
                     </div>
                 </div>
