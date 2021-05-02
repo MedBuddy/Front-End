@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Balsamiq+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kalam&display=swap');
 .forum-trending-today
 {
     font-family: roboto;
@@ -12,20 +14,38 @@
 .forum-discussion-sort
 {
     background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
     padding-top: 13px;
     padding-bottom: 13px;
 }
 .forum-discussion-sort-heading
 {
-    font-family: roboto;
+    font-family: Kalam;
+    font-weight: 600;
     text-align: center;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(0, 0, 0, 0.1);
     border-radius: 20px;
+    transition-duration: 0.2s;
+}
+.forum-discussion-sort-heading:active
+{
+    transform: scale(0.92);
+}
+.forum-discussion-sort-heading-active
+{
+    cursor: pointer;
+    font-family: Kalam;
+    
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border-radius: 20px;
+    transition-duration: 0.2s;
 }
 .forum-discussion-sort-heading:hover
 {
     cursor: pointer;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(0, 0, 0, 0.4);
 }
 .forum-discussion
 {
@@ -46,6 +66,7 @@
 
 .forum-ask-question-bg
 {
+    transition-duration: 0.2s;
     border-radius: 10px;
     display: flex;
     justify-content: center;
@@ -61,4 +82,33 @@
 .forum-modal-textarea
 {
     resize: none;
+}
+.forum-question-render
+{
+    display: flex;
+    align-items: center;
+    font-family: Balsamiq Sans;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    transition-duration: 0.4s;
+}
+.forum-question-render:hover
+{
+    transform: scale(1.03);
+    cursor: pointer;
+}
+.forum-discussion-image-container
+{
+    text-align: center;
+    font-size: 14px;
+}
+.forum-discussion-image
+{
+    width: 34px;
+    height: 34px;
+    border-radius: 100%;
+}
+.forum-discussion-date
+{
+    color: rgba(75, 75, 75,1);
 }
