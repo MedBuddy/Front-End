@@ -62,7 +62,7 @@ class Home extends Component {
                             <Card className="home-card">
                                 <CardBody>
                                     <CardTitle className="home-style-6">4+ ★ rated Doctors</CardTitle>
-                                    <CardText className="home-style-8">Online consultations</CardText>
+                                    <CardText className="home-style-8">In every specialization</CardText>
                                 </CardBody>
                             </Card>
                         </div>

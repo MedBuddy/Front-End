@@ -59,3 +59,7 @@
     color: rgba(15, 206, 206, 1) !important;
     
 }
+.header-user > img
+{
+    border-radius: 50%;
+}
