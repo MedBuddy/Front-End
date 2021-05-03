@@ -71,16 +71,15 @@ class Forum extends Component {
                 })
             })
     }
+
     renderDiscussions()
     {
         
         const questions = this.state.questions.map((question) => {
             let d = new Date(Date.parse(question.createdAt));
-            let hh = d.getHours();
-            let mm = d.getMinutes();
-            let time = hh + ":" + mm;
+            let time = d.getHours() + ":" + d.getMinutes();
             return(
-                <Media className="forum-question-render mb-3">
+                <Media className="forum-question-render mb-3" key={question._id} onClick={() => window.location.href = "/forum/"+question._id} >
                     <Media left middle className="ml-2 forum-discussion-image-container">
                         <Media object src={question.userIcon.url} alt={question.askedUserName} className="forum-discussion-image" />
                         <Media body>{question.askedUserName}</Media>
@@ -93,7 +92,6 @@ class Forum extends Component {
                         <Media>
                             ~ {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(d)+' ⏰'+time}
                         </Media>
-                        
                     </Media>
                 </Media>
             )
@@ -113,7 +111,7 @@ class Forum extends Component {
             this.toggleModal();
         }
         else
-            window.location.href = 'login'
+            window.location.href = '/login'
     }
     postQuestion(event)
     {
@@ -172,7 +170,7 @@ class Forum extends Component {
             if(id === 1)
             {
                 questions.sort(
-                    function(a,b){
+                    (a,b) => {
                         if(a.createdAt > b.createdAt)
                             return -1;
                         else if(a.createdAt < b.createdAt)
@@ -184,7 +182,7 @@ class Forum extends Component {
             else if(id === 2)
             {
                 questions.sort(
-                    function(a,b){
+                    (a,b) => {
                         let a_up = (a.replies.length)?this.findUpvote(a.replies):0,b_up = (a.replies.length)?this.findUpvote(b.replies):0;
                         if(a_up > b_up)
                             return -1;
@@ -197,7 +195,7 @@ class Forum extends Component {
             else
             {
                 questions.sort(
-                    function(a,b){
+                    (a,b) => {
                         if(a.replies.length > b.replies.length)
                             return -1;
                         else if(a.replies.length < b.replies.length)
@@ -298,7 +296,7 @@ class Forum extends Component {
                             </div>
                             <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                                 <ModalHeader toggle={this.toggleModal}>
-                                    Post new question:
+                                    Post new question
                                 </ModalHeader>
                                 <ModalBody>
                                     <Form onSubmit={this.postQuestion} id="postQuestionForm">

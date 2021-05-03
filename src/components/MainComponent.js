@@ -5,6 +5,7 @@ import Forum from './ForumComponent'
 import Login from './LoginComponent'
 import About from './AboutComponent'
 import Consult from './ConsultComponent'
+import DiscussionComponent from './DiscussionComponent'
 import { Switch, Route, Redirect } from 'react-router-dom'
 
 class Main extends Component {
@@ -13,16 +14,16 @@ class Main extends Component {
     }
     render()
     {
-
         return (
             <>
                 <Switch>
                     <Route path="/home" component={() => <Home />} />
-                    <Route path="/news" component={() => <News />} />
-                    <Route path="/forum" component={() => <Forum />} />
-                    <Route path="/consult" component={() => <Consult />} />
-                    <Route path="/about" component={() => <About />} />
                     <Route path="/login" component={() => <Login />} />
+                    <Route exact path="/news" component={() => <News />} />
+                    <Route exact path="/forum" component={() => <Forum />} />
+                    <Route path="/forum/:id" component={({match}) => <DiscussionComponent id={match.params.id}/>} />
+                    <Route exact path="/consult" component={() => <Consult />} />
+                    <Route path="/about" component={() => <About />} />
                     <Redirect to="/home" />
                 </Switch>
             </>
