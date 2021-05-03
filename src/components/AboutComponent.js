@@ -43,6 +43,15 @@ const sites = ['github', 'linkedin', 'instagram']
 
 class About extends Component {
 
+    titleDesign(){
+        return (
+            <div className="dev-title">
+                <div>Developers</div>
+                <div>Arena</div>
+            </div>
+        )
+    }
+
     renderDevCards(){
         const cards = developers.map((dev, i) => {
 
@@ -114,13 +123,14 @@ class About extends Component {
         return (
             <>
                 <Header />
-                <div className="bottom-left-img">
-                    <img src="/images/aboutImage2.svg" alt="MedBuddy" className="about-image2"/>
-                </div>
-                <div className="top-right-img">
-                    <img src="/images/aboutImage1.svg" alt="MedBuddy" className="about-image1"/>
-                </div>
                 <div className="container mt-5 about-container">
+                    <div className="bottom-left-img">
+                        <img src="/images/aboutImage2.svg" alt="MedBuddy" className="about-image2"/>
+                    </div>
+                    <div className="top-right-img">
+                        <img src="/images/aboutImage1.svg" alt="MedBuddy" className="about-image1"/>
+                    </div>
+                    { this.titleDesign() }
                     { this.renderDevCards() }
                 </div>
                 <div className="container mt-5">
