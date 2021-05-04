@@ -24,7 +24,7 @@
 {
     background: rgba(0,0,0,0.1);
     border-radius: 10px;
-    height: 97vh;
+    min-height: 97vh;
 }
 .question-image
 {
@@ -58,4 +58,33 @@
 .reply-left
 {
     text-align: left;
+}
+.discussion-votes
+{
+    text-align: center;
+    display:flex;
+    justify-content:center;
+    align-items:center; 
+    flex-direction: column;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+.discussion-upvote
+{
+    cursor: pointer;
+    color: rgb(37, 185, 37);
+
+}
+.discussion-downvote
+{
+    cursor: pointer;
+    color: rgba(255, 0, 0, 0.6);
+}
+.discussion-upvote-count
+{
+    color: green;
+}
+.discussion-downvote-count
+{
+    color: red;
 }

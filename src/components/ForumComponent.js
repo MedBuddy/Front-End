@@ -77,7 +77,11 @@ class Forum extends Component {
         
         const questions = this.state.questions.map((question) => {
             let d = new Date(Date.parse(question.createdAt));
-            let time = d.getHours() + ":" + d.getMinutes();
+            let hh = parseInt(d.getHours());
+            let mm = parseInt(d.getMinutes());
+            if(hh<10) hh = '0'+hh;
+            if(mm<10) mm = '0'+mm;
+            let time = hh + ":" + mm;
             return(
                 <Media className="forum-question-render mb-3" key={question._id} onClick={() => window.location.href = "/forum/"+question._id} >
                     <Media left middle className="ml-2 forum-discussion-image-container">

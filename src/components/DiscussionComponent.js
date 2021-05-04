@@ -144,6 +144,7 @@ class DiscussionComponent extends Component{
                 if(response.ok)
                 {
                     this.toggleReplyForm();
+                    console.log('posted')
                 }
                 else{
                     let error = new Error('Error: ' + response.status + ': ' + response.statusText)
@@ -155,16 +156,102 @@ class DiscussionComponent extends Component{
                 throw error
         })
     }
-    
+    updateVote(replyid,voteType)
+    {
+        const userToken = localStorage.getItem('userToken');
+        const content = { voteType: voteType }
+        fetch('/queries/'+this.props.id+'/replies/'+replyid+'/votes',{
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer '+userToken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(content)
+            
+        })
+        .then((response) => {
+                if(response.ok)
+                {
+                    window.location.reload();
+                }
+                else{
+                    let error = new Error('Error: ' + response.status + ': ' + response.statusText)
+                    error.response = response
+                    throw error
+                }
+            }, err => {
+                let error = new Error(err)
+                throw error
+        })
+    }
+    renderReplies()
+    {
+        if(this.state.question!==''&&this.state.question.replies.length)
+        {
+            const replies = this.state.question.replies.map((reply) => {
+                let d = new Date(Date.parse(reply.createdAt));
+                let hh = parseInt(d.getHours());
+                let mm = parseInt(d.getMinutes());
+                if(hh<10) hh = '0'+hh;
+                if(mm<10) mm = '0'+mm;
+                let time = hh + ":" + mm;
+                return(
+                    <div className="row align-items-center mt-3">
+                        <div className="col-1 offset-1">
+                                <div className="discussion-votes">
+                                <span onClick={() => this.updateVote(reply._id,"up")} className="discussion-upvote"><i className="fa fa-caret-up fa-lg"></i></span>
+                                
+                                <div className="d-flex">
+                                    <div className="discussion-upvote-count">
+                                        <i class="fa fa-angle-up"></i>
+                                        {reply.upvotes.length}
+                                    </div>
+                                    <div className="discussion-downvote-count">
+                                        <i class="fa fa-angle-down"></i>
+                                        {reply.downvotes.length}
+                                    </div>
+                                </div>
+                                
+                                <span onClick={() => this.updateVote(reply._id,"down")} className="discussion-downvote"><i className="fa fa-caret-down fa-lg"></i></span>
+                            </div>
+                        </div>
+                        <div className="col-9">
+                            <Media className="discussion-replies d-flex align-items-center">
+                                <Media left middle className="ml-2 discussion-image-container">
+                                    <Media object src={reply.userIcon.url} alt={reply.author} className="discussion-image" />
+                                    <Media body>{reply.author}</Media>
+                                </Media>
+                                <Media body className="ml-5">
+                                    <p>{reply.content}</p>
+                                </Media>
+                                <Media right className="mt-auto mr-3 discussion-date">
+                                    <Media>
+                                        ~ {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(d)+' ⏰'+time}
+                                    </Media>
+                                </Media>
+                            </Media>
+                        </div>
+                    </div>
+                )
+            })
+            return(
+                replies
+            )
+        }
+        else
+        {
+            
+            return <></>
+        }
+    }
     render()
     {
         return(
             <>
                 <Header />
-                <div className="container dicussion-container">
+                <div className="container dicussion-container mt-3 pt-2 mb-3 pb-3">
                     <div className="discussion-question-render">
                         <div className="row mt-3">
-                        
                             <div className="col-12">
                                 {this.renderQuestion()}
                             </div>
@@ -201,6 +288,11 @@ class DiscussionComponent extends Component{
                                 </Form>
                             </div>
                         </div>
+                    </div>
+                    <div className={(this.state.question!==''&&this.state.question.replies.length)?"mt-3":"d-none"}>
+                        
+                        {this.renderReplies()}
+                        
                     </div>
                 </div>
             </>
