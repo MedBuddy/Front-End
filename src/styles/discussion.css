@@ -1,7 +1,6 @@
 .discussion-question-render
 {
-    display: flex;
-    align-items: center;
+    width: 100vw;
     font-family: Balsamiq Sans;
     background-color: rgba(255, 255, 255, 0.8);
     border-radius: 10px;
@@ -21,4 +20,20 @@
 .discussion-date
 {
     color: rgba(75, 75, 75,1);
+}
+.dicussion-container
+{
+    background: rgba(0,0,0,0.1);
+    border-radius: 10px;
+    height: 97vh;
+}
+.question-image
+{
+    height: 150px;
+    width: 150px;
+    right: 20px;
+}
+.question-date-left
+{
+    text-align: right;
 }

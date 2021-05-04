@@ -94,8 +94,7 @@ class Forum extends Component {
                         </Media>
                     </Media>
                 </Media>
-            )
-            }
+            )}
         )
         return(
             <Media list className="col-12">

@@ -8,10 +8,26 @@ class DiscussionComponent extends Component{
     {
         super(props)
         this.state = {
-            question: ''
+            question: '',
+            replyModal: false,
+            deleteModal: false,
         }
         this.fetchQuestion = this.fetchQuestion.bind(this);
+        
     }
+    toggleReplyModal()
+    {
+        this.setState({
+            replyModal: !this.state.replyModal
+        })
+    }
+    toggleDeleteModal()
+    {
+        this.setState({
+            deleteModal: !this.state.deleteModal
+        })
+    }
+    
     componentDidMount(){
         this.checkLogin();
         this.fetchQuestion();
@@ -48,6 +64,50 @@ class DiscussionComponent extends Component{
             })
         })
     }
+    renderQuestionImages()
+    {
+        let question = this.state.question;
+        if(question === '')
+        {
+            return <></>
+        }
+        else
+        {
+            if(!question.files.length)
+            {
+                return <></>
+            }
+            else
+            {
+                const images = question.files.map((image) => {
+                    return(
+                        <Media object src={image} alt={question.title} className="col-3 mb-4 question-image" />
+                    )
+                })
+                return(
+                    images
+                )
+            }
+        }    
+    }
+    renderDate()
+    {
+        const question = this.state.question;
+        if(question === '')
+        {
+            return <></>
+        }
+        else
+        {
+            let d = new Date(Date.parse(question.createdAt));
+            let time = d.getHours() + ":" + d.getMinutes();
+            return(
+                <div className="discussion-date">
+                    ~ {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(d)+' ⏰'+time}
+                </div>
+            )
+        }
+    }
     renderQuestion()
     {
         let question = this.state.question;
@@ -55,11 +115,10 @@ class DiscussionComponent extends Component{
         {
             return <></>
         }
-        else{
-            let d = new Date(Date.parse(question.createdAt));
-            let time = d.getHours() + ":" + d.getMinutes();
+        else
+        {
             return(
-                <Media className="discussion-question-render">
+                <Media className="mt-3 d-flex align-items-center">
                         <Media left middle className="ml-2 discussion-image-container">
                             <Media object src={question.userIcon.url} alt={question.askedUserName} className="discussion-image" />
                             <Media body>{question.askedUserName}</Media>
@@ -67,11 +126,6 @@ class DiscussionComponent extends Component{
                         <Media body className="ml-5">
                             <Media heading className="pt-2">{question.title}</Media>
                             <p>{question.content}</p>
-                        </Media>
-                        <Media right className="mt-auto mr-3 discussion-date">
-                            <Media>
-                                ~ {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(d)+' ⏰'+time}
-                            </Media>
                         </Media>
                     </Media>
             )
@@ -82,10 +136,20 @@ class DiscussionComponent extends Component{
         return(
             <>
                 <Header />
-                <div className="container">
-                    <div className="row mt-4">
-                        <div className="col-12">
-                            {this.renderQuestion()}
+                <div className="container dicussion-container">
+                    <div className="row mt-3">
+                        <div className="m-3 discussion-question-render">
+                            <div className="col-12">
+                                {this.renderQuestion()}
+                            </div>
+                            <div className="col-12">
+                                <Media className="justify-content-center">
+                                    {this.renderQuestionImages()}
+                                </Media>
+                            </div>
+                            <div className="col-12 question-date-left">
+                                {this.renderDate()}
+                            </div>
                         </div>
                     </div>
                 </div>
