@@ -1,6 +1,5 @@
 .discussion-question-render
 {
-    width: 100vw;
     font-family: Balsamiq Sans;
     background-color: rgba(255, 255, 255, 0.8);
     border-radius: 10px;
@@ -36,4 +35,27 @@
 .question-date-left
 {
     text-align: right;
+}
+.discussion-replies
+{
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+}
+.dicussion-reply-btn
+{
+    cursor: pointer;
+    color: black;
+}
+.dicussion-reply-btn:hover
+{
+    color:rgba(0,0,0,0.7);
+}
+.discussion-answer-textarea
+{
+    resize: none;
+}
+.reply-left
+{
+    text-align: left;
 }

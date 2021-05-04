@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Header from './HeaderComponent';
-import { Media } from 'reactstrap';
+import { Media,Form,FormGroup,Input,Label,Button } from 'reactstrap';
 import  '../styles/discussion.css';
 
 class DiscussionComponent extends Component{
@@ -9,25 +9,19 @@ class DiscussionComponent extends Component{
         super(props)
         this.state = {
             question: '',
-            replyModal: false,
-            deleteModal: false,
+            replyForm: false,
         }
         this.fetchQuestion = this.fetchQuestion.bind(this);
-        
-    }
-    toggleReplyModal()
-    {
-        this.setState({
-            replyModal: !this.state.replyModal
-        })
-    }
-    toggleDeleteModal()
-    {
-        this.setState({
-            deleteModal: !this.state.deleteModal
-        })
+        this.toggleReplyForm = this.toggleReplyForm.bind(this);    
+        this.postReply = this.postReply.bind(this);
     }
     
+    toggleReplyForm()
+    {
+        this.setState({
+            replyForm: !this.state.replyForm
+        })
+    }
     componentDidMount(){
         this.checkLogin();
         this.fetchQuestion();
@@ -119,36 +113,92 @@ class DiscussionComponent extends Component{
         {
             return(
                 <Media className="mt-3 d-flex align-items-center">
-                        <Media left middle className="ml-2 discussion-image-container">
-                            <Media object src={question.userIcon.url} alt={question.askedUserName} className="discussion-image" />
-                            <Media body>{question.askedUserName}</Media>
-                        </Media>
-                        <Media body className="ml-5">
-                            <Media heading className="pt-2">{question.title}</Media>
-                            <p>{question.content}</p>
-                        </Media>
+                    <Media left middle className="ml-2 discussion-image-container">
+                        <Media object src={question.userIcon.url} alt={question.askedUserName} className="discussion-image" />
+                        <Media body>{question.askedUserName}</Media>
                     </Media>
+                    <Media body className="ml-5">
+                        <Media heading className="pt-2">{question.title}</Media>
+                        <p>{question.content}</p>
+                    </Media>
+                </Media>
             )
         }
     }
+    postReply(event)
+    {
+        const userToken = localStorage.getItem('userToken');
+        const content = {
+                            content:this.reply.value
+                        }
+        fetch('/queries/'+this.props.id+'/replies',{
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer '+userToken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(content)
+            
+        })
+        .then((response) => {
+                if(response.ok)
+                {
+                    this.toggleReplyForm();
+                }
+                else{
+                    let error = new Error('Error: ' + response.status + ': ' + response.statusText)
+                    error.response = response
+                    throw error
+                }
+            }, err => {
+                let error = new Error(err)
+                throw error
+        })
+    }
+    
     render()
     {
         return(
             <>
                 <Header />
                 <div className="container dicussion-container">
-                    <div className="row mt-3">
-                        <div className="m-3 discussion-question-render">
+                    <div className="discussion-question-render">
+                        <div className="row mt-3">
+                        
                             <div className="col-12">
                                 {this.renderQuestion()}
                             </div>
+                        </div>
+                        <div className="row">
                             <div className="col-12">
                                 <Media className="justify-content-center">
                                     {this.renderQuestionImages()}
                                 </Media>
                             </div>
-                            <div className="col-12 question-date-left">
+                        </div>
+                        <div className="row">
+                            <div className="col-6 pl-5 pb-2 reply-left">
+                                <span className="dicussion-reply-btn" onClick={this.toggleReplyForm}><i className="fa fa-reply"></i> Reply</span>
+                            </div>
+                            <div className="col-6 question-date-left pr-5">
                                 {this.renderDate()}
+                            </div>
+                        </div>
+                    </div>
+                    <div className={(this.state.replyForm)?"row mt-3":"d-none"}>
+                        <div className="col-11 offset-1">
+                            <div className="discussion-replies">
+                                <Form className="w-75 m-3" id="postAnswerForm" onSubmit={this.postReply}>
+                                    <FormGroup>
+                                        <Label htmlFor="reply">Your Reply</Label>
+                                        <Input type="textarea" className="discussion-answer-textarea" rows="4" id="reply" name="reply" required
+                                            innerRef={(input) => this.reply = input} />
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <Button color="primary" type="submit" form="postAnswerForm">Submit</Button>
+                                        <Button color="danger" className="ml-2" onClick={this.toggleReplyForm}>Cancel</Button>
+                                    </FormGroup>
+                                </Form>
                             </div>
                         </div>
                     </div>
