@@ -88,3 +88,12 @@
 {
     color: red;
 }
+.discussion-replies-update
+{
+    text-align: right;
+}
+.discussion-replies-edit,.discussion-replies-delete
+{
+    transform: scale(1.1);
+    cursor: pointer;
+}

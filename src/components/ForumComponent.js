@@ -186,7 +186,7 @@ class Forum extends Component {
             {
                 questions.sort(
                     (a,b) => {
-                        let a_up = (a.replies.length)?this.findUpvote(a.replies):0,b_up = (a.replies.length)?this.findUpvote(b.replies):0;
+                        let a_up = (a.replies.length)?() => this.findUpvote(a.replies):0,b_up = (a.replies.length)?() => this.findUpvote(b.replies):0;
                         if(a_up > b_up)
                             return -1;
                         else if(a_up < b_up)

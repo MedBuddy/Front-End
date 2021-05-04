@@ -179,6 +179,9 @@ class Login extends Component {
                     window.location.href = '/'
                 }
             })
+            .catch(error => {
+                console.log(error)
+            })
         }
         event.preventDefault()
     }
@@ -286,6 +289,9 @@ class Login extends Component {
                     userId: userId
                 })
             })
+            .catch(error => {
+                console.log(error)
+            })
         }
         else{
             this.setState({
@@ -388,6 +394,9 @@ class Login extends Component {
                     }
                 }
             })
+            .catch(error => {
+                console.log(error)
+            })
         }
         event.preventDefault()
     }
@@ -424,6 +433,9 @@ class Login extends Component {
                 loginPageMsg: 'Doctor account created! You will be notified as soon as your license is verified',
                 userId: ''
             })
+        })
+        .catch(error => {
+            console.log(error)
         })
     }
 
