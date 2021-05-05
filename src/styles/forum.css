@@ -120,3 +120,24 @@
 {
     color: rgba(75, 75, 75,1);
 }
+.question-break 
+{
+    word-wrap: break-word;
+}
+.forum-card-container
+{
+    font-family: Balsamiq Sans;
+    background-color: rgba(255, 255, 255, 0.8);
+    text-overflow: ellipsis;
+    transition-duration: 0.3s;
+}
+.forum-card-container:hover
+{
+    transform: scale(1.1);
+    cursor: pointer;
+}
+.forum-card-heading
+{
+    font-size: 25px;
+    font-weight: 600;
+}

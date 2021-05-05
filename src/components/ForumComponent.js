@@ -21,14 +21,16 @@ class Forum extends Component {
         this.handleFileInput = this.handleFileInput.bind(this);
         this.changeDiscussionType = this.changeDiscussionType.bind(this);
     }
+
+    componentDidMount(){
+        this.fetchDiscussions();
+    }
+    
     handleFileInput(event)
     {
         this.setState({
             files: event.target.files
         })
-    }
-    componentDidMount(){
-        this.fetchDiscussions();
     }
 
     toggleModal()
@@ -71,7 +73,7 @@ class Forum extends Component {
                 })
             })
     }
-
+    
     renderDiscussions()
     {
         
@@ -88,7 +90,7 @@ class Forum extends Component {
                         <Media object src={question.userIcon.url} alt={question.askedUserName} className="forum-discussion-image" />
                         <Media body>{question.askedUserName}</Media>
                     </Media>
-                    <Media body className="">
+                    <Media body className="question-break">
                         <Media heading className="pt-2">{question.title}</Media>
                         <p>{question.content}</p>
                     </Media>
@@ -163,6 +165,53 @@ class Forum extends Component {
             sum+=replies[i].upvotes.length
         return sum;
     }
+    renderCards()
+    {
+        if(this.state.questions)
+        {
+            let questions = this.state.questions;
+            let d = new Date();
+            questions.forEach(q => console.log((d - new Date(Date.parse(q.createdAt)))/(1000*60*60*24)))
+            console.log(d)
+            questions = questions.filter(question => {
+                let days = (d - new Date(Date.parse(question.createdAt)))/(1000*60*60*24)
+                return (days <= 10)
+            })
+            questions.sort(
+                (a,b) => {
+                    if(a.replies.length > b.replies.length)
+                        return -1;
+                    else if(a.replies.length < b.replies.length)
+                        return 1;
+                    return 0;
+                }
+            )
+            questions = questions.slice(0,3);
+            console.log(questions)
+            const questionCards = questions.map(question => (
+                    <div className="col-3" onClick={() => window.location.href = "/forum/"+question._id}>
+                        <Card className="forum-card-container">
+                            <CardBody>
+                                <CardText className="forum-card-heading">
+                                    { question.title }
+                                </CardText>
+                                <CardText>
+                                    { question.content }
+                                </CardText>
+                            </CardBody>
+                        </Card>
+                    </div>
+            ))
+            return (
+                <div className="row mt-5 justify-content-around">
+                    { questionCards }
+                </div>
+            )
+        }
+        else{
+            return <></>
+        }
+    }
     changeDiscussionType(id)
     {
         if(id !== this.state.discussionType)
@@ -228,44 +277,7 @@ class Forum extends Component {
                             {/* <i className="fa fa-search"></i> */}
                         </div>
                     </div>
-                    <div className="row mt-5">
-                        <div className="col-md-3">
-                            <Card>
-                                <CardBody>
-                                    <CardText>
-                                        Trending question-1
-                                    </CardText>
-                                    <CardText>
-                                        View entire discussion
-                                    </CardText>
-                                </CardBody>
-                            </Card>
-                        </div>
-                        <div className="col-md-3 offset-md-1">
-                            <Card>
-                                <CardBody>
-                                    <CardText>
-                                        Trending question-2
-                                    </CardText>
-                                    <CardText>
-                                        View entire discussion
-                                    </CardText>
-                                </CardBody>
-                            </Card>
-                        </div>
-                        <div className="col-md-3 offset-md-1">
-                            <Card>
-                                <CardBody>
-                                    <CardText>
-                                        Trending question-3
-                                    </CardText>
-                                    <CardText>
-                                        View entire discussion
-                                    </CardText>
-                                </CardBody>
-                            </Card>
-                        </div>
-                    </div>
+                    {this.renderCards()}
                 </div>
                 
                 <div className="container forum-container pl-5 pr-5 mb-4">
