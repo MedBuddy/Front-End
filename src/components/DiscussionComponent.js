@@ -11,6 +11,7 @@ class DiscussionComponent extends Component{
             question: '',
             replyForm: false,
             editModal:false,
+            replyIndex: -1
         }
         this.fetchQuestion = this.fetchQuestion.bind(this);
         this.toggleReplyForm = this.toggleReplyForm.bind(this);    
@@ -26,9 +27,10 @@ class DiscussionComponent extends Component{
             replyForm: !this.state.replyForm
         })
     }
-    toggleEditModal()
+    toggleEditModal(index=-1)
     {
         this.setState({
+            replyIndex: index,
             editModal: !this.state.editModal
         })
     }
@@ -140,6 +142,7 @@ class DiscussionComponent extends Component{
     }
     postReply(event)
     {
+        event.preventDefault()
         const userToken = localStorage.getItem('userToken');
         const content = { content:this.reply.value }
         fetch('/queries/'+this.props.id+'/replies',{
@@ -155,7 +158,7 @@ class DiscussionComponent extends Component{
                 if(response.ok)
                 {
                     this.toggleReplyForm();
-                    console.log('posted')
+                    return response.json()
                 }
                 else{
                     let error = new Error('Error: ' + response.status + ': ' + response.statusText)
@@ -166,42 +169,16 @@ class DiscussionComponent extends Component{
                 let error = new Error(err)
                 throw error
         })
-        .catch(error => {
-            console.log(error)
-        })
-    }
-    updateReply()
-    {
-        const userToken = localStorage.getItem('userToken');
-        const content = { content:this.editreply.value }
-        fetch('/queries/'+this.props.id+'/replies',{
-            method: 'PUT',
-            headers: {
-                'Authorization': 'Bearer '+userToken,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(content)
-            
-        })
-        .then((response) => {
-                if(response.ok)
-                {
-                    this.toggleReplyForm();
-                    console.log('updated')
-                }
-                else{
-                    let error = new Error('Error: ' + response.status + ': ' + response.statusText)
-                    error.response = response
-                    throw error
-                }
-            }, err => {
-                let error = new Error(err)
-                throw error
+        .then(response => {
+            this.setState({
+                question: response.query
+            })
         })
         .catch(error => {
             console.log(error)
         })
     }
+    
     updateVote(replyid,voteType)
     {
         const userToken = localStorage.getItem('userToken');
@@ -218,7 +195,7 @@ class DiscussionComponent extends Component{
         .then((response) => {
                 if(response.ok)
                 {
-                    window.location.reload();
+                    return response.json();
                 }
                 else{
                     let error = new Error('Error: ' + response.status + ': ' + response.statusText)
@@ -229,19 +206,99 @@ class DiscussionComponent extends Component{
                 let error = new Error(err)
                 throw error
         })
+        .then(response => {
+            this.setState({
+                question: response.query
+            })
+        })
         .catch(error => {
             console.log(error)
         })
     }
-    renderDeleteEdit(reply)
+
+    updateReply(event)
     {
+        event.preventDefault();
+        const replyId = this.state.question.replies[this.state.replyIndex]._id
+        const userToken = localStorage.getItem('userToken');
+        const content = { content: this.editreply.value }
+        fetch('/queries/'+this.props.id+'/replies/'+replyId,{
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer '+userToken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(content) 
+        })
+        .then((response) => {
+                if(response.ok)
+                {
+                    this.toggleEditModal()
+                    return response.json()
+                }
+                else{
+                    let error = new Error('Error: ' + response.status + ': ' + response.statusText)
+                    error.response = response
+                    throw error
+                }
+            }, err => {
+                let error = new Error(err)
+                throw error
+        })
+        .then(response => {
+            this.setState({
+                question: response.query
+            })
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    }
+
+    deleteReply(replyId)
+    {
+        const userToken = localStorage.getItem('userToken');
+        fetch('/queries/'+this.props.id+'/replies/'+replyId,{
+            method: 'DELETE',
+            headers: {
+                'Authorization': 'Bearer '+userToken,
+            },
+        })
+        .then((response) => {
+                if(response.ok)
+                {
+                    return response.json()
+                }
+                else{
+                    let error = new Error('Error: ' + response.status + ': ' + response.statusText)
+                    error.response = response
+                    throw error
+                }
+            }, err => {
+                let error = new Error(err)
+                throw error
+        })
+        .then(response => {
+            this.setState({
+                question: response.query
+            })
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    }
+
+    renderDeleteEdit(index)
+    {
+        let reply = this.state.question.replies[index];
         const username = localStorage.getItem('username');
         if(username === reply.author)
         {
             return(
                 <div className="discussion-replies-update mb-2">
-                    <span onClick={this.toggleEditModal} className="pr-3"><i className="discussion-replies-edit fa fa-edit fa-md"></i></span>
-                    <span onClick={() => this.deleteReply()}><i className="discussion-replies-delete fa fa-trash fa-md"></i></span>
+                    <span onClick={() => this.toggleEditModal(index)} className="pr-3"><i className="discussion-replies-edit fa fa-edit fa-md"></i></span>
+                    
+                    <span onClick={() => this.deleteReply(reply._id)}><i className="discussion-replies-delete fa fa-trash fa-md"></i></span>
                 </div>
             )
         }
@@ -257,7 +314,7 @@ class DiscussionComponent extends Component{
     {
         if(this.state.question!==''&&this.state.question.replies.length)
         {
-            const replies = this.state.question.replies.map((reply) => {
+            const replies = this.state.question.replies.map((reply,index) => {
                 let d = new Date(Date.parse(reply.createdAt));
                 let hh = parseInt(d.getHours());
                 let mm = parseInt(d.getMinutes());
@@ -295,7 +352,7 @@ class DiscussionComponent extends Component{
                                 </Media>
                                 
                                 <Media right className="mt-auto mr-3 discussion-date">
-                                    {this.renderDeleteEdit(reply)}
+                                    {this.renderDeleteEdit(index)}
                                     <Media>
                                         ~ {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(d)+' ⏰'+time}
                                     </Media>
@@ -363,8 +420,8 @@ class DiscussionComponent extends Component{
                     <div className={(this.state.question!==''&&this.state.question.replies.length)?"mt-3":"d-none"}>
                         
                         {this.renderReplies()}
-                        <Modal isOpen={this.state.editModal} toggle={this.toggleEditModal}>
-                            <ModalHeader toggle={this.toggleEditModal}>
+                        <Modal isOpen={this.state.editModal} toggle={() => this.toggleEditModal()}>
+                            <ModalHeader toggle={() => this.toggleEditModal()}>
                                 Edit your reply
                             </ModalHeader>
                             <ModalBody>
@@ -372,13 +429,13 @@ class DiscussionComponent extends Component{
                                     <FormGroup>
                                         <Label htmlFor="editreply">Your Reply</Label>
                                         <Input type="textarea" className="discussion-answer-textarea" rows="4" id="editreply" name="editreply" required
-                                            innerRef={(input) => this.editreply = input} />
+                                            defaultValue={(this.state.replyIndex === -1)?'':this.state.question.replies[this.state.replyIndex].content} innerRef={(input) => this.editreply = input} />
                                     </FormGroup>
                                 </Form>
                             </ModalBody>
                             <ModalFooter>
                                 <Button color="primary" type="submit" form="editReplyForm">Submit</Button>
-                                <Button color="danger" className="ml-2" onClick={this.toggleEditModal}>Cancel</Button>
+                                <Button color="danger" className="ml-2" onClick={() => this.toggleEditModal()}>Cancel</Button>
                             </ModalFooter>
                         </Modal>
                     </div>
