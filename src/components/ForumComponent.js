@@ -28,7 +28,7 @@ class Forum extends Component {
         })
     }
     componentDidMount(){
-        this.fetchDiscussions()
+        this.fetchDiscussions();
     }
 
     toggleModal()
@@ -84,11 +84,11 @@ class Forum extends Component {
             let time = hh + ":" + mm;
             return(
                 <Media className="forum-question-render mb-3" key={question._id} onClick={() => window.location.href = "/forum/"+question._id} >
-                    <Media left middle className="ml-2 forum-discussion-image-container">
+                    <Media left middle className="col-2 text-center forum-discussion-image-container">
                         <Media object src={question.userIcon.url} alt={question.askedUserName} className="forum-discussion-image" />
                         <Media body>{question.askedUserName}</Media>
                     </Media>
-                    <Media body className="ml-5">
+                    <Media body className="">
                         <Media heading className="pt-2">{question.title}</Media>
                         <p>{question.content}</p>
                     </Media>
@@ -160,15 +160,13 @@ class Forum extends Component {
     {
         let i,sum=0;
         for(i=0;i<replies.length;i++)
-            sum+=replies.upvotes.length
+            sum+=replies[i].upvotes.length
         return sum;
     }
-    changeDiscussionType(event)
+    changeDiscussionType(id)
     {
-        let id = parseInt(event.target.id);
         if(id !== this.state.discussionType)
         {
-            
             let questions = this.state.questions
             if(id === 1)
             {
@@ -186,7 +184,8 @@ class Forum extends Component {
             {
                 questions.sort(
                     (a,b) => {
-                        let a_up = (a.replies.length)?() => this.findUpvote(a.replies):0,b_up = (a.replies.length)?() => this.findUpvote(b.replies):0;
+                        let a_up = this.findUpvote(a.replies);
+                        let b_up = this.findUpvote(b.replies);
                         if(a_up > b_up)
                             return -1;
                         else if(a_up < b_up)
@@ -218,12 +217,12 @@ class Forum extends Component {
         return (
             <>
                 <Header />
-                <div className="container">
+                <div className="container forum-container pt-2 pl-5 pr-5 pb-5 mt-4">
                     <div className="row mt-4">
                         <div className="col-md-4 forum-trending-today">
                             Trending Today
                         </div>
-                        <div className="col-md-5 offset-md-2">
+                        <div className="col-md-5 offset-md-2 d-flex align-items-center">
                             
                             <Input type="text" className="forum-search" placeholder="Search Topics" onKeyPress={this.searchTopic} />
                             {/* <i className="fa fa-search"></i> */}
@@ -267,31 +266,38 @@ class Forum extends Component {
                             </Card>
                         </div>
                     </div>
+                </div>
+                
+                <div className="container forum-container pl-5 pr-5 mb-4">
                     <div className="row mt-5 align-items-center">
-                        
-                            <div className="col-md-8">
-                                <div className="forum-discussion-sort">
-                                    <div className="row justify-content-center">
-                                        <div className="col-3">
-                                            <div className={(this.state.discussionType === 1)?"forum-discussion-sort-heading-active p-1":"forum-discussion-sort-heading p-1"} id="1" onClick={this.changeDiscussionType}>
-                                                Latest Talks
-                                            </div>
+                        <div className="col-12 forum-discussion mb-4">
+                            Discussions
+                        </div> 
+                    </div>
+                    <div className="row">
+                        <div className="col-md-8">
+                            <div className="forum-discussion-sort">
+                                <div className="row justify-content-center">
+                                    <div className="col-3">
+                                        <div className={(this.state.discussionType === 1)?"forum-discussion-sort-heading-active p-1":"forum-discussion-sort-heading p-1"} onClick={() => this.changeDiscussionType(1)}>
+                                            Latest Talks
                                         </div>
-                                        <div className="col-3 offset-1">
-                                            <div className={(this.state.discussionType === 2)?"forum-discussion-sort-heading-active p-1":"forum-discussion-sort-heading p-1"} id="2" onClick={this.changeDiscussionType}>
-                                                Highest Votes
-                                            </div>
+                                    </div>
+                                    <div className="col-3 offset-1">
+                                        <div className={(this.state.discussionType === 2)?"forum-discussion-sort-heading-active p-1":"forum-discussion-sort-heading p-1"} onClick={() => this.changeDiscussionType(2)}>
+                                            Highest Votes
                                         </div>
-                                        <div className="col-3 offset-1">
-                                            <div className={(this.state.discussionType === 3)?"forum-discussion-sort-heading-active p-1":"forum-discussion-sort-heading p-1"} id="3" onClick={this.changeDiscussionType}>
-                                                Most Popular
-                                            </div>
+                                    </div>
+                                    <div className="col-3 offset-1">
+                                        <div className={(this.state.discussionType === 3)?"forum-discussion-sort-heading-active p-1":"forum-discussion-sort-heading p-1"} onClick={() => this.changeDiscussionType(3)}>
+                                            Most Popular
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
                         
-                        <div className="col-md-3 offset-md-1 ">
+                        <div className="col-md-3 offset-md-1">
                             <div className="forum-ask-question-bg" onClick={this.checkLogin}>
                                 <div className="forum-ask-question">
                                     Ask Your question
@@ -310,8 +316,8 @@ class Forum extends Component {
                                         </FormGroup>
                                         <FormGroup>
                                             <Label htmlFor="question">Question</Label>
-                                            <Input className="forum-modal-textarea" type="textarea" id="question" name="question" autoComplete="off" required 
-                                                innerRef={(input) => this.question = input} />
+                                            <Input className="forum-modal-textarea" type="textarea" id="question" rows="3" required  
+                                                    name="question" autoComplete="off" innerRef={(input) => this.question = input} />
                                         </FormGroup>
                                         <FormGroup>
                                             <Label htmlFor="image">Images (max. 3)</Label>
@@ -327,10 +333,7 @@ class Forum extends Component {
                             </Modal>
                         </div>
                     </div>
-                    <div className="row mt-4">
-                        <div className="col-12 forum-discussion mb-4">
-                            Discussions
-                        </div>
+                    <div className="row mt-5">
                         {this.renderDiscussions()}
                     </div>
                 </div>

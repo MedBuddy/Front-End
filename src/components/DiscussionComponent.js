@@ -111,7 +111,7 @@ class DiscussionComponent extends Component{
             let d = new Date(Date.parse(question.createdAt));
             let time = d.getHours() + ":" + d.getMinutes();
             return(
-                <div className="discussion-date">
+                <div className="discussion-question-date">
                     ~ {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(d)+' ⏰'+time}
                 </div>
             )
@@ -152,12 +152,12 @@ class DiscussionComponent extends Component{
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(content)
-            
         })
         .then((response) => {
                 if(response.ok)
                 {
                     this.toggleReplyForm();
+                    this.reply.value = '';
                     return response.json()
                 }
                 else{
@@ -325,7 +325,9 @@ class DiscussionComponent extends Component{
                     <div className="row align-items-center mt-3">
                         <div className="col-1 offset-1">
                                 <div className="discussion-votes">
-                                <span onClick={() => this.updateVote(reply._id,"up")} className="discussion-upvote"><i className="fa fa-caret-up fa-lg"></i></span>
+                                <span onClick={() => this.updateVote(reply._id,"up")} className="discussion-upvote">
+                                    <i className="fa fa-caret-up fa-lg"></i>
+                                </span>
                                 
                                 <div className="d-flex">
                                     <div className="discussion-upvote-count pr-1">
@@ -343,17 +345,17 @@ class DiscussionComponent extends Component{
                         </div>
                         <div className="col-9">
                             <Media className="discussion-replies d-flex align-items-center">
-                                <Media left middle className="ml-2 discussion-image-container">
+                                <Media left middle className="col-2 discussion-image-container text-center">
                                     <Media object src={reply.userIcon.url} alt={reply.author} className="discussion-image" />
                                     <Media body>{reply.author}</Media>
                                 </Media>
-                                <Media body className="ml-5">
+                                <Media body className="discusssion-reply-content">
                                     <p>{reply.content}</p>
                                 </Media>
                                 
-                                <Media right className="mt-auto mr-3 discussion-date">
+                                <Media right className="mt-auto mr-3">
                                     {this.renderDeleteEdit(index)}
-                                    <Media>
+                                    <Media className="discussion-date">
                                         ~ {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(d)+' ⏰'+time}
                                     </Media>
                                 </Media>

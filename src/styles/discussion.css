@@ -7,8 +7,9 @@
 }
 .discussion-image-container
 {
-    text-align: center;
     font-size: 14px;
+    margin-left: -20px;
+    text-align: center;
 }
 .discussion-image
 {
@@ -16,9 +17,14 @@
     height: 34px;
     border-radius: 100%;
 }
+.discussion-question-date
+{
+    color: rgba(75, 75, 75,1);
+}
 .discussion-date
 {
     color: rgba(75, 75, 75,1);
+    font-size: 0.8rem;
 }
 .dicussion-container
 {
@@ -96,4 +102,8 @@
 {
     transform: scale(1.1);
     cursor: pointer;
+}
+.discusssion-reply-content 
+{
+    word-break: break-all;
 }

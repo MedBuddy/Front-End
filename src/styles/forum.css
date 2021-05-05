@@ -1,11 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Balsamiq+Sans&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Kalam&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
+
+.forum-container
+{
+    background: rgba(0,0,0,0.1);
+    border-radius: 10px;
+}
 .forum-trending-today
 {
-    font-family: roboto;
+    font-family: Itim;
     font-weight: bold;
-    font-size: 24px;
+    font-size: 35px;
 }
 .forum-search
 {
@@ -49,9 +56,9 @@
 }
 .forum-discussion
 {
-    font-family: roboto;
+    font-family: Itim;
     font-weight: bold;
-    font-size: 24px;
+    font-size: 35px;
 }
 .forum-ask-question,.forum-ask-question:hover
 {
@@ -101,6 +108,7 @@
 {
     text-align: center;
     font-size: 14px;
+    margin-left: -25px;
 }
 .forum-discussion-image
 {
