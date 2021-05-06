@@ -11,7 +11,9 @@ class DiscussionComponent extends Component{
             question: '',
             replyForm: false,
             editModal:false,
-            replyIndex: -1
+            replyIndex: -1,
+            editQuestionModal:false,
+            files: [],
         }
         this.fetchQuestion = this.fetchQuestion.bind(this);
         this.toggleReplyForm = this.toggleReplyForm.bind(this);    
@@ -19,8 +21,16 @@ class DiscussionComponent extends Component{
         this.updateVote = this.updateVote.bind(this);
         this.toggleEditModal = this.toggleEditModal.bind(this);
         this.updateReply = this.updateReply.bind(this);
+        this.deleteQuestion = this.deleteQuestion.bind(this);
+        this.toggleEditQuestionModal = this.toggleEditQuestionModal.bind(this);
+        this.updateQuestion = this.updateQuestion.bind(this);
     }
-    
+    toggleEditQuestionModal()
+    {
+        this.setState({
+            editQuestionModal: !this.state.editQuestionModal
+        })
+    }
     toggleReplyForm()
     {
         this.setState({
@@ -73,6 +83,45 @@ class DiscussionComponent extends Component{
             console.log(error)
         })
     }
+    
+    updateQuestion(event)
+    {
+        const userToken = localStorage.getItem('userToken');
+        let question = new FormData()
+        question.append('title', this.edittopic.value)
+        question.append('content', this.editquestion.value)
+        for(let i=0;i<this.state.files.length;i++)
+            question.append('image',this.state.files[i])
+        fetch('/queries/'+this.state.question._id,{
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer '+userToken
+            },
+            body: question
+        })
+        .then((response) => {
+            if(response.ok)
+            {
+                console.log('Updated succesfully');
+                this.toggleEditQuestionModal();
+                window.location.reload();
+            }
+            else
+            {
+                let error = new Error('Error: ' + response.status + ': ' + response.statusText)
+                error.response = response
+                console.log(typeof(response.status))
+                throw error
+            }
+        }, err => {
+            let error = new Error(err)
+            throw error
+        })
+        .catch(error => {
+            console.log(error)
+        })
+        event.preventDefault();
+    }
     renderQuestionImages()
     {
         let question = this.state.question;
@@ -117,6 +166,54 @@ class DiscussionComponent extends Component{
             )
         }
     }
+    deleteQuestion()
+    {
+        const userToken = localStorage.getItem('userToken');
+        fetch('/queries/'+this.state.question._id,{
+            method: 'DELETE',
+            headers :{
+                'Authorization': 'Bearer '+userToken
+            }
+        })
+        .then(response => {
+            if(response.ok){
+                window.location.href = "/forum"
+            }
+            else
+            {
+                let error = new Error('Error: ' + response.status + ': ' + response.statusText)
+                error.response = response
+                throw error
+            }
+        }, err => {
+            let error = new Error(err)
+            throw error
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    }
+    renderQuestionUpdateIcons()
+    {
+        const username = localStorage.getItem('username');
+        if(this.state.question.askedUserName === username)
+        {
+            return(
+                <Media>
+                    <span className="pr-3" onClick={this.toggleEditQuestionModal}>
+                        <i className="discussion-replies-edit fa fa-edit fa-md"></i>
+                    </span>
+                    <span className="pr-4" onClick={this.deleteQuestion}>
+                        <i className="discussion-replies-delete fa fa-trash fa-md"></i>
+                    </span>
+                </Media>
+            )
+        }
+        else
+        {
+            return <></>
+        }
+    }
     renderQuestion()
     {
         let question = this.state.question;
@@ -136,6 +233,7 @@ class DiscussionComponent extends Component{
                         <Media heading className="pt-2">{question.title}</Media>
                         <p>{question.content}</p>
                     </Media>
+                    {this.renderQuestionUpdateIcons(question)}
                 </Media>
             )
         }
@@ -296,18 +394,18 @@ class DiscussionComponent extends Component{
         {
             return(
                 <div className="discussion-replies-update mb-2">
-                    <span onClick={() => this.toggleEditModal(index)} className="pr-3"><i className="discussion-replies-edit fa fa-edit fa-md"></i></span>
-                    
-                    <span onClick={() => this.deleteReply(reply._id)}><i className="discussion-replies-delete fa fa-trash fa-md"></i></span>
+                    <span onClick={() => this.toggleEditModal(index)} className="pr-3">
+                        <i className="discussion-replies-edit fa fa-edit fa-md"></i>
+                    </span>
+                    <span onClick={() => this.deleteReply(reply._id)}>
+                        <i className="discussion-replies-delete fa fa-trash fa-md"></i>
+                    </span>
                 </div>
             )
         }
         else
         {
-            return(
-                <>
-                </>
-            )
+            return <></>
         }
     }
     renderReplies()
@@ -401,6 +499,29 @@ class DiscussionComponent extends Component{
                                 {this.renderDate()}
                             </div>
                         </div>
+                        <Modal isOpen={this.state.editQuestionModal} toggle={this.toggleEditQuestionModal}>
+                            <ModalHeader toggle={this.toggleEditQuestionModal}>
+                                Edit My question
+                            </ModalHeader>
+                            <ModalBody>
+                                <Form onSubmit={this.updateQuestion} id="updateQuestionForm">
+                                    <FormGroup>
+                                        <Label htmlFor="edittopic">Topic</Label>
+                                        <Input type="text" id="edittopic" name="edittopic" maxLength="20" autoComplete="off" required
+                                            defaultValue={this.state.question.title} innerRef={(input) => this.edittopic = input} />
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <Label htmlFor="editquestion">Question</Label>
+                                        <Input className="forum-modal-textarea" type="textarea" id="editquestion" rows="3" required  
+                                            defaultValue={this.state.question.content} name="editquestion" autoComplete="off" innerRef={(input) => this.editquestion = input} />
+                                    </FormGroup>
+                                </Form>
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="primary" type="submit" form="updateQuestionForm">Submit</Button>
+                                <Button color="danger" onClick={this.toggleEditQuestionModal}>Cancel</Button>
+                            </ModalFooter>
+                        </Modal>
                     </div>
                     <div className={(this.state.replyForm)?"row mt-3":"d-none"}>
                         <div className="col-11 offset-1">

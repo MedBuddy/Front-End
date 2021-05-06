@@ -9,7 +9,8 @@ class Header extends Component {
         super(props);
         this.state={
             isNavOpen:false,
-            username: localStorage.getItem('username')
+            username: localStorage.getItem('username'),
+            userIcon: localStorage.getItem('userIcon')
         };
         this.toggleNav=this.toggleNav.bind(this);
         this.logout = this.logout.bind(this);
@@ -27,6 +28,7 @@ class Header extends Component {
     logout(){
         localStorage.removeItem('username')
         localStorage.removeItem('userToken')
+        localStorage.removeItem('userIcon')
         this.setState({
             username: null
         })
@@ -48,7 +50,7 @@ class Header extends Component {
                 <>
                     <NavItem>
                         <div className="header-user">
-                            <img src="http://localhost:4000/images/user-default.jpg" alt="user-img" className="header-img"></img>
+                            <img src={this.state.userIcon} alt="user-img" className="header-img"></img>
                             <span className="header-username">{ this.state.username }</span>
                         </div>
                     </NavItem>

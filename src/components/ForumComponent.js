@@ -70,16 +70,17 @@ class Forum extends Component {
             })
             .then(response => response.json())
             .then((response) => {
+                let questions = response.reverse()
                 this.setState({
-                    allQuestions: response.reverse(),
-                    questions: response.reverse()
+                    allQuestions: questions,
+                    questions: questions
                 })
             })
+            .catch(error => console.log(error))
     }
     
     renderDiscussions()
     {
-        
         const questions = this.state.questions.map((question) => {
             let d = new Date(Date.parse(question.createdAt));
             let hh = parseInt(d.getHours());
@@ -103,8 +104,8 @@ class Forum extends Component {
                         </Media>
                     </Media>
                 </Media>
-            )}
-        )
+            )
+        })
         return(
             <Media list className="col-12">
                 {questions}
@@ -133,7 +134,6 @@ class Forum extends Component {
     }
     postQuestion(event)
     {
-        
         const userToken = localStorage.getItem('userToken');
         let question = new FormData()
         question.append('title', this.topic.value)
@@ -282,7 +282,7 @@ class Forum extends Component {
                 <div className="container forum-container pt-1 pl-5 pr-5 pb-5 mt-4">
                     <div className="row mt-4">
                         <div className="col-md-4 forum-trending-today">
-                            Trending Today
+                            Trending Talks
                         </div>
                         <div className="col-md-5 offset-md-2 d-flex align-items-center">
                             

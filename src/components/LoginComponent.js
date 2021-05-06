@@ -176,6 +176,7 @@ class Login extends Component {
                 else{
                     localStorage.setItem('userToken', response.token)
                     localStorage.setItem('username', response.username)
+                    localStorage.setItem('userIcon', response.userIcon)
                     window.location.href = '/'
                 }
             })
