@@ -43,6 +43,11 @@ const sites = ['github', 'linkedin', 'instagram']
 
 class About extends Component {
 
+    constructor(props){
+        super(props)
+        this.submitFeedback = this.submitFeedback.bind(this)
+    }
+
     titleDesign(){
         return (
             <div className="dev-title">
@@ -97,13 +102,54 @@ class About extends Component {
         )
     }
 
+    submitFeedback(event){
+        event.preventDefault()
+        const feedback = {
+            name: this.name.value,
+            email: this.email.value,
+            content: this.feedback.value
+        }
+        this.name.value = ''
+        this.email.value = ''
+        this.feedback.value = ''
+        fetch('/feedback', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(feedback)
+        })
+        .then(response => {
+            if(response.ok){
+                alert('FeedBack Posted')
+                return response
+            }
+            else{
+                let error = new Error('Error: ' + response.status + ': ' + response.statusText)
+                error.response = response
+                throw error
+            }
+        }, err => {
+            let error = new Error(err)
+            throw error
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    }
+
     renderContactForm(){
         return (
-            <Form>
+            <Form onSubmit={this.submitFeedback}>
                 <FormGroup row>
-                        <Label htmlFor="name" className="col-4 about-label">Your Name</Label>
+                        <Label htmlFor="name" className="col-4 about-label">Name</Label>
                         <Input type="text" className="col-6" id="name" name="name" autoComplete="off" required
                                 innerRef={(input) => this.name = input} />
+                </FormGroup>
+                <FormGroup row>
+                        <Label htmlFor="email" className="col-4 about-label">Email</Label>
+                        <Input type="email" className="col-6" id="email" name="email" autoComplete="off" required
+                                innerRef={(input) => this.email = input} />
                 </FormGroup>
                 <FormGroup row>
                         <Label htmlFor="feedback" className="col-4 about-label">Feedback / Comments</Label>
