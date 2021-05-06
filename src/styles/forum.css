@@ -70,14 +70,11 @@
     text-decoration: none;
     color: black;
 }
-
 .forum-ask-question-bg
 {
     transition-duration: 0.2s;
     border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    text-align: center;
     background-color: rgba(255, 255, 255, 0.6);
 }
 .forum-ask-question-bg:hover
@@ -85,7 +82,27 @@
     cursor: pointer;
     background-color: rgba(255, 255, 255, 0.8);
 }
-
+.forum-my-question-bg
+{
+    transition-duration: 0.2s;
+    border-radius: 10px;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.35)
+}
+.forum-my-question-bg:hover
+{
+    cursor: pointer;
+}
+.forum-my-question,.forum-my-question:hover
+{
+    padding-top: 5px;
+    padding-bottom: 5px; 
+    font-family: roboto;
+    font-weight: bold;
+    font-size: 24px;
+    text-decoration: none;
+    color: white;
+}
 .forum-modal-textarea
 {
     resize: none;

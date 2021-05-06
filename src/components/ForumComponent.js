@@ -8,8 +8,10 @@ class Forum extends Component {
     {
         super(props);
         this.state = {
+            allQuestions: [],
             questions: [],
             files:[],
+            myquestions:[],
             modal: false,
             discussionType: 1,
         }
@@ -69,6 +71,7 @@ class Forum extends Component {
             .then(response => response.json())
             .then((response) => {
                 this.setState({
+                    allQuestions: response.reverse(),
                     questions: response.reverse()
                 })
             })
@@ -108,12 +111,22 @@ class Forum extends Component {
             </Media>
         )
     }
-    checkLogin()
+    checkLogin(x)
     {
         const userToken = localStorage.getItem('userToken');
         if(userToken)
         {
-            this.toggleModal();
+            if(x)
+                this.toggleModal();
+            else
+            {
+                const username = localStorage.getItem('username')
+                let questions = this.state.allQuestions.filter(q => q.askedUserName === username)
+                this.setState({
+                    questions: questions,
+                    discussionType: 4
+                })
+            }
         }
         else
             window.location.href = '/login'
@@ -169,7 +182,7 @@ class Forum extends Component {
     {
         if(this.state.questions)
         {
-            let questions = this.state.questions;
+            let questions = this.state.allQuestions;
             let d = new Date();
             questions.forEach(q => console.log((d - new Date(Date.parse(q.createdAt)))/(1000*60*60*24)))
             console.log(d)
@@ -216,7 +229,7 @@ class Forum extends Component {
     {
         if(id !== this.state.discussionType)
         {
-            let questions = this.state.questions
+            let questions = this.state.allQuestions
             if(id === 1)
             {
                 questions.sort(
@@ -266,7 +279,7 @@ class Forum extends Component {
         return (
             <>
                 <Header />
-                <div className="container forum-container pt-2 pl-5 pr-5 pb-5 mt-4">
+                <div className="container forum-container pt-1 pl-5 pr-5 pb-5 mt-4">
                     <div className="row mt-4">
                         <div className="col-md-4 forum-trending-today">
                             Trending Today
@@ -280,13 +293,20 @@ class Forum extends Component {
                     {this.renderCards()}
                 </div>
                 
-                <div className="container forum-container pl-5 pr-5 mb-4">
-                    <div className="row mt-5 align-items-center">
-                        <div className="col-12 forum-discussion mb-4">
+                <div className="container forum-container pl-5 pr-5 mb-4 pt-3 mt-5">
+                    <div className="row align-items-center">
+                        <div className="col-9 forum-discussion mb-4">
                             Discussions
                         </div> 
+                        <div className="col-3">
+                            <div className="forum-ask-question-bg" onClick={() => this.checkLogin(1)}>
+                                <div className="forum-ask-question">
+                                    <i className="fa fa-question-circle"></i> Ask Your question
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div className="row">
+                    <div className="row align-items-center">
                         <div className="col-md-8">
                             <div className="forum-discussion-sort">
                                 <div className="row justify-content-center">
@@ -310,11 +330,12 @@ class Forum extends Component {
                         </div>
                         
                         <div className="col-md-3 offset-md-1">
-                            <div className="forum-ask-question-bg" onClick={this.checkLogin}>
-                                <div className="forum-ask-question">
-                                    Ask Your question
+                            <div className={(this.state.discussionType === 4)?"forum-my-question-bg":"forum-ask-question-bg"} onClick={() => this.checkLogin(0)}>
+                                <div className={(this.state.discussionType === 4)?"forum-my-question":"forum-ask-question"}>
+                                    My Questions
                                 </div>
                             </div>
+
                             <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                                 <ModalHeader toggle={this.toggleModal}>
                                     Post new question
