@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Header from './HeaderComponent';
+import {FadeLoader} from 'react-spinners';
 import  '../styles/forum.css';
 import { Input,Card,CardBody,CardText,Media,Modal,ModalHeader,ModalBody,ModalFooter,Button,Form,FormGroup,Label } from 'reactstrap';
 
@@ -14,6 +15,7 @@ class Forum extends Component {
             myquestions:[],
             modal: false,
             discussionType: 1,
+            loading: true,
         }
         this.searchTopic = this.searchTopic.bind(this);
         this.fetchDiscussions = this.fetchDiscussions.bind(this);
@@ -73,8 +75,13 @@ class Forum extends Component {
                 let questions = response.reverse()
                 this.setState({
                     allQuestions: questions,
-                    questions: questions
+                    questions: questions,
                 })
+                setTimeout(() => {
+                    this.setState({
+                        loading: false,
+                    });
+                  }, 200);
             })
             .catch(error => console.log(error))
     }
@@ -134,6 +141,7 @@ class Forum extends Component {
     }
     postQuestion(event)
     {
+        event.preventDefault();
         const userToken = localStorage.getItem('userToken');
         let question = new FormData()
         question.append('title', this.topic.value)
@@ -150,26 +158,30 @@ class Forum extends Component {
         .then((response) => {
             if(response.ok)
             {
-                console.log('posted succesfully');
                 this.toggleModal();
-                window.location.reload();
-            }
-            else if(response.status === 500 )
-            {
-                alert('you can upload only 3 files...!!')
+                return response.json()
             }
             else
             {
                 let error = new Error('Error: ' + response.status + ': ' + response.statusText)
                 error.response = response
-                console.log(typeof(response.status))
                 throw error
             }
         }, err => {
             let error = new Error(err)
             throw error
         })
-        event.preventDefault()
+        .then((question) => {
+            let questions = this.state.allQuestions
+            questions.splice(0,0,question);
+            console.log(questions)
+            this.setState({
+                allQuestions: questions,
+                questions: questions,
+            })
+        }
+        )
+        
     }
     findUpvote(replies)
     {
@@ -184,8 +196,6 @@ class Forum extends Component {
         {
             let questions = this.state.allQuestions;
             let d = new Date();
-            questions.forEach(q => console.log((d - new Date(Date.parse(q.createdAt)))/(1000*60*60*24)))
-            console.log(d)
             questions = questions.filter(question => {
                 let days = (d - new Date(Date.parse(question.createdAt)))/(1000*60*60*24)
                 return (days <= 10)
@@ -200,7 +210,6 @@ class Forum extends Component {
                 }
             )
             questions = questions.slice(0,3);
-            console.log(questions)
             const questionCards = questions.map(question => (
                     <div className="col-3" onClick={() => window.location.href = "/forum/"+question._id}>
                         <Card className="forum-card-container">
@@ -208,7 +217,7 @@ class Forum extends Component {
                                 <CardText className="forum-card-heading">
                                     { question.title }
                                 </CardText>
-                                <CardText>
+                                <CardText className="forum-card-break">
                                     { question.content }
                                 </CardText>
                             </CardBody>
@@ -276,102 +285,119 @@ class Forum extends Component {
     }
 
     render(){
-        return (
-            <>
-                <Header />
-                <div className="container forum-container pt-1 pl-5 pr-5 pb-5 mt-4">
-                    <div className="row mt-4">
-                        <div className="col-md-4 forum-trending-today">
-                            Trending Talks
-                        </div>
-                        <div className="col-md-5 offset-md-2 d-flex align-items-center">
-                            
-                            <Input type="text" className="forum-search" placeholder="Search Topics" onKeyPress={this.searchTopic} />
-                            {/* <i className="fa fa-search"></i> */}
-                        </div>
+        if(this.state.loading === true)
+        {
+            
+            return(
+                <>
+                    <Header />
+                    <div className="container loader-container d-flex justify-content-center align-items-center">
+                        <FadeLoader width="15" height="15" radius="20" color="white" /> 
+                        <div className="forum-loading"> Fetching data for You</div>
                     </div>
-                    {this.renderCards()}
-                </div>
-                
-                <div className="container forum-container pl-5 pr-5 mb-4 pt-3 mt-5">
-                    <div className="row align-items-center">
-                        <div className="col-9 forum-discussion mb-4">
-                            Discussions
-                        </div> 
-                        <div className="col-3">
-                            <div className="forum-ask-question-bg" onClick={() => this.checkLogin(1)}>
-                                <div className="forum-ask-question">
-                                    <i className="fa fa-question-circle"></i> Ask Your question
-                                </div>
+                </>
+            )
+        }
+        else
+        {
+            return(
+                <>
+                    <Header />
+                    <div className="container forum-container pt-1 pl-5 pr-5 pb-5 mt-4">
+                        <div className="row mt-4">
+                            <div className="col-md-4 forum-trending-today">
+                                Trending Talks
+                            </div>
+                            <div className="col-md-5 offset-md-2 d-flex align-items-center">
+                                
+                                <Input type="text" className="forum-search" placeholder="Search Topics" onKeyPress={this.searchTopic} />
+                                {/* <i className="fa fa-search"></i> */}
                             </div>
                         </div>
+                        {this.renderCards()}
                     </div>
-                    <div className="row align-items-center">
-                        <div className="col-md-8">
-                            <div className="forum-discussion-sort">
-                                <div className="row justify-content-center">
-                                    <div className="col-3">
-                                        <div className={(this.state.discussionType === 1)?"forum-discussion-sort-heading-active p-1":"forum-discussion-sort-heading p-1"} onClick={() => this.changeDiscussionType(1)}>
-                                            Latest Talks
-                                        </div>
-                                    </div>
-                                    <div className="col-3 offset-1">
-                                        <div className={(this.state.discussionType === 2)?"forum-discussion-sort-heading-active p-1":"forum-discussion-sort-heading p-1"} onClick={() => this.changeDiscussionType(2)}>
-                                            Highest Votes
-                                        </div>
-                                    </div>
-                                    <div className="col-3 offset-1">
-                                        <div className={(this.state.discussionType === 3)?"forum-discussion-sort-heading-active p-1":"forum-discussion-sort-heading p-1"} onClick={() => this.changeDiscussionType(3)}>
-                                            Most Popular
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div className="col-md-3 offset-md-1">
-                            <div className={(this.state.discussionType === 4)?"forum-my-question-bg":"forum-ask-question-bg"} onClick={() => this.checkLogin(0)}>
-                                <div className={(this.state.discussionType === 4)?"forum-my-question":"forum-ask-question"}>
-                                    My Questions
-                                </div>
-                            </div>
+                    
 
-                            <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
-                                <ModalHeader toggle={this.toggleModal}>
-                                    Post new question
-                                </ModalHeader>
-                                <ModalBody>
-                                    <Form onSubmit={this.postQuestion} id="postQuestionForm">
-                                        <FormGroup>
-                                            <Label htmlFor="topic">Topic</Label>
-                                            <Input type="text" id="topic" name="topic" maxLength="20" autoComplete="off" required
-                                                innerRef={(input) => this.topic = input} />
-                                        </FormGroup>
-                                        <FormGroup>
-                                            <Label htmlFor="question">Question</Label>
-                                            <Input className="forum-modal-textarea" type="textarea" id="question" rows="3" required  
-                                                    name="question" autoComplete="off" innerRef={(input) => this.question = input} />
-                                        </FormGroup>
-                                        <FormGroup>
-                                            <Label htmlFor="image">Images (max. 3)</Label>
-                                            <Input type="file" id="image" name="image" multiple onChange={this.handleFileInput} accept="image/*"
-                                                />
-                                        </FormGroup>
-                                    </Form>
-                                </ModalBody>
-                                <ModalFooter>
-                                    <Button color="primary" type="submit" form="postQuestionForm">Submit</Button>
-                                    <Button color="danger" onClick={this.toggleModal}>Cancel</Button>
-                                </ModalFooter>
-                            </Modal>
+                    <div className="container forum-container pl-5 pr-5 mb-4 pt-3 mt-5">
+                        <div className="row align-items-center">
+                            <div className="col-9 forum-discussion mb-4">
+                                Discussions
+                            </div> 
+                            <div className="col-3">
+                                <div className="forum-ask-question-bg" onClick={() => this.checkLogin(1)}>
+                                    <div className="forum-ask-question">
+                                        <i className="fa fa-question-circle"></i> Ask Your question
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row align-items-center">
+                            <div className="col-md-8">
+                                <div className="forum-discussion-sort">
+                                    <div className="row justify-content-center">
+                                        <div className="col-3">
+                                            <div className={(this.state.discussionType === 1)?"forum-discussion-sort-heading-active p-1":"forum-discussion-sort-heading p-1"} onClick={() => this.changeDiscussionType(1)}>
+                                                Latest Talks
+                                            </div>
+                                        </div>
+                                        <div className="col-3 offset-1">
+                                            <div className={(this.state.discussionType === 2)?"forum-discussion-sort-heading-active p-1":"forum-discussion-sort-heading p-1"} onClick={() => this.changeDiscussionType(2)}>
+                                                Highest Votes
+                                            </div>
+                                        </div>
+                                        <div className="col-3 offset-1">
+                                            <div className={(this.state.discussionType === 3)?"forum-discussion-sort-heading-active p-1":"forum-discussion-sort-heading p-1"} onClick={() => this.changeDiscussionType(3)}>
+                                                Most Popular
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div className="col-md-3 offset-md-1">
+                                <div className={(this.state.discussionType === 4)?"forum-my-question-bg":"forum-ask-question-bg"} onClick={() => this.checkLogin(0)}>
+                                    <div className={(this.state.discussionType === 4)?"forum-my-question":"forum-ask-question"}>
+                                        My Questions
+                                    </div>
+                                </div>
+
+                                <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
+                                    <ModalHeader toggle={this.toggleModal}>
+                                        Post new question
+                                    </ModalHeader>
+                                    <ModalBody>
+                                        <Form onSubmit={this.postQuestion} id="postQuestionForm">
+                                            <FormGroup>
+                                                <Label htmlFor="topic">Topic</Label>
+                                                <Input type="text" id="topic" name="topic" maxLength="20" autoComplete="off" required
+                                                    innerRef={(input) => this.topic = input} />
+                                            </FormGroup>
+                                            <FormGroup>
+                                                <Label htmlFor="question">Question</Label>
+                                                <Input className="forum-modal-textarea" type="textarea" id="question" rows="3" required  
+                                                        name="question" autoComplete="off" innerRef={(input) => this.question = input} />
+                                            </FormGroup>
+                                            <FormGroup>
+                                                <Label htmlFor="image">Images (max. 3)</Label>
+                                                <Input type="file" id="image" name="image" multiple onChange={this.handleFileInput} accept="image/*"
+                                                    />
+                                            </FormGroup>
+                                        </Form>
+                                    </ModalBody>
+                                    <ModalFooter>
+                                        <Button color="primary" type="submit" form="postQuestionForm">Submit</Button>
+                                        <Button color="danger" onClick={this.toggleModal}>Cancel</Button>
+                                    </ModalFooter>
+                                </Modal>
+                            </div>
+                        </div>
+                        <div className="row mt-5">
+                            {this.renderDiscussions()}
                         </div>
                     </div>
-                    <div className="row mt-5">
-                        {this.renderDiscussions()}
-                    </div>
-                </div>
-            </>
-        )
+                </>
+            )
+        }
     }
 }
 

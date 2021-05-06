@@ -8,6 +8,17 @@
     background: rgba(0,0,0,0.1);
     border-radius: 10px;
 }
+.loader-container
+{
+    height: 100vh;
+    width: 100vw;
+    color: white;
+}
+.forum-loading
+{
+    font-size: 40px;
+    font-family: Balsamiq Sans;
+}
 .forum-trending-today
 {
     font-family: Itim;
@@ -145,8 +156,10 @@
 {
     font-family: Balsamiq Sans;
     background-color: rgba(255, 255, 255, 0.8);
-    text-overflow: ellipsis;
     transition-duration: 0.3s;
+    text-overflow: ellipsis I !important;
+    overflow: hidden;
+    height: 150px;
 }
 .forum-card-container:hover
 {

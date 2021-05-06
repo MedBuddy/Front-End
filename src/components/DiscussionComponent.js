@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Header from './HeaderComponent';
 import { Media,Form,FormGroup,Input,Label,Button,Modal,ModalBody,ModalHeader,ModalFooter } from 'reactstrap';
 import  '../styles/discussion.css';
+import { FadeLoader } from 'react-spinners';
 
 class DiscussionComponent extends Component{
     constructor(props)
@@ -14,6 +15,7 @@ class DiscussionComponent extends Component{
             replyIndex: -1,
             editQuestionModal:false,
             files: [],
+            loading: true,
         }
         this.fetchQuestion = this.fetchQuestion.bind(this);
         this.toggleReplyForm = this.toggleReplyForm.bind(this);    
@@ -78,6 +80,11 @@ class DiscussionComponent extends Component{
             this.setState({
                 question: response
             })
+            setTimeout(() => {
+                this.setState({
+                    loading: false,
+                });
+              }, 300);
         })
         .catch(error => {
             console.log(error)
@@ -474,97 +481,113 @@ class DiscussionComponent extends Component{
     }
     render()
     {
-        return(
-            <>
-                <Header />
-                <div className="container dicussion-container mt-3 pt-2 mb-3 pb-3">
-                    <div className="discussion-question-render">
-                        <div className="row mt-3">
-                            <div className="col-12">
-                                {this.renderQuestion()}
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-12">
-                                <Media className="justify-content-center">
-                                    {this.renderQuestionImages()}
-                                </Media>
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-6 pl-5 pb-2 reply-left">
-                                <span className="dicussion-reply-btn" onClick={this.toggleReplyForm}><i className="fa fa-reply"></i> Reply</span>
-                            </div>
-                            <div className="col-6 question-date-left pr-5">
-                                {this.renderDate()}
-                            </div>
-                        </div>
-                        <Modal isOpen={this.state.editQuestionModal} toggle={this.toggleEditQuestionModal}>
-                            <ModalHeader toggle={this.toggleEditQuestionModal}>
-                                Edit My question
-                            </ModalHeader>
-                            <ModalBody>
-                                <Form onSubmit={this.updateQuestion} id="updateQuestionForm">
-                                    <FormGroup>
-                                        <Label htmlFor="edittopic">Topic</Label>
-                                        <Input type="text" id="edittopic" name="edittopic" maxLength="20" autoComplete="off" required
-                                            defaultValue={this.state.question.title} innerRef={(input) => this.edittopic = input} />
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label htmlFor="editquestion">Question</Label>
-                                        <Input className="forum-modal-textarea" type="textarea" id="editquestion" rows="3" required  
-                                            defaultValue={this.state.question.content} name="editquestion" autoComplete="off" innerRef={(input) => this.editquestion = input} />
-                                    </FormGroup>
-                                </Form>
-                            </ModalBody>
-                            <ModalFooter>
-                                <Button color="primary" type="submit" form="updateQuestionForm">Submit</Button>
-                                <Button color="danger" onClick={this.toggleEditQuestionModal}>Cancel</Button>
-                            </ModalFooter>
-                        </Modal>
+        if(this.state.loading === true)
+        {
+            
+            return(
+                <>
+                    <Header />
+                    <div className="container loader-container d-flex justify-content-center align-items-center">
+                        <FadeLoader width="15" height="15" radius="20" color="white" /> 
+                        <div className="forum-loading"> Loading Discussion</div>
                     </div>
-                    <div className={(this.state.replyForm)?"row mt-3":"d-none"}>
-                        <div className="col-11 offset-1">
-                            <div className="discussion-replies">
-                                <Form className="w-75 m-3" id="postAnswerForm" onSubmit={this.postReply}>
-                                    <FormGroup>
-                                        <Label htmlFor="reply">Your Reply</Label>
-                                        <Input type="textarea" className="discussion-answer-textarea" rows="4" id="reply" name="reply" required
-                                            innerRef={(input) => this.reply = input} />
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Button color="primary" type="submit" form="postAnswerForm">Submit</Button>
-                                        <Button color="danger" className="ml-2" onClick={this.toggleReplyForm}>Cancel</Button>
-                                    </FormGroup>
-                                </Form>
+                </>
+            )
+        }
+        else
+        {
+            return(
+                <>
+                    <Header />
+                    <div className="container dicussion-container mt-3 pt-2 mb-3 pb-3">
+                        <div className="discussion-question-render">
+                            <div className="row mt-3">
+                                <div className="col-12">
+                                    {this.renderQuestion()}
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col-12">
+                                    <Media className="justify-content-center">
+                                        {this.renderQuestionImages()}
+                                    </Media>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col-6 pl-5 pb-2 reply-left">
+                                    <span className="dicussion-reply-btn" onClick={this.toggleReplyForm}><i className="fa fa-reply"></i> Reply</span>
+                                </div>
+                                <div className="col-6 question-date-left pr-5">
+                                    {this.renderDate()}
+                                </div>
+                            </div>
+                            <Modal isOpen={this.state.editQuestionModal} toggle={this.toggleEditQuestionModal}>
+                                <ModalHeader toggle={this.toggleEditQuestionModal}>
+                                    Edit My question
+                                </ModalHeader>
+                                <ModalBody>
+                                    <Form onSubmit={this.updateQuestion} id="updateQuestionForm">
+                                        <FormGroup>
+                                            <Label htmlFor="edittopic">Topic</Label>
+                                            <Input type="text" id="edittopic" name="edittopic" maxLength="20" autoComplete="off" required
+                                                defaultValue={this.state.question.title} innerRef={(input) => this.edittopic = input} />
+                                        </FormGroup>
+                                        <FormGroup>
+                                            <Label htmlFor="editquestion">Question</Label>
+                                            <Input className="forum-modal-textarea" type="textarea" id="editquestion" rows="3" required  
+                                                defaultValue={this.state.question.content} name="editquestion" autoComplete="off" innerRef={(input) => this.editquestion = input} />
+                                        </FormGroup>
+                                    </Form>
+                                </ModalBody>
+                                <ModalFooter>
+                                    <Button color="primary" type="submit" form="updateQuestionForm">Submit</Button>
+                                    <Button color="danger" onClick={this.toggleEditQuestionModal}>Cancel</Button>
+                                </ModalFooter>
+                            </Modal>
+                        </div>
+                        <div className={(this.state.replyForm)?"row mt-3":"d-none"}>
+                            <div className="col-11 offset-1">
+                                <div className="discussion-replies">
+                                    <Form className="w-75 m-3" id="postAnswerForm" onSubmit={this.postReply}>
+                                        <FormGroup>
+                                            <Label htmlFor="reply">Your Reply</Label>
+                                            <Input type="textarea" className="discussion-answer-textarea" rows="4" id="reply" name="reply" required
+                                                innerRef={(input) => this.reply = input} />
+                                        </FormGroup>
+                                        <FormGroup>
+                                            <Button color="primary" type="submit" form="postAnswerForm">Submit</Button>
+                                            <Button color="danger" className="ml-2" onClick={this.toggleReplyForm}>Cancel</Button>
+                                        </FormGroup>
+                                    </Form>
+                                </div>
                             </div>
                         </div>
+                        <div className={(this.state.question!==''&&this.state.question.replies.length)?"mt-3":"d-none"}>
+                            
+                            {this.renderReplies()}
+                            <Modal isOpen={this.state.editModal} toggle={() => this.toggleEditModal()}>
+                                <ModalHeader toggle={() => this.toggleEditModal()}>
+                                    Edit your reply
+                                </ModalHeader>
+                                <ModalBody>
+                                    <Form onSubmit={this.updateReply} id="editReplyForm">
+                                        <FormGroup>
+                                            <Label htmlFor="editreply">Your Reply</Label>
+                                            <Input type="textarea" className="discussion-answer-textarea" rows="4" id="editreply" name="editreply" required
+                                                defaultValue={(this.state.replyIndex === -1)?'':this.state.question.replies[this.state.replyIndex].content} innerRef={(input) => this.editreply = input} />
+                                        </FormGroup>
+                                    </Form>
+                                </ModalBody>
+                                <ModalFooter>
+                                    <Button color="primary" type="submit" form="editReplyForm">Submit</Button>
+                                    <Button color="danger" className="ml-2" onClick={() => this.toggleEditModal()}>Cancel</Button>
+                                </ModalFooter>
+                            </Modal>
+                        </div>
                     </div>
-                    <div className={(this.state.question!==''&&this.state.question.replies.length)?"mt-3":"d-none"}>
-                        
-                        {this.renderReplies()}
-                        <Modal isOpen={this.state.editModal} toggle={() => this.toggleEditModal()}>
-                            <ModalHeader toggle={() => this.toggleEditModal()}>
-                                Edit your reply
-                            </ModalHeader>
-                            <ModalBody>
-                                <Form onSubmit={this.updateReply} id="editReplyForm">
-                                    <FormGroup>
-                                        <Label htmlFor="editreply">Your Reply</Label>
-                                        <Input type="textarea" className="discussion-answer-textarea" rows="4" id="editreply" name="editreply" required
-                                            defaultValue={(this.state.replyIndex === -1)?'':this.state.question.replies[this.state.replyIndex].content} innerRef={(input) => this.editreply = input} />
-                                    </FormGroup>
-                                </Form>
-                            </ModalBody>
-                            <ModalFooter>
-                                <Button color="primary" type="submit" form="editReplyForm">Submit</Button>
-                                <Button color="danger" className="ml-2" onClick={() => this.toggleEditModal()}>Cancel</Button>
-                            </ModalFooter>
-                        </Modal>
-                    </div>
-                </div>
-            </>
-        )
+                </>
+            )
+        }
     }
 }
 
