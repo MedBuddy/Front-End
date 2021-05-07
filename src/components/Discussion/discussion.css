@@ -107,3 +107,22 @@
 {
     word-wrap: break-word;
 }
+.discussion-edit-img-container
+{
+    position: relative;
+}
+.discussion-edit-img-container > img
+{
+    height: 150px;
+    width: 150px;
+}
+.discussion-edit-img-container > .close
+{
+    position: absolute;
+    cursor: pointer;
+    right: 5px;
+}
+.discussion-edit-img-hide
+{
+    display: none;
+}

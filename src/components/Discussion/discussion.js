@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Header from '../Header/header';
 import { Media,Form,FormGroup,Input,Label,Button,Modal,ModalBody,ModalHeader,ModalFooter } from 'reactstrap';
 import  './discussion.css';
-import { FadeLoader } from 'react-spinners';
+import { ScaleLoader } from 'react-spinners';
 
 class DiscussionComponent extends Component{
     constructor(props)
@@ -11,11 +11,12 @@ class DiscussionComponent extends Component{
         this.state = {
             question: '',
             replyForm: false,
-            editModal:false,
+            editModal: false,
             replyIndex: -1,
-            editQuestionModal:false,
+            editQuestionModal: false,
             files: [],
             loading: true,
+            removedFiles: []
         }
         this.fetchQuestion = this.fetchQuestion.bind(this);
         this.toggleReplyForm = this.toggleReplyForm.bind(this);    
@@ -26,19 +27,38 @@ class DiscussionComponent extends Component{
         this.deleteQuestion = this.deleteQuestion.bind(this);
         this.toggleEditQuestionModal = this.toggleEditQuestionModal.bind(this);
         this.updateQuestion = this.updateQuestion.bind(this);
+        this.handleFileInput = this.handleFileInput.bind(this);
+        this.renderEditImages = this.renderEditImages.bind(this);
+        this.removeImage = this.removeImage.bind(this);
     }
+    
+    componentDidMount(){
+        this.checkLogin();
+        this.fetchQuestion();
+    }
+
+    handleFileInput(event)
+    {
+        this.setState({
+            files: event.target.files
+        })
+    }
+
     toggleEditQuestionModal()
     {
         this.setState({
-            editQuestionModal: !this.state.editQuestionModal
+            editQuestionModal: !this.state.editQuestionModal,
+            removedFiles: []
         })
     }
+
     toggleReplyForm()
     {
         this.setState({
             replyForm: !this.state.replyForm
         })
     }
+
     toggleEditModal(index=-1)
     {
         this.setState({
@@ -46,16 +66,14 @@ class DiscussionComponent extends Component{
             editModal: !this.state.editModal
         })
     }
-    componentDidMount(){
-        this.checkLogin();
-        this.fetchQuestion();
-    }
+
     checkLogin()
     {
         const userToken = localStorage.getItem('userToken');
         if(!userToken)
             window.location.href = '/login';
     }
+
     fetchQuestion()
     {
         let qid = this.props.id; 
@@ -93,12 +111,24 @@ class DiscussionComponent extends Component{
     
     updateQuestion(event)
     {
+        event.preventDefault();
+        let fileCount = this.state.files.length + this.state.question.files.length - this.state.removedFiles.length
+        if(fileCount>3){
+            alert('Upload a maximum 3 files!!!')
+            return
+        }
         const userToken = localStorage.getItem('userToken');
         let question = new FormData()
         question.append('title', this.edittopic.value)
         question.append('content', this.editquestion.value)
         for(let i=0;i<this.state.files.length;i++)
-            question.append('image',this.state.files[i])
+            question.append('image', this.state.files[i])
+        let removed = ''
+        for(let i in this.state.removedFiles)
+            removed += i + ' '
+        removed = removed.substring(0,removed.length-1)
+        question.append('removed', removed)
+
         fetch('/queries/'+this.state.question._id,{
             method: 'PUT',
             headers: {
@@ -127,8 +157,8 @@ class DiscussionComponent extends Component{
         .catch(error => {
             console.log(error)
         })
-        event.preventDefault();
     }
+
     renderQuestionImages()
     {
         let question = this.state.question;
@@ -173,6 +203,7 @@ class DiscussionComponent extends Component{
             )
         }
     }
+    
     deleteQuestion()
     {
         const userToken = localStorage.getItem('userToken');
@@ -415,6 +446,7 @@ class DiscussionComponent extends Component{
             return <></>
         }
     }
+
     renderReplies()
     {
         if(this.state.question!==''&&this.state.question.replies.length)
@@ -426,6 +458,7 @@ class DiscussionComponent extends Component{
                 if(hh<10) hh = '0'+hh;
                 if(mm<10) mm = '0'+mm;
                 let time = hh + ":" + mm;
+                
                 return(
                     <div className="row align-items-center mt-3">
                         <div className="col-1 offset-1">
@@ -469,16 +502,72 @@ class DiscussionComponent extends Component{
                     </div>
                 )
             })
-            return(
-                replies
-            )
+            return replies
         }
         else
         {
-            
             return <></>
         }
     }
+
+    removeImage(index){
+        let removed = this.state.removedFiles
+        removed.push(index)
+        this.setState({
+            removedFiles: removed
+        })
+    }
+    
+    renderEditImages(){
+        const images = this.state.question.files.map((image, index) => {
+            return (
+                <div className={(this.state.removedFiles.includes(index))?"discussion-edit-img-hide":"discussion-edit-img-container"}>
+                    <div className="close" onClick={() => this.removeImage(index)}>&times;</div>
+                    <img src={image} alt={image} />
+                </div>
+            )
+        })
+
+        return (
+            <div className="d-flex justify-content-around mt-3 mb-3">
+                { images }
+            </div>
+        )
+    }
+
+    renderEditModal(){
+        return (
+            <Modal isOpen={this.state.editQuestionModal} toggle={this.toggleEditQuestionModal}>
+                <ModalHeader toggle={this.toggleEditQuestionModal}>
+                    Edit question
+                </ModalHeader>
+                <ModalBody>
+                    <Form onSubmit={this.updateQuestion} id="updateQuestionForm">
+                        <FormGroup>
+                            <Label htmlFor="edittopic">Topic</Label>
+                            <Input type="text" id="edittopic" name="edittopic" maxLength="20" autoComplete="off" required
+                                defaultValue={this.state.question.title} innerRef={(input) => this.edittopic = input} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label htmlFor="editquestion">Question</Label>
+                            <Input className="forum-modal-textarea" type="textarea" id="editquestion" rows="3" required  
+                                defaultValue={this.state.question.content} name="editquestion" autoComplete="off" innerRef={(input) => this.editquestion = input} />
+                        </FormGroup>
+                        { this.renderEditImages() }
+                        <FormGroup>
+                            <Label htmlFor="newimage">New Images (optional)</Label>
+                            <Input type="file" id="newimage" name="newimage" multiple onChange={this.handleFileInput} accept="image/*" />
+                        </FormGroup>
+                    </Form>
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="primary" type="submit" form="updateQuestionForm">Submit</Button>
+                    <Button color="danger" onClick={this.toggleEditQuestionModal}>Cancel</Button>
+                </ModalFooter>
+            </Modal>
+        )
+    }
+
     render()
     {
         if(this.state.loading === true)
@@ -488,8 +577,8 @@ class DiscussionComponent extends Component{
                 <>
                     <Header />
                     <div className="container loader-container d-flex justify-content-center align-items-center">
-                        <FadeLoader width="15" height="15" radius="20" color="white" /> 
-                        <div className="forum-loading"> Loading Discussion</div>
+                        <ScaleLoader color="white" /> 
+                        <div className="forum-loading ml-3"> Loading Discussion</div>
                     </div>
                 </>
             )
@@ -521,29 +610,7 @@ class DiscussionComponent extends Component{
                                     {this.renderDate()}
                                 </div>
                             </div>
-                            <Modal isOpen={this.state.editQuestionModal} toggle={this.toggleEditQuestionModal}>
-                                <ModalHeader toggle={this.toggleEditQuestionModal}>
-                                    Edit My question
-                                </ModalHeader>
-                                <ModalBody>
-                                    <Form onSubmit={this.updateQuestion} id="updateQuestionForm">
-                                        <FormGroup>
-                                            <Label htmlFor="edittopic">Topic</Label>
-                                            <Input type="text" id="edittopic" name="edittopic" maxLength="20" autoComplete="off" required
-                                                defaultValue={this.state.question.title} innerRef={(input) => this.edittopic = input} />
-                                        </FormGroup>
-                                        <FormGroup>
-                                            <Label htmlFor="editquestion">Question</Label>
-                                            <Input className="forum-modal-textarea" type="textarea" id="editquestion" rows="3" required  
-                                                defaultValue={this.state.question.content} name="editquestion" autoComplete="off" innerRef={(input) => this.editquestion = input} />
-                                        </FormGroup>
-                                    </Form>
-                                </ModalBody>
-                                <ModalFooter>
-                                    <Button color="primary" type="submit" form="updateQuestionForm">Submit</Button>
-                                    <Button color="danger" onClick={this.toggleEditQuestionModal}>Cancel</Button>
-                                </ModalFooter>
-                            </Modal>
+                            { this.renderEditModal() }
                         </div>
                         <div className={(this.state.replyForm)?"row mt-3":"d-none"}>
                             <div className="col-11 offset-1">

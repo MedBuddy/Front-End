@@ -173,9 +173,19 @@
 }
 .forum-modal-header,.forum-modal-footer
 {
-    background: rgb(26, 169, 194);
+    font-family: Balsamiq Sans;
+    background: rgba(0, 172, 177, 0.85);
 }
 .forum-modal-body
 {
-    background: rgb(20, 174, 212);
+    font-family: Balsamiq Sans;
+    background: rgba(0, 172, 177, 0.65);
 }
+.forum-goto-btn
+{
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    color: white;
+    cursor: pointer;
+}   

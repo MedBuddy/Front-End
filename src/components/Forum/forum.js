@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Header from '../Header/header';
-import {FadeLoader} from 'react-spinners';
+import { ScaleLoader } from 'react-spinners';
 import  './forum.css';
 import { Input,Card,CardBody,CardText,Media,Modal,ModalHeader,ModalBody,ModalFooter,Button,Form,FormGroup,Label } from 'reactstrap';
 
@@ -16,6 +16,7 @@ class Forum extends Component {
             modal: false,
             discussionType: 1,
             loading: true,
+            display: 'none'
         }
         this.searchTopic = this.searchTopic.bind(this);
         this.fetchDiscussions = this.fetchDiscussions.bind(this);
@@ -24,10 +25,19 @@ class Forum extends Component {
         this.checkLogin = this.checkLogin.bind(this);
         this.handleFileInput = this.handleFileInput.bind(this);
         this.changeDiscussionType = this.changeDiscussionType.bind(this);
+        this.renderModal = this.renderModal.bind(this);
     }
 
     componentDidMount(){
         this.fetchDiscussions();
+        window.addEventListener('scroll', () => {
+            let display = 'none'
+            if(window.pageYOffset > 550)
+                display = 'block'
+            this.setState({
+                display: display
+            })
+        })
     }
     
     handleFileInput(event)
@@ -284,16 +294,49 @@ class Forum extends Component {
         }
     }
 
-    render(){
+    renderModal(){
+        return (
+            <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
+                <ModalHeader toggle={this.toggleModal} className="forum-modal-header">
+                    Post new question
+                </ModalHeader>
+                <ModalBody className="forum-modal-body">
+                    <Form onSubmit={this.postQuestion} id="postQuestionForm">
+                        <FormGroup>
+                            <Label htmlFor="topic">Topic</Label>
+                            <Input type="text" id="topic" name="topic" maxLength="20" autoComplete="off" required
+                                innerRef={(input) => this.topic = input} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label htmlFor="question">Question</Label>
+                            <Input className="forum-modal-textarea" type="textarea" id="question" rows="3" required  
+                                    name="question" autoComplete="off" innerRef={(input) => this.question = input} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label htmlFor="image">Images (max. 3)</Label>
+                            <Input type="file" id="image" name="image" multiple onChange={this.handleFileInput} accept="image/*"
+                                />
+                        </FormGroup>
+                    </Form>
+                </ModalBody>
+                <ModalFooter className="forum-modal-footer">
+                    <Button color="primary" type="submit" form="postQuestionForm">Submit</Button>
+                    <Button color="danger" onClick={this.toggleModal}>Cancel</Button>
+                </ModalFooter>
+            </Modal>
+        )
+    }
+
+    render()
+    {
         if(this.state.loading === true)
         {
-            
             return(
                 <>
                     <Header />
                     <div className="container loader-container d-flex justify-content-center align-items-center">
-                        <FadeLoader width="15" height="15" radius="20" color="white" /> 
-                        <div className="forum-loading"> Fetching data for You</div>
+                        <ScaleLoader color="white" /> 
+                        <div className="forum-loading pl-3"> Fetching data for You</div>
                     </div>
                 </>
             )
@@ -360,39 +403,14 @@ class Forum extends Component {
                                         My Questions
                                     </div>
                                 </div>
-
-                                <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
-                                    <ModalHeader toggle={this.toggleModal} className="forum-modal-header">
-                                        Post new question
-                                    </ModalHeader>
-                                    <ModalBody className="forum-modal-body">
-                                        <Form onSubmit={this.postQuestion} id="postQuestionForm">
-                                            <FormGroup>
-                                                <Label htmlFor="topic">Topic</Label>
-                                                <Input type="text" id="topic" name="topic" maxLength="20" autoComplete="off" required
-                                                    innerRef={(input) => this.topic = input} />
-                                            </FormGroup>
-                                            <FormGroup>
-                                                <Label htmlFor="question">Question</Label>
-                                                <Input className="forum-modal-textarea" type="textarea" id="question" rows="3" required  
-                                                        name="question" autoComplete="off" innerRef={(input) => this.question = input} />
-                                            </FormGroup>
-                                            <FormGroup>
-                                                <Label htmlFor="image">Images (max. 3)</Label>
-                                                <Input type="file" id="image" name="image" multiple onChange={this.handleFileInput} accept="image/*"
-                                                    />
-                                            </FormGroup>
-                                        </Form>
-                                    </ModalBody>
-                                    <ModalFooter className="forum-modal-footer">
-                                        <Button color="primary" type="submit" form="postQuestionForm">Submit</Button>
-                                        <Button color="danger" onClick={this.toggleModal}>Cancel</Button>
-                                    </ModalFooter>
-                                </Modal>
+                                { this.renderModal() }
                             </div>
                         </div>
                         <div className="row mt-5">
                             {this.renderDiscussions()}
+                        </div>
+                        <div className="forum-goto-btn" onClick={() => window.scrollTo(0,0)} style={{display: this.state.display}}>
+                            <button className="btn btn-primary">⬆️</button>
                         </div>
                     </div>
                 </>
