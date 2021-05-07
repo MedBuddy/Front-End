@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Header from './HeaderComponent';
+import Header from '../Header/header';
 import {FadeLoader} from 'react-spinners';
-import  '../styles/forum.css';
+import  './forum.css';
 import { Input,Card,CardBody,CardText,Media,Modal,ModalHeader,ModalBody,ModalFooter,Button,Form,FormGroup,Label } from 'reactstrap';
 
 class Forum extends Component {
@@ -362,10 +362,10 @@ class Forum extends Component {
                                 </div>
 
                                 <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
-                                    <ModalHeader toggle={this.toggleModal}>
+                                    <ModalHeader toggle={this.toggleModal} className="forum-modal-header">
                                         Post new question
                                     </ModalHeader>
-                                    <ModalBody>
+                                    <ModalBody className="forum-modal-body">
                                         <Form onSubmit={this.postQuestion} id="postQuestionForm">
                                             <FormGroup>
                                                 <Label htmlFor="topic">Topic</Label>
@@ -384,7 +384,7 @@ class Forum extends Component {
                                             </FormGroup>
                                         </Form>
                                     </ModalBody>
-                                    <ModalFooter>
+                                    <ModalFooter className="forum-modal-footer">
                                         <Button color="primary" type="submit" form="postQuestionForm">Submit</Button>
                                         <Button color="danger" onClick={this.toggleModal}>Cancel</Button>
                                     </ModalFooter>

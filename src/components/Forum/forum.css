@@ -171,3 +171,11 @@
     font-size: 25px;
     font-weight: 600;
 }
+.forum-modal-header,.forum-modal-footer
+{
+    background: rgb(26, 169, 194);
+}
+.forum-modal-body
+{
+    background: rgb(20, 174, 212);
+}

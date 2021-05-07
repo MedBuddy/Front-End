@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Card, CardImg, CardBody, CardTitle, CardText, CardFooter, CardLink, Form, FormGroup, Input, Label} from 'reactstrap'
-import Header from './HeaderComponent'
-import  '../styles/about.css'
+import Header from '../Header/header'
+import  './about.css'
 
 const developers = [
     {

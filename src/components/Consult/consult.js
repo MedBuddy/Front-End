@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import Header from './HeaderComponent'
+import Header from '../Header/header'
+import './consult.css'
 
 class Consult extends Component {
     render(){

@@ -1,17 +1,19 @@
 import React, { Component } from 'react'
-import Home from './HomeComponent'
-import News from './NewsComponent'
-import Forum from './ForumComponent'
-import Login from './LoginComponent'
-import About from './AboutComponent'
-import Consult from './ConsultComponent'
-import DiscussionComponent from './DiscussionComponent'
+import Home from './Home/home'
+import News from './News/news'
+import Forum from './Forum/forum'
+import Login from './Login/login'
+import About from './About/about'
+import Consult from './Consult/consult'
+import DiscussionComponent from './Discussion/discussion'
 import { Switch, Route, Redirect } from 'react-router-dom'
 
 class Main extends Component {
+
     componentDidMount() {
         document.body.style.backgroundColor = "rgba(0, 172, 177, 1)"
     }
+    
     render()
     {
         return (

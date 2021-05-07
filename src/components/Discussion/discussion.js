@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Header from './HeaderComponent';
+import Header from '../Header/header';
 import { Media,Form,FormGroup,Input,Label,Button,Modal,ModalBody,ModalHeader,ModalFooter } from 'reactstrap';
-import  '../styles/discussion.css';
+import  './discussion.css';
 import { FadeLoader } from 'react-spinners';
 
 class DiscussionComponent extends Component{

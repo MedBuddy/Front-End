@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import Header from './HeaderComponent'
+import Header from '../Header/header'
+import './news.css'
 
 class News extends Component {
     render(){
