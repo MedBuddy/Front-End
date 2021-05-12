@@ -1,0 +1,24 @@
+.info-container
+{
+    background-color: rgba(0, 0, 0, 0.6);
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    padding: 15px;
+    border-radius: 3px;
+    width: 300px;
+    color: white;
+}
+.info-body
+{
+    color: white;
+}
+.info-close
+{
+    color: white;
+    cursor: pointer;
+}
+.info-close:hover
+{
+    color: white;
+}

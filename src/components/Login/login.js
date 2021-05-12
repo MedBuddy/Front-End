@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Form,FormGroup,Label,Input,Nav,NavItem,TabContent,TabPane,Button } from 'reactstrap'
 import './login.css'
+import Info from '../Info/info'
 
 const emailRegex = [
     {
@@ -54,12 +55,16 @@ class Login extends Component {
             formtype: 'login',
             email:'',
             username:'',
+            firstname:'',
+            lastname:'',
             password:'',
             confirmpassword:'',
             logintype:'user',
             errors: {
                 email:'',
                 username:'',
+                firstname:'',
+                lastname:'',
                 password:'',
                 confirmpassword:''
             },
@@ -67,10 +72,11 @@ class Login extends Component {
             otp: '',
             otpError: '',
             userId: '',
-            loginPageMsg: '',
+            otpMsg: '',
             license: '',
             fileError: '',
-            viewFileInput: false
+            viewFileInput: false,
+            info: ''
         }
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
@@ -82,6 +88,7 @@ class Login extends Component {
         this.handleOTP = this.handleOTP.bind(this);
         this.handleFileInput = this.handleFileInput.bind(this)
         this.handleFileSubmit = this.handleFileSubmit.bind(this)
+        this.clearInfo = this.clearInfo.bind(this)
     }
     componentDidMount()
     {
@@ -194,7 +201,9 @@ class Login extends Component {
             email: '',
             username: '',
             password: '',
-            confirmpassword: ''
+            confirmpassword: '',
+            firstname: '',
+            lastname: '',
         }
         this.setState({
             formtype: form,
@@ -202,10 +211,18 @@ class Login extends Component {
             username:'',
             password:'',
             confirmpassword:'',
+            firstname: '',
+            lastname: '',
             logintype:'user',
             errors: errors,
             step: 1,
-            loginPageMsg: ''
+            otp: '',
+            otpError: '',
+            userId: '',
+            otpMsg: '',
+            license: '',
+            fileError: '',
+            viewFileInput: false
         });
         document.getElementById('showpassword').checked = false
         document.getElementById('password').type="password"
@@ -225,23 +242,19 @@ class Login extends Component {
             email: '',
             username: '',
             password: '',
-            confirmpassword: ''
+            confirmpassword: '',
+            firstname: '',
+            lastname: ''
         }
         this.setState({
             errors: errors
         })
-        for(let i in passwordRegex){
-            if(!passwordRegex[i].regex.test(this.state.password)){
-                errors.password = passwordRegex[i].error
-                break
-            }
-        }
-        if(this.state.confirmpassword === '')
-            errors.confirmpassword = 'Password is required'
-        else if(this.state.confirmpassword !== this.state.password)
-            errors.confirmpassword = 'Passwords don\'t match'
+        if(this.state.firstname === '')
+            errors.firstname = 'First Name is required'
+        if(this.state.lastname === '')
+            errors.lastname = 'Last Name is required'
         
-        if(errors.password === '' && errors.confirmpassword === ''){
+        if(errors.firstname === '' && errors.lastname === ''){
             const user = {
                 username: this.state.username,
                 email: this.state.email,
@@ -270,7 +283,7 @@ class Login extends Component {
             })
             .then(response => response.json())
             .then(response => {
-                let step = 3
+                let step = 4
                 let userId = ''
                 if(response.resCode === 0){
                     errors.email = response.msg
@@ -281,7 +294,7 @@ class Login extends Component {
                     step = 1
                 }
                 else{
-                    step = 3
+                    step = 4
                     userId = response.msg
                 }
                 this.setState({
@@ -307,35 +320,60 @@ class Login extends Component {
         })
     }
 
+    clearInfo(){
+        setTimeout(() => {
+            this.setState({
+                info: ''
+            })
+        }, 5000)
+    }
+
     next(){
         let errors = {
             email: '',
             username: '',
             password: '',
-            confirmpassword: ''
+            confirmpassword: '',
+            firstname:'',
+            lastname:''
         }
         this.setState({
             errors: errors
         })
-        for(let i in emailRegex){
-            if(!emailRegex[i].regex.test(this.state.email)){
-                errors.email = emailRegex[i].error
-                break
+        if(this.state.step === 1){
+            for(let i in emailRegex){
+                if(!emailRegex[i].regex.test(this.state.email)){
+                    errors.email = emailRegex[i].error
+                    break
+                }
             }
-        }
-        for(let i in usernameRegex){
-            if(!usernameRegex[i].regex.test(this.state.username)){
-                errors.username = usernameRegex[i].error
-                break
+            for(let i in usernameRegex){
+                if(!usernameRegex[i].regex.test(this.state.username)){
+                    errors.username = usernameRegex[i].error
+                    break
+                }
             }
+            if(errors.username === '' && errors.email === '')
+                this.changeStep(2)
         }
-        if(errors.username === '' && errors.email === '')
-            this.changeStep(2)
-        else{
-            this.setState({
-                errors: errors
-            })
+        else if(this.state.step === 2){    
+            for(let i in passwordRegex){
+                if(!passwordRegex[i].regex.test(this.state.password)){
+                    errors.password = passwordRegex[i].error
+                    break
+                }
+            }
+            if(this.state.confirmpassword === '')
+                errors.confirmpassword = 'Password is required'
+            else if(this.state.confirmpassword !== this.state.password)
+                errors.confirmpassword = 'Passwords don\'t match'
+            
+            if(errors.password === '' && errors.confirmpassword === '')
+                this.changeStep(3)
         }
+        this.setState({
+            errors: errors
+        })
     }
 
     handleOTP(event){
@@ -381,15 +419,16 @@ class Login extends Component {
                     if(req.type === 1){
                         this.changeForm('login')
                         this.setState({
-                            loginPageMsg: 'Account created successfully!',
                             userId: '',
-                            otpError: ''
+                            otpError: '',
+                            info: 'Account created successfully!'
                         })
+                        this.clearInfo()
                     }
                     else{
                         this.setState({
                             otpError: '',
-                            loginPageMsg: 'OTP verified!',
+                            otpMsg: 'OTP verified!',
                             viewFileInput: true
                         })
                     }
@@ -431,9 +470,10 @@ class Login extends Component {
         .then(response => {
             this.changeForm('login')
             this.setState({
-                loginPageMsg: 'Doctor account created! You will be notified as soon as your license is verified',
-                userId: ''
+                userId: '',
+                info: 'Doctor account created! You will be notified as soon as your license is verified'
             })
+            this.clearInfo()
         })
         .catch(error => {
             console.log(error)
@@ -455,6 +495,10 @@ class Login extends Component {
                             <div className="signup-line"></div>
                         </div>
                         <div className="signup-steps">3</div>
+                        <div className="align-self-center">
+                            <div className="signup-line"></div>
+                        </div>
+                        <div className="signup-steps">4</div>
                     </div>
                 </div> 
             )
@@ -473,11 +517,15 @@ class Login extends Component {
                             <div className="signup-line"></div>
                         </div>
                         <div className="signup-steps">3</div>
+                        <div className="align-self-center">
+                            <div className="signup-line"></div>
+                        </div>
+                        <div className="signup-steps">4</div>
                     </div>
                 </div> 
             )
         }
-        else
+        else if(this.state.step === 3)
         {
             return (
                 <div className="container mt-3">
@@ -491,6 +539,32 @@ class Login extends Component {
                             <div className="signup-completed-line"></div>
                         </div>
                         <div className="signup-completed-steps">3</div>
+                        <div className="align-self-center">
+                            <div className="signup-line"></div>
+                        </div>
+                        <div className="signup-steps">4</div>
+                    </div>
+                </div> 
+            )
+        }
+        else if(this.state.step === 4)
+        {
+            return (
+                <div className="container mt-3">
+                    <div className="row justify-content-center">
+                    <div className="signup-completed-steps"><i class="fa fa-check"></i></div>
+                        <div className="align-self-center">
+                            <div className="signup-completed-line"></div>
+                        </div>
+                        <div className="signup-completed-steps"><i class="fa fa-check"></i></div>
+                        <div className="align-self-center">
+                            <div className="signup-completed-line"></div>
+                        </div>
+                        <div className="signup-completed-steps"><i class="fa fa-check"></i></div>
+                        <div className="align-self-center">
+                            <div className="signup-completed-line"></div>
+                        </div>
+                        <div className="signup-completed-steps">4</div>
                     </div>
                 </div> 
             )
@@ -503,18 +577,18 @@ class Login extends Component {
             return (
                 <div className="signup-form-content">
                     <FormGroup row>
-                        <Label htmlFor="email" className="col-12">Email Address</Label>
-                        <Input type="text" className="login-input-box col-12" id="email" name="email" 
-                                placeholder="Email" autoComplete="off" value={this.state.email} 
-                                onChange={this.handleInputChange} />
-                        <span className="col-12 error">{ this.state.errors.email }</span>
-                    </FormGroup>
-                    <FormGroup row>
                         <Label htmlFor="s-username" className="col-12">Username</Label>
                         <Input type="text" className="login-input-box" id="s-username" name="username" 
                                 placeholder="Username" autoComplete="off" value={this.state.username} 
                                 onChange={this.handleInputChange} />
                         <span className="col-12 error">{ this.state.errors.username }</span>
+                    </FormGroup>
+                    <FormGroup row>
+                        <Label htmlFor="email" className="col-12">Email Address</Label>
+                        <Input type="text" className="login-input-box col-12" id="email" name="email" 
+                                placeholder="Email" autoComplete="off" value={this.state.email} 
+                                onChange={this.handleInputChange} />
+                        <span className="col-12 error">{ this.state.errors.email }</span>
                     </FormGroup>
                     <FormGroup row className="mt-4">
                         <Label htmlFor="signuptype" className="col-4">Type</Label>
@@ -549,7 +623,28 @@ class Login extends Component {
                 </div>
             )
         }
-        else if(this.state.step === 3){
+        else if(this.state.step === 3)
+        {
+            return(
+                <div className="signup-form-content">
+                    <FormGroup row>
+                        <Label htmlFor="firstname" className="col-12">First Name</Label>
+                        <Input type="text" className="login-input-box" id="firstname" name="firstname" 
+                                placeholder="First Name" autoComplete="off" value={this.state.firstname} 
+                                onChange={this.handleInputChange} />
+                        <span className="col-12 error">{ this.state.errors.firstname }</span>
+                    </FormGroup>
+                    <FormGroup row>
+                        <Label htmlFor="lastname" className="col-12">Last Name</Label>
+                        <Input type="text" className="login-input-box" id="lastname" name="lastname" 
+                                placeholder="Last Name" autoComplete="off" value={this.state.lastname} 
+                                onChange={this.handleInputChange} />
+                        <span className="col-12 error">{ this.state.errors.lastname }</span>
+                    </FormGroup>        
+                </div>
+            )
+        }
+        else if(this.state.step === 4){
             return (
                 <div className="signup-form-content">
                     <div className="row mb-3">
@@ -563,7 +658,7 @@ class Login extends Component {
                                     placeholder="OTP" autoComplete="off" value={this.state.otp} 
                                     onChange={this.handleInputChange} />
                             <span className="col-12 error text-center">{ this.state.otpError }</span>
-                            <span className="col-12 text-center login-page-msg">{ this.state.loginPageMsg }</span>
+                            <span className="col-12 text-center login-page-msg">{ this.state.otpMsg }</span>
                         </FormGroup>
                         <FormGroup row className="justify-content-center">
                             <div className="col-4">
@@ -598,23 +693,23 @@ class Login extends Component {
     }
 
     displaySignupButtons(){
-        if(this.state.step === 3)
+        if(this.state.step === 4)
             return <></>
         return (
             <FormGroup row className="justify-content-center mt-4">
                 <div className="col-3">
-                    <Button className={this.state.step === 2?"btn login-btns":"btn-disabled"} 
-                            disabled={this.state.step !== 2} onClick={() => this.changeStep(1)}>
+                    <Button className={this.state.step !== 1?"btn login-btns":"btn-disabled"} 
+                            disabled={this.state.step === 1} onClick={() => this.changeStep(this.state.step-1)}>
                         <i class="fa fa-arrow-left"></i>
                     </Button>
                 </div>
                 <div className="col-5">
-                    <Input type="submit" value="Sign up" className={this.state.step === 2?"btn login-btns":"btn-disabled"} 
-                            disabled={this.state.step !== 2} form="signup-form" />
+                    <Input type="submit" value="Sign up" className={this.state.step === 3?"btn login-btns":"btn-disabled"} 
+                            disabled={this.state.step !== 3} form="signup-form" />
                 </div>
                 <div className="col-3">
-                    <Button className={this.state.step === 1?"btn login-btns":"btn-disabled"} 
-                            disabled={this.state.step !== 1} onClick={this.next}>
+                    <Button className={this.state.step !== 3?"btn login-btns":"btn-disabled"} 
+                            disabled={this.state.step === 3} onClick={this.next}>
                         <i class="fa fa-arrow-right"></i>
                     </Button>
                 </div>
@@ -658,11 +753,6 @@ class Login extends Component {
                         <Input type="submit" value="Login" className="btn login-btns mb-3" />
                     </div>
                 </FormGroup>
-                <div className="row">
-                    <div className="col-12 text-center">
-                        { this.state.loginPageMsg }
-                    </div>
-                </div>
             </Form>
         )
     }
@@ -670,6 +760,7 @@ class Login extends Component {
     render(){
         return (
             <>
+                <Info info={this.state.info} />
                 <div className="container">
                     <Link to="/" className="login-icon-link">
                         <div className="row login-style-1-bg mt-3">
