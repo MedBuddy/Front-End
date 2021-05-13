@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Form,FormGroup,Label,Input,Nav,NavItem,TabContent,TabPane,Button } from 'reactstrap'
 import './login.css'
-import Info from '../Info/info'
 
 const emailRegex = [
     {
@@ -75,8 +74,7 @@ class Login extends Component {
             otpMsg: '',
             license: '',
             fileError: '',
-            viewFileInput: false,
-            info: ''
+            viewFileInput: false
         }
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
@@ -88,13 +86,14 @@ class Login extends Component {
         this.handleOTP = this.handleOTP.bind(this);
         this.handleFileInput = this.handleFileInput.bind(this)
         this.handleFileSubmit = this.handleFileSubmit.bind(this)
-        this.clearInfo = this.clearInfo.bind(this)
     }
+
     componentDidMount()
     {
         if(localStorage.getItem('userToken'))
             window.location.href = "/";
     }
+
     getType(type){
         switch(type){
             case 'user': return 1
@@ -184,6 +183,8 @@ class Login extends Component {
                     localStorage.setItem('userToken', response.token)
                     localStorage.setItem('username', response.username)
                     localStorage.setItem('userIcon', response.userIcon)
+                    this.props.setInfo('Logged in successfully!')
+                    this.props.clearInfo()
                     window.location.href = '/'
                 }
             })
@@ -227,14 +228,15 @@ class Login extends Component {
         document.getElementById('showpassword').checked = false
         document.getElementById('password').type="password"
     }
+
     showPassword(event)
     {
         if(event.target.checked)
             document.getElementById('password').type="text"
         else
             document.getElementById('password').type="password"
-        
     }
+
     handleSignupSubmit(event)
     {
         event.preventDefault();
@@ -318,14 +320,6 @@ class Login extends Component {
         this.setState({
             step: step
         })
-    }
-
-    clearInfo(){
-        setTimeout(() => {
-            this.setState({
-                info: ''
-            })
-        }, 5000)
     }
 
     next(){
@@ -420,10 +414,10 @@ class Login extends Component {
                         this.changeForm('login')
                         this.setState({
                             userId: '',
-                            otpError: '',
-                            info: 'Account created successfully!'
+                            otpError: ''
                         })
-                        this.clearInfo()
+                        this.props.setInfo('Account created successfully!')
+                        this.props.clearInfo()
                     }
                     else{
                         this.setState({
@@ -470,10 +464,10 @@ class Login extends Component {
         .then(response => {
             this.changeForm('login')
             this.setState({
-                userId: '',
-                info: 'Doctor account created! You will be notified as soon as your license is verified'
+                userId: ''
             })
-            this.clearInfo()
+            this.props.setInfo('Doctor account created! You will be notified as soon as your license is verified')
+            this.props.clearInfo()
         })
         .catch(error => {
             console.log(error)
@@ -760,7 +754,6 @@ class Login extends Component {
     render(){
         return (
             <>
-                <Info info={this.state.info} />
                 <div className="container">
                     <Link to="/" className="login-icon-link">
                         <div className="row login-style-1-bg mt-3">

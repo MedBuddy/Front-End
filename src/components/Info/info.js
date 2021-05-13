@@ -1,15 +1,13 @@
 import './info.css'
 
 function Info(props) {
-
-    let info = props.info
     
     return (
         <>
-            <div className={info?"info-container":"d-none"}>
-                <div className="close info-close" onClick={() => info=''}>&times;</div>
+            <div className={props.info?"info-container":"d-none"}>
+                <div className="close info-close" onClick={props.closeInfo}>&times;</div>
                 <div className="info-body">
-                    { info }
+                    { props.info }
                 </div>
             </div>
         </>
