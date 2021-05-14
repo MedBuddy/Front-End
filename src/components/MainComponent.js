@@ -27,12 +27,14 @@ class Main extends Component {
     }
 
     setInfo(info){
+        localStorage.removeItem('info')
         this.setState({
             info: info
         })
     }
 
     clearInfo(){
+        localStorage.removeItem('info')
         setTimeout(() => {
             this.setState({
                 info: ''
@@ -41,6 +43,7 @@ class Main extends Component {
     }
 
     closeInfo(){
+        localStorage.removeItem('info')
         this.setState({
             info: ''
         })
@@ -51,7 +54,7 @@ class Main extends Component {
         return (
             <>
                 <Switch>
-                    <Route path="/home" component={() => <Home />} />
+                    <Route path="/home" component={() => <Home clearInfo={this.clearInfo} closeInfo={this.closeInfo} setInfo={this.setInfo} />} />
                     <Route path="/login" component={() => <Login clearInfo={this.clearInfo} closeInfo={this.closeInfo} setInfo={this.setInfo} />} />
                     <Route exact path="/news" component={() => <News />} />
                     <Route exact path="/forum" component={() => <Forum />} />

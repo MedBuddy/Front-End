@@ -4,6 +4,20 @@ import { Card,CardBody,CardTitle,CardText } from 'reactstrap'
 import './home.css'
 
 class Home extends Component {
+
+    constructor(props){
+        super(props)
+        this.state = {
+            info: localStorage.getItem('info') || ''
+        }
+    }
+
+    componentDidMount(){
+        if(this.state.info){
+            this.props.setInfo(this.state.info)
+            this.props.clearInfo()
+        }
+    }
     
     render(){
         return (

@@ -32,7 +32,8 @@ class Header extends Component {
         this.setState({
             username: null
         })
-        window.location.reload()
+        localStorage.setItem('info', `Logged out successfully!`)
+        window.location.href = '/'
     }
 
     displayBtns(){      

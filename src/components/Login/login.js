@@ -183,8 +183,7 @@ class Login extends Component {
                     localStorage.setItem('userToken', response.token)
                     localStorage.setItem('username', response.username)
                     localStorage.setItem('userIcon', response.userIcon)
-                    this.props.setInfo('Logged in successfully!')
-                    this.props.clearInfo()
+                    localStorage.setItem('info', `Welcome ${response.username}`)
                     window.location.href = '/'
                 }
             })
