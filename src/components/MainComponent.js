@@ -8,6 +8,7 @@ import About from './About/about'
 import Consult from './Consult/consult'
 import DiscussionComponent from './Discussion/discussion'
 import Info from './Info/info'
+import VideoCall from './VideoCall/videoCall'
 
 class Main extends Component {
 
@@ -56,6 +57,7 @@ class Main extends Component {
                     <Route exact path="/forum" component={() => <Forum />} />
                     <Route path="/forum/:id" component={({match}) => <DiscussionComponent id={match.params.id}/>} />
                     <Route exact path="/consult" component={() => <Consult />} />
+                    <Route exact path="/videoCall" component={() => <VideoCall />} />
                     <Route path="/about" component={() => <About />} />
                     <Redirect to="/home" />
                 </Switch>
