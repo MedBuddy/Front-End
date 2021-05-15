@@ -66,7 +66,7 @@ class Chat extends Component{
                     <Form onSubmit={this.sendMessage}>
                         <Input type="textarea" rows="1" className="chat-input" innerRef={(input) => this.msg = input} />
                         <Button type="submit" className="btn chat-btn" color="primary">
-                            <i class="fa fa-paper-plane"></i>
+                            <i className="fa fa-paper-plane"></i>
                         </Button>
                     </Form>
                 </div>

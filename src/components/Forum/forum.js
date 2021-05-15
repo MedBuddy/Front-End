@@ -12,7 +12,6 @@ class Forum extends Component {
             allQuestions: [],
             questions: [],
             files:[],
-            myquestions:[],
             modal: false,
             discussionType: 1,
             loading: true,
@@ -60,7 +59,7 @@ class Forum extends Component {
         {
             alert('enter pressed')
         }
-        else if(event.button === 2)
+        else if(event.button === 0)
         {
             alert('mouse clicked')
         }

@@ -1,11 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Balsamiq+Sans&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Kalam&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap');
+
+.news-container
+{
+    background: rgba(0,0,0,0.1);
+    border-radius: 10px;
+}
 
 .news-heading
 {
-    font-family: Balsamiq Sans;
-    font-size: 30px;
+    font-family: Abril Fatface;
+    color: rgba(255, 255, 255, 1);
+    font-size: 40px;
 }
 
 .news-blog-button
@@ -24,4 +32,35 @@
 .news-blog-button:hover
 {
     background-color: rgba(255, 255, 255, 0.8);
+}
+.news-blog-button:active
+{
+    transition-duration: none;
+    background-color: rgba(255, 255, 255, 0.6);
+}
+.news-blog-container
+{
+    display: flex;
+    height: 300px;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 10px;
+    font-family: Balsamiq Sans;
+}
+.news-content-container
+{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+}
+.news-blog-profile-img
+{
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+}
+.news-comment-icon
+{
+    cursor: pointer;
+    color: rgba(0,0,0,0.8);
 }
