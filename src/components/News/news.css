@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Balsamiq+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kalam&display=swap');
+
+.news-heading
+{
+    font-family: Balsamiq Sans;
+    font-size: 30px;
+}
+
+.news-blog-button
+{
+    transition-duration: 0.3s;
+    background-color: rgba(255, 255, 255, 0.6);
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-align: center;
+    border-radius: 7px;
+    cursor: pointer;
+    font-family: roboto;
+    font-weight: bold;
+    font-size: 24px;
+}
+.news-blog-button:hover
+{
+    background-color: rgba(255, 255, 255, 0.8);
+}

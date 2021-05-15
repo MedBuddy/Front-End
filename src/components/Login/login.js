@@ -120,7 +120,7 @@ class Login extends Component {
     }
 
     handleLoginSubmit(event) {
-        const userRegex = /^[a-zA-Z][a-zA-Z0-9]{7,}$/
+        const userRegex = /^[a-zA-Z][a-zA-Z0-9_]{7,}$/
         const passRegex = /^[a-zA-Z0-9_@#$&]{8,}$/
         let errors = {
             username: '',
@@ -183,6 +183,7 @@ class Login extends Component {
                     localStorage.setItem('userToken', response.token)
                     localStorage.setItem('username', response.username)
                     localStorage.setItem('userIcon', response.userIcon)
+                    localStorage.setItem('loginType',this.state.logintype)
                     localStorage.setItem('info', `Welcome ${response.username}`)
                     window.location.href = '/'
                 }

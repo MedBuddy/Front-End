@@ -60,6 +60,10 @@ class Forum extends Component {
         {
             alert('enter pressed')
         }
+        else if(event.button === 2)
+        {
+            alert('mouse clicked')
+        }
     }
     
     fetchDiscussions()
@@ -189,8 +193,7 @@ class Forum extends Component {
                 allQuestions: questions,
                 questions: questions,
             })
-        }
-        )
+        })
         
     }
     findUpvote(replies)
@@ -354,7 +357,9 @@ class Forum extends Component {
                             <div className="col-md-5 offset-md-2 d-flex align-items-center">
                                 
                                 <Input type="text" className="forum-search" placeholder="Search Topics" onKeyPress={this.searchTopic} />
-                                {/* <i className="fa fa-search"></i> */}
+                                <div className="forum-search-button" onClick={this.searchTopic}>
+                                    <i className="fa fa-search"></i>
+                                </div>
                             </div>
                         </div>
                         {this.renderCards()}

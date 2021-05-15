@@ -29,6 +29,7 @@ class Header extends Component {
         localStorage.removeItem('username')
         localStorage.removeItem('userToken')
         localStorage.removeItem('userIcon')
+        localStorage.removeItem('loginType')
         this.setState({
             username: null
         })

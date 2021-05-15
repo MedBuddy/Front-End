@@ -27,7 +27,24 @@
 }
 .forum-search
 {
-    border-radius: 150px;
+    height: 37px;
+    border-radius: 5px 0px 0px 5px;
+}
+.forum-search-button
+{
+    transition-duration: 0.4s;
+    border-radius: 0px 5px 5px 0px;
+    background-color: rgba(15, 206, 206, 1);
+    cursor: pointer;
+    height: 37px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+.forum-search-button:active
+{
+    background-color: rgba(255, 255, 255, 0.8);
 }
 .forum-discussion-sort
 {
