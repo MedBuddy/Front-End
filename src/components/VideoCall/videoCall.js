@@ -145,7 +145,6 @@ function VideoCall(){
                                 Call
                             </Button>
                         )}
-                        {idToCall}
                     </div>
                 </div>
                 <div>
