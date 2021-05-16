@@ -210,7 +210,7 @@ class Forum extends Component {
             let d = new Date();
             questions = questions.filter(question => {
                 let days = (d - new Date(Date.parse(question.createdAt)))/(1000*60*60*24)
-                return (days <= 10)
+                return (days <= 30)
             })
             questions.sort(
                 (a,b) => {
