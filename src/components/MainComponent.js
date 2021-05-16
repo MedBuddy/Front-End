@@ -10,6 +10,7 @@ import DiscussionComponent from './Discussion/discussion'
 import BlogComponent from './Blog/blog'
 import Info from './Info/info'
 import VideoCall from './VideoCall/videoCall'
+import Doctor from './Doctor/doctor'
 
 class Main extends Component {
 
@@ -62,6 +63,7 @@ class Main extends Component {
                     <Route exact path="/forum" component={() => <Forum />} />
                     <Route path="/forum/:id" component={({match}) => <DiscussionComponent id={match.params.id}/>} />
                     <Route exact path="/consult" component={() => <Consult />} />
+                    <Route path="/consult/:id" component={({match}) => <Doctor id={match.params.id} />} />
                     <Route exact path="/videoCall" component={() => <VideoCall />} />
                     <Route path="/about" component={() => <About />} />
                     <Redirect to="/home" />

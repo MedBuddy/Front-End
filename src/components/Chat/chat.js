@@ -54,10 +54,10 @@ class Chat extends Component{
 
     render(){
         return (
-            <div className="chat-box">
+            <div className={"chat-box "+(this.props.display?'d-block':'d-none')}>
                 <div className="chat-header">
                     Chat
-                    <div className="close">&times;</div>
+                    <div className="close" onClick={this.props.closeChat}>&times;</div>
                 </div>
                 <div className="chat-body" id="chat-body">
                     { this.renderMessages() }
