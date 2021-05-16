@@ -271,7 +271,7 @@ class DiscussionComponent extends Component{
                         <Media heading className="pt-2">{question.title}</Media>
                         <p>{question.content}</p>
                     </Media>
-                    {this.renderQuestionUpdateIcons(question)}
+                    {this.renderQuestionUpdateIcons()}
                 </Media>
             )
         }

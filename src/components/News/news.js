@@ -24,15 +24,9 @@ class News extends Component {
     }
     componentDidMount()
     {
-        this.checkLogin();
         this.fetchBlogs();
     }
-    checkLogin()
-    {
-        const userToken = localStorage.getItem('userToken');
-        if(!userToken)
-            window.location.href = '/login';
-    }
+    
     changeBlogType()
     {
         if(this.state.blogType === 'All Blogs')
@@ -159,7 +153,7 @@ class News extends Component {
         return(
             <>
                 <p>{blog.content}</p>
-                <div className="btn btn-info mb-2">Continue reading</div>
+                <div className="btn btn-info mb-2"  onClick={() => window.location.href = '/news/'+blog._id}>Continue reading</div>
             </>
         )
     }
@@ -191,10 +185,14 @@ class News extends Component {
                         </div>
                         <div className="d-flex mb-auto">
                             <div className="">
-                               <span className="news-comment-icon"><i className="fa fa-thumbs-up fa-lg pr-1 "></i>Like</span>
+                               <span className="news-comment-icon">
+                                   <i className="fa fa-thumbs-up fa-lg pr-1 "></i>{blog.likes.length} Likes
+                                </span>
                             </div>
                             <div className="ml-auto pr-5">
-                                <span className="news-comment-icon"><i className="fa fa-comments fa-lg pr-1"></i>Comment</span>
+                                <span className="news-comment-icon" onClick={() => window.location.href = '/news/'+blog._id}>
+                                    <i className="fa fa-comments fa-lg pr-1"></i>Comment
+                                </span>
                             </div>
                         </div>
                     </div>
