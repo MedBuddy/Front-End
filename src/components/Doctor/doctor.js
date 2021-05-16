@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Button } from 'reactstrap'
 import Header from '../Header/header'
 import './doctor.css'
-import ReactStars from 'react-rating-stars-component'
 import { Link } from 'react-router-dom'
 import Chat from '../Chat/chat'
 
@@ -184,12 +183,18 @@ class Doctor extends Component {
     }
 
     render(){
+        let chatComp = ''
+        if(this.state.doctor){
+            chatComp = 
+                <Chat display={this.state.chatDisplay} closeChat={this.toggleChat} sender={localStorage.getItem('username')}
+                      doctor={this.state.doctor.username} user={localStorage.getItem('username')} />
+        }
         return (
             <>
                 <Header />
                 { this.renderDoctorInfo() }
                 { this.renderReviews() }
-                <Chat display={this.state.chatDisplay} closeChat={this.toggleChat} />
+                { chatComp }
             </>
         )
     }

@@ -10,14 +10,16 @@ class Chat extends Component{
     constructor(props){
         super(props)
         this.state = {
-            roomId: 'doctor-user',
-            username: 'user',
+            roomId: this.props.doctor + '-' + this.props.user,
+            username: this.props.sender,
             messages: []
         }
         this.sendMessage = this.sendMessage.bind(this)
+        this.fetchMessages = this.fetchMessages.bind(this)
     }
 
     componentDidMount(){
+        this.fetchMessages()
         socket.emit('connectToRoom', {roomId: this.state.roomId, newUser: this.state.username})
         socket.on('message', data => {
             let messages = this.state.messages
@@ -27,6 +29,44 @@ class Chat extends Component{
             })
             let chatBody = document.getElementById('chat-body')
             chatBody.scrollTop = chatBody.scrollHeight
+        })
+    }
+
+    fetchMessages(){
+        let token = localStorage.getItem('userToken')
+        const body = {
+            doctor: this.props.doctor,
+            user: this.props.user
+        }
+        fetch('/doctors/messages', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        })
+        .then((response) => {
+            if(response.ok)
+                return response
+            else
+            {
+                let error = new Error('Error: ' + response.status + ': ' + response.statusText)
+                error.response = response
+                throw error
+            }
+        }, err => {
+            let error = new Error(err)
+            throw error
+        })
+        .then((response) => response.json())
+        .then((response) => {
+            this.setState({
+                messages: response
+            })
+        })
+        .catch(error => {
+            console.log(error)
         })
     }
 
@@ -45,8 +85,8 @@ class Chat extends Component{
     renderMessages(){
         const messages = this.state.messages.map(message => (
             <div className="chat-msg">
-                <div className="msg-user">{ message.username }: </div>
-                <div className="msg-content">{ message.msg }</div>
+                <div className="msg-user">{ message.sender }: </div>
+                <div className="msg-content">{ message.message }</div>
             </div>
         ))
         return messages
