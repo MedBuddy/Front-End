@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import Header from '../Header/header';
 import { ScaleLoader } from 'react-spinners';
-import { Media,Form,Input,Button,FormGroup,Label } from 'reactstrap';
+import { Media,Form,Input,Button,FormGroup,Label,Modal,ModalBody,ModalHeader,ModalFooter } from 'reactstrap';
 import './blog.css'
 
 class BlogComponent extends Component
@@ -12,15 +12,30 @@ class BlogComponent extends Component
         this.state = {
             loading: true,
             blog: [],
+            commentModal: false,
+            commentIndex: -1,
         }
 
         this.fetchBlog = this.fetchBlog.bind(this);
         this.postComment = this.postComment.bind(this);
+        /* this.editBlog = this.editBlog.bind(this); */
+        this.deleteBlog = this.deleteBlog.bind(this);
+        this.togglecommentModal = this.togglecommentModal.bind(this);
+        this.updateComment = this.updateComment.bind(this);
+        this.deleteComment = this.deleteComment.bind(this);
     }
     
     componentDidMount()
     {
         this.fetchBlog();
+    }
+
+    togglecommentModal(index=-1)
+    {
+        this.setState({
+            commentIndex: index,
+            commentModal: !this.state.commentModal
+        })
     }
 
     checkLogin()
@@ -65,23 +80,35 @@ class BlogComponent extends Component
             console.log(error)
         })
     }
-    renderBlogFiles(blog)
+    
+    deleteBlog()
     {
-        if(blog)
-        {
-            return(
-                <div className="mr-4">
-                    <img src={blog.userIcon.url} />
-                </div>
-            )
-        }
-        else
-        {
-            return( 
-                <div className="ml-5"></div>
-            )
-        }
+        const userToken = localStorage.getItem('userToken');
+        fetch('/posts/'+this.state.blog._id,{
+            method: 'DELETE',
+            headers :{
+                'Authorization': 'Bearer '+userToken
+            }
+        })
+        .then(response => {
+            if(response.ok){
+                window.location.href = "/news"
+            }
+            else
+            {
+                let error = new Error('Error: ' + response.status + ': ' + response.statusText)
+                error.response = response
+                throw error
+            }
+        }, err => {
+            let error = new Error(err)
+            throw error
+        })
+        .catch(error => {
+            console.log(error)
+        })
     }
+
     renderBlogUpdateIcons()
     {
         const username = localStorage.getItem('username');
@@ -92,7 +119,7 @@ class BlogComponent extends Component
                     <span className="pr-3">
                         <i className="discussion-replies-edit fa fa-edit fa-md"></i>
                     </span>
-                    <span className="pr-4">
+                    <span className="pr-4" onClick={this.deleteBlog}>
                         <i className="discussion-replies-delete fa fa-trash fa-md"></i>
                     </span>
                 </div>
@@ -103,6 +130,25 @@ class BlogComponent extends Component
             return <></>
         }
     }
+
+    renderBlogFiles(blog)
+    {
+        if(blog)
+        {
+            return(
+                <div className="mr-4">
+                    <img src={blog.userIcon.url} alt={blog.userIcon.url} />
+                </div>
+            )
+        }
+        else
+        {
+            return( 
+                <div className="ml-5"></div>
+            )
+        }
+    }
+
     renderBlog()
     {
         let blog = this.state.blog;
@@ -149,19 +195,92 @@ class BlogComponent extends Component
             )
         }
     }
-    renderDeleteEdit(index)
+
+    deleteComment(commentId)
     {
-        let comment = this.state.blog.comment[index];
+        const userToken = localStorage.getItem('userToken');
+        fetch('/posts/'+this.props.id+'/comments/'+commentId,{
+            method: 'DELETE',
+            headers: {
+                'Authorization': 'Bearer '+userToken,
+            },
+        })
+        .then((response) => {
+                if(response.ok)
+                {
+                    return response.json()
+                }
+                else{
+                    let error = new Error('Error: ' + response.status + ': ' + response.statusText)
+                    error.response = response
+                    throw error
+                }
+            }, err => {
+                let error = new Error(err)
+                throw error
+        })
+        .then(response => {
+            this.setState({
+                blog: response.post
+            })
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    }
+
+    updateComment(event)
+    {
+        event.preventDefault();
+        const commentId = this.state.blog.comments[this.state.commentIndex]._id
+        const userToken = localStorage.getItem('userToken');
+        const content = { content: this.editComment.value }
+        fetch('/posts/'+this.props.id+'/comments/'+commentId,{
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer '+userToken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(content) 
+        })
+        .then((response) => {
+                if(response.ok)
+                {
+                    this.togglecommentModal()
+                    return response.json()
+                }
+                else{
+                    let error = new Error('Error: ' + response.status + ': ' + response.statusText)
+                    error.response = response
+                    throw error
+                }
+            }, err => {
+                let error = new Error(err)
+                throw error
+        })
+        .then(response => {
+            this.setState({
+                blog: response.post
+            })
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    }
+
+    commentUpdateIcons(index)
+    {
+        let comment = this.state.blog.comments[index];
         const username = localStorage.getItem('username');
         console.log('username: '+username);
         if(username === comment.author)
         {
             return(
                 <div className="discussion-replies-update mb-2">
-                    <span className="pr-3">
+                    <span className="pr-3" onClick={() => this.togglecommentModal(index)}>
                         <i className="discussion-replies-edit fa fa-edit fa-md"></i>
                     </span>
-                    <span>
+                    <span onClick={() => this.deleteComment(comment._id)}>
                         <i className="discussion-replies-delete fa fa-trash fa-md"></i>
                     </span>
                 </div>
@@ -198,7 +317,7 @@ class BlogComponent extends Component
                                 </Media>
                                 
                                 <Media right className="mt-auto mr-3">
-                                    {/*this.renderDeleteEdit(index)*/}
+                                    {this.commentUpdateIcons(index)}
                                     <Media className="discussion-date">
                                         ~ {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(d)+' ⏰'+time}
                                     </Media>
@@ -303,6 +422,24 @@ class BlogComponent extends Component
                             </div>
                         </div>
                     </div>
+                    <Modal isOpen={this.state.commentModal} toggle={() => this.togglecommentModal()}>
+                        <ModalHeader toggle={() => this.togglecommentModal()}>
+                            Edit your Comment
+                        </ModalHeader>
+                        <ModalBody>
+                            <Form onSubmit={this.updateComment} id="editCommentForm">
+                                <FormGroup>
+                                    <Label htmlFor="editComment">Your Comment</Label>
+                                    <Input type="textarea" className="discussion-answer-textarea" rows="4" id="editComment" name="editComment" required
+                                        defaultValue={(this.state.commentIndex === -1)?'':this.state.blog.comments[this.state.commentIndex].content} innerRef={(input) => this.editComment = input} />
+                                </FormGroup>
+                            </Form>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button color="primary" type="submit" form="editCommentForm">Submit</Button>
+                            <Button color="danger" className="ml-2" onClick={() => this.togglecommentModal()}>Cancel</Button>
+                        </ModalFooter>
+                    </Modal>
                 </>
             )
 

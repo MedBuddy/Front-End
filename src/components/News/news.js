@@ -137,7 +137,7 @@ class News extends Component {
         {
             return(
                 <div className="mr-4">
-                    <img src={blog.userIcon.url} />
+                    <img src={blog.userIcon.url} alt={blog.userIcon.url} />
                 </div>
             )
         }
