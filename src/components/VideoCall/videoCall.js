@@ -26,6 +26,12 @@ function VideoCall(){
     const connectionRef = useRef()
 
     useEffect(() => {
+        let token = localStorage.getItem('userToken')
+        if(!token)
+            window.location.href = '/login'
+    })
+
+    useEffect(() => {
         navigator.mediaDevices.getUserMedia({video: videoOn, audio: audioOn}) 
             .then(stream => {
                 stream.getTracks().forEach((track, index) => {

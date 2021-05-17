@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import { Button } from 'reactstrap'
+import { Button, Form, FormGroup, Input, Label } from 'reactstrap'
 import Header from '../Header/header'
 import './doctor.css'
 import { Link } from 'react-router-dom'
 import Chat from '../Chat/chat'
+import ReactStars from 'react-rating-stars-component'
 
 class Doctor extends Component {
 
@@ -11,12 +12,16 @@ class Doctor extends Component {
         super(props)
         this.state = {
             doctor: '',
-            reviews: '',
-            chatDisplay: false
+            reviews: [],
+            chatDisplay: false,
+            rating: 0,
+            myreview: false
         }
         this.fetchDoctorInfo = this.fetchDoctorInfo.bind(this)
         this.fetchReviews = this.fetchReviews.bind(this)
         this.toggleChat = this.toggleChat.bind(this)
+        this.changeRating = this.changeRating.bind(this)
+        this.postReview = this.postReview.bind(this)
     }
 
     componentDidMount(){
@@ -94,7 +99,61 @@ class Doctor extends Component {
         .then((response) => {
             this.setState({
                 reviews: response
+            }, () => {
+                let username = localStorage.getItem('username')
+                this.state.reviews.forEach(review => {
+                    if(review.userId.username === username){
+                        this.setState({
+                            myreview: true
+                        })
+                    }
+                })
             })
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    }
+
+    postReview(event){
+        event.preventDefault()
+        const review = {
+            rating: this.state.rating,
+            comment: this.comment.value
+        }
+        let token = localStorage.getItem('userToken')
+        fetch('/doctors/'+this.props.id+'/reviews', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(review)
+        })
+        .then((response) => {
+            if(response.ok)
+                return response
+            else
+            {
+                let error = new Error('Error: ' + response.status + ': ' + response.statusText)
+                error.response = response
+                throw error
+            }
+        }, err => {
+            let error = new Error(err)
+            throw error
+        })
+        .then((response) => response.json())
+        .then((response) => {
+            if(response.resCode === 1){
+                let reviews = this.state.reviews
+                reviews.splice(0, 0, response.review)
+                this.setState({
+                    reviews: reviews,
+                    myreview: true
+                })
+                console.log(reviews)
+            }
         })
         .catch(error => {
             console.log(error)
@@ -157,29 +216,75 @@ class Doctor extends Component {
         }
     }
 
+    changeRating(rating){
+        this.setState({
+            rating: rating
+        })
+    }
+
     renderReviews(){
-        if(this.state.reviews){
+        let reviewsDiv = ''
+        if(this.state.reviews.length){
             const reviews = this.state.reviews.map(review => (
-                <div>{review.userId.username}</div>
-            ))
-            return (
-                <div className="container doctor-container p-2 pl-3 mt-4">
+                <div className="review-container col-6">
                     <div className="row">
+                        <div className="col-3 d-flex flex-column align-items-center">
+                            <div className="review-user-img">
+                                <img src={review.userId.image.url} alt={review.userId.username} />
+                            </div>
+                            <div className="review-username">
+                                { review.userId.username }
+                            </div>
+                        </div>
                         <div className="col">
+                            <div className="review-rating">
+                                <ReactStars value={review.rating} edit={false} size={30} />
+                            </div>
+                            <div className="review-comment">
+                                { review.comment }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ))
+
+            reviewsDiv = (
+                <>
+                    <div className="row">
+                        <div className="col reviews-title">
                             Reviews
                         </div>
                     </div>
-                    <div className="row">
+                    <div className="row p-3">
                         {reviews}
                     </div>
+                </>
+            )
+        }
+
+        return (
+            <div className="container doctor-container p-2 pl-3 mt-4 mb-4">
+                <div className={"review-form-container "+(this.state.myreview?"d-none":"")}>
+                    <Form onSubmit={this.postReview}>
+                        <div className="your-review-title">Your Review</div>
+                        <FormGroup>
+                            <ReactStars value={this.state.rating} size={30} onChange={this.changeRating} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label htmlFor="comment">Comment</Label>
+                            <Input type="textarea" rows="3" id="comment" name="comment" className="review-comment" 
+                                    innerRef={(input) => this.comment = input} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Button color="primary" type="submit" className="btn">Submit</Button>
+                        </FormGroup>
+                    </Form>
                 </div>
-            )
-        }
-        else{
-            return (
-                <></>
-            )
-        }
+                <div className="container">
+                    { reviewsDiv }
+                </div>
+            </div>
+        )
     }
 
     render(){

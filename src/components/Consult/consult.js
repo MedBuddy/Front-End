@@ -4,6 +4,7 @@ import Header from '../Header/header'
 import './consult.css'
 import ReactStars from 'react-rating-stars-component'
 import Chat from '../Chat/chat'
+import { Link } from 'react-router-dom'
 
 class Consult extends Component {
 
@@ -117,7 +118,7 @@ class Consult extends Component {
                         <CardTitle className="consult-card-title">{doctor.firstname + ' ' + doctor.lastname}</CardTitle>
                         <CardSubtitle className="consult-card-subtitle">{doctor.specialization}</CardSubtitle>
                         <CardText className="text-center">
-                            <ReactStars value={doctor.rating} edit={false} size="25" classNames="m-auto" />
+                            <ReactStars value={doctor.rating} isHalf={true} edit={false} size="25" classNames="m-auto" />
                         </CardText>
                     </CardBody>
                 </Card>
@@ -149,9 +150,9 @@ class Consult extends Component {
                             <Button color="primary" className="btn consult-user-btn" onClick={() => this.toggleChat(true)}>
                                 Chat
                             </Button>
-                            <Button color="primary" className="btn consult-user-btn" onClick={() => window.location.href = '/videCall'}>
+                            <Link className="btn btn-primary consult-user-btn" to="/videoCall" target="_blank">
                                 Video Call
-                            </Button>
+                            </Link>
                         </CardText>
                     </CardBody>
                 </Card>
@@ -169,7 +170,7 @@ class Consult extends Component {
             <>
                 <div className="row">
                     <div className="col doctor-title">
-                        Doctors
+                        Your Chats
                     </div>
                 </div>
                 <div className="row">
