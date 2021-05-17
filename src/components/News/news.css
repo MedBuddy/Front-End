@@ -58,8 +58,12 @@
     width: 35px;
     height: 35px;
 }
-.news-comment-icon
+.news-icons
 {
     cursor: pointer;
     color: rgba(0,0,0,0.8);
+}
+.news-like-icon
+{
+    color: rgb(194, 62, 62);
 }

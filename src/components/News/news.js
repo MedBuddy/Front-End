@@ -21,6 +21,7 @@ class News extends Component {
         this.postBlog = this.postBlog.bind(this);
         this.handleFileInput = this.handleFileInput.bind(this);
         this.changeBlogType = this.changeBlogType.bind(this);
+        this.updateLike = this.updateLike.bind(this);
     }
     componentDidMount()
     {
@@ -153,13 +154,72 @@ class News extends Component {
         return(
             <>
                 <p>{blog.content}</p>
-                <div className="btn btn-info mb-2"  onClick={() => window.location.href = '/news/'+blog._id}>Continue reading</div>
+                <div className="btn btn-info mb-2"  onClick={() => window.location.href = '/news/'+blog._id}>View entire article</div>
             </>
         )
     }
+    renderLikeIcon(blog)
+    {
+        if(blog)
+        {
+            const username = localStorage.getItem("username");
+            if(blog.likes.includes(username))
+            {
+                return(
+                    <span class="material-icons pr-1 news-like-icon">favorite</span> 
+                )
+            }
+            else
+            {
+                return(
+                    <span class="material-icons pr-1">favorite_border</span>
+                )
+            }
+        }
+        else
+        {
+            return <></>
+        }
+    }
+    updateLike(index)
+    {
+        let blogs = this.state.blogs;
+        const userToken = localStorage.getItem('userToken');
+        
+        fetch('/posts/'+blogs[index]._id+'/likes',{
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer '+userToken,
+            },
+            
+        })
+        .then((response) => {
+                if(response.ok)
+                {
+                    return response.json();
+                }
+                else{
+                    let error = new Error('Error: ' + response.status + ': ' + response.statusText)
+                    error.response = response
+                    throw error
+                }
+            }, err => {
+                let error = new Error(err)
+                throw error
+        })
+        .then(response => {
+            blogs[index] = response.post
+            this.setState({
+                blogs: blogs,
+            })
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    }
     renderBlogs()
     {
-        const blogs = this.state.blogs.map((blog) => {
+        const blogs = this.state.blogs.map((blog,index) => {
             let d = new Date(Date.parse(blog.createdAt));
             let hh = parseInt(d.getHours());
             let mm = parseInt(d.getMinutes());
@@ -184,13 +244,14 @@ class News extends Component {
                             {this.renderBlogContent(blog)}
                         </div>
                         <div className="d-flex mb-auto">
-                            <div className="">
-                               <span className="news-comment-icon">
-                                   <i className="fa fa-thumbs-up fa-lg pr-1 "></i>{blog.likes.length} Likes
+                            <div>
+                                <span className="news-icons d-flex aligm-items-center" onClick={() => this.updateLike(index)}>
+                                    {this.renderLikeIcon(blog)} 
+                                    {blog.likes.length} Likes
                                 </span>
                             </div>
                             <div className="ml-auto pr-5">
-                                <span className="news-comment-icon" onClick={() => window.location.href = '/news/'+blog._id}>
+                                <span className="news-icons" onClick={() => window.location.href = '/news/'+blog._id}>
                                     <i className="fa fa-comments fa-lg pr-1"></i>Comment
                                 </span>
                             </div>

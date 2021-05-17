@@ -12,22 +12,39 @@ class BlogComponent extends Component
         this.state = {
             loading: true,
             blog: [],
+            blogModal: false,
             commentModal: false,
             commentIndex: -1,
+            files: [],
+            removedFiles: [],
         }
 
         this.fetchBlog = this.fetchBlog.bind(this);
         this.postComment = this.postComment.bind(this);
-        /* this.editBlog = this.editBlog.bind(this); */
+        this.updateBlog = this.updateBlog.bind(this);
         this.deleteBlog = this.deleteBlog.bind(this);
+        this.toggleblogModal = this.toggleblogModal.bind(this);
         this.togglecommentModal = this.togglecommentModal.bind(this);
         this.updateComment = this.updateComment.bind(this);
         this.deleteComment = this.deleteComment.bind(this);
+        this.updateLike = this.updateLike.bind(this);
+        this.handleFileInput = this.handleFileInput.bind(this);
+        this.renderEditImages = this.renderEditImages.bind(this);
+        this.removeImage = this.removeImage.bind(this);
+
     }
     
     componentDidMount()
     {
         this.fetchBlog();
+    }
+
+    toggleblogModal()
+    {
+        this.setState({
+            blogModal: !this.state.blogModal,
+            removedFiles: [],
+        })
     }
 
     togglecommentModal(index=-1)
@@ -36,6 +53,38 @@ class BlogComponent extends Component
             commentIndex: index,
             commentModal: !this.state.commentModal
         })
+    }
+
+    handleFileInput(event)
+    {
+        this.setState({
+            files: event.target.files
+        })
+    }
+
+    removeImage(index){
+        let removed = this.state.removedFiles
+        removed.push(index)
+        this.setState({
+            removedFiles: removed
+        })
+    }
+
+    renderEditImages(){
+        const images = this.state.blog.files.map((image, index) => {
+            return (
+                <div className={(this.state.removedFiles.includes(index))?"discussion-edit-img-hide":"discussion-edit-img-container"}>
+                    <div className="close" onClick={() => this.removeImage(index)}>&times;</div>
+                    <img src={image} alt={image} />
+                </div>
+            )
+        })
+
+        return (
+            <div className="d-flex justify-content-around mt-3 mb-3">
+                { images }
+            </div>
+        )
     }
 
     checkLogin()
@@ -81,6 +130,56 @@ class BlogComponent extends Component
         })
     }
     
+    updateBlog(event)
+    {
+        event.preventDefault();
+        let fileCount = this.state.files.length + this.state.blog.files.length - this.state.removedFiles.length
+        if(fileCount>3){
+            alert('Upload a maximum 3 files!!!')
+            return
+        }
+        const userToken = localStorage.getItem('userToken');
+        let blog = new FormData()
+        blog.append('title', this.editTopic.value)
+        blog.append('content', this.editContent.value)
+        for(let i=0;i<this.state.files.length;i++)
+            blog.append('image', this.state.files[i])
+        let removed = ''
+        for(let i=0;i<this.state.removedFiles.length;i++)
+            removed += this.state.removedFiles[i] + ' '
+        removed = removed.substring(0,removed.length-1)
+        blog.append('removed', removed)
+
+        fetch('/posts/'+this.state.blog._id,{
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer '+userToken
+            },
+            body: blog
+        })
+        .then((response) => {
+            if(response.ok)
+            {
+                console.log('Updated succesfully');
+                this.toggleblogModal();
+                window.location.reload();
+            }
+            else
+            {
+                let error = new Error('Error: ' + response.status + ': ' + response.statusText)
+                error.response = response
+                console.log(typeof(response.status))
+                throw error
+            }
+        }, err => {
+            let error = new Error(err)
+            throw error
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    }
+
     deleteBlog()
     {
         const userToken = localStorage.getItem('userToken');
@@ -116,7 +215,7 @@ class BlogComponent extends Component
         {
             return(
                 <div className="ml-auto">
-                    <span className="pr-3">
+                    <span className="pr-3" onClick={this.toggleblogModal}>
                         <i className="discussion-replies-edit fa fa-edit fa-md"></i>
                     </span>
                     <span className="pr-4" onClick={this.deleteBlog}>
@@ -147,6 +246,58 @@ class BlogComponent extends Component
                 <div className="ml-5"></div>
             )
         }
+    }
+
+    renderLikeIcon()
+    {
+        const username = localStorage.getItem("username");
+        if(this.state.blog.likes.includes(username))
+        {
+            return(
+                <span class="material-icons pr-1 news-like-icon">favorite</span> 
+            )
+        }
+        else
+        {
+            return(
+                <span class="material-icons pr-1">favorite_border</span>
+            )
+        }
+    }
+    updateLike()
+    {
+        let blog = this.state.blog;
+        const userToken = localStorage.getItem('userToken');
+        
+        fetch('/posts/'+blog._id+'/likes',{
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer '+userToken,
+            },
+            
+        })
+        .then((response) => {
+                if(response.ok)
+                {
+                    return response.json();
+                }
+                else{
+                    let error = new Error('Error: ' + response.status + ': ' + response.statusText)
+                    error.response = response
+                    throw error
+                }
+            }, err => {
+                let error = new Error(err)
+                throw error
+        })
+        .then(response => {
+            this.setState({
+                blog: response.post,
+            })
+        })
+        .catch(error => {
+            console.log(error)
+        })
     }
 
     renderBlog()
@@ -181,8 +332,9 @@ class BlogComponent extends Component
                         </div>
                         <div className="d-flex mb-auto">
                             <div className="">
-                                <span className="news-comment-icon">
-                                    <i className="fa fa-thumbs-up fa-lg pr-1 "></i>{blog.likes.length} Likes
+                                <span className="news-icons d-flex aligm-items-center" onClick={this.updateLike}>
+                                    {this.renderLikeIcon(blog)} 
+                                    {blog.likes.length} Likes
                                 </span>
                             </div>
                             
@@ -406,8 +558,7 @@ class BlogComponent extends Component
                             <div className="offset-1 col-10">
                                 <Form className="m-3 blog-comment-form" id="postCommentForm" onSubmit={this.postComment}>
                                     <FormGroup>
-                                        <Label htmlFor="blogComment" className="blog-comment-form-label">Add a public comment</Label>
-                                        <Input type="textarea" className="discussion-answer-textarea" rows="3" id="blogComment" name="blogComment" required
+                                        <Input type="textarea" placeholder="Add a public comment" className="discussion-answer-textarea" rows="3" id="blogComment" name="blogComment" required
                                             innerRef={(input) => this.blogComment = input} />
                                     </FormGroup>
                                     <FormGroup>
@@ -422,11 +573,41 @@ class BlogComponent extends Component
                             </div>
                         </div>
                     </div>
+
+                    <Modal isOpen={this.state.blogModal} toggle={this.toggleblogModal}>
+                        <ModalHeader toggle={this.toggleblogModal} className="forum-modal-header">
+                            Edit Blog
+                        </ModalHeader>
+                        <ModalBody className="forum-modal-body">
+                            <Form onSubmit={this.updateBlog} id="updateBlogForm">
+                                <FormGroup>
+                                    <Label htmlFor="editTopic">Topic</Label>
+                                    <Input type="text" id="editTopic" name="editTopic" maxLength="20" autoComplete="off" required
+                                        defaultValue={this.state.blog.title} innerRef={(input) => this.editTopic = input} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label htmlFor="editContent">Question</Label>
+                                    <Input className="forum-modal-textarea" type="textarea" id="editContent" rows="3" required  
+                                        defaultValue={this.state.blog.content} name="editContent" autoComplete="off" innerRef={(input) => this.editContent = input} />
+                                </FormGroup>
+                                { this.renderEditImages() }
+                                <FormGroup>
+                                    <Label htmlFor="newImage">New Images (optional)</Label>
+                                    <Input type="file" id="newImage" name="newImage" multiple onChange={this.handleFileInput} accept="image/*" />
+                                </FormGroup>
+                            </Form>
+                        </ModalBody>
+                        <ModalFooter className="forum-modal-footer">
+                            <Button color="primary" type="submit" form="updateBlogForm">Submit</Button>
+                            <Button color="danger" onClick={this.toggleblogModal}>Cancel</Button>
+                        </ModalFooter>
+                    </Modal>
+
                     <Modal isOpen={this.state.commentModal} toggle={() => this.togglecommentModal()}>
-                        <ModalHeader toggle={() => this.togglecommentModal()}>
+                        <ModalHeader toggle={() => this.togglecommentModal()} className="forum-modal-header" >
                             Edit your Comment
                         </ModalHeader>
-                        <ModalBody>
+                        <ModalBody className="forum-modal-body">
                             <Form onSubmit={this.updateComment} id="editCommentForm">
                                 <FormGroup>
                                     <Label htmlFor="editComment">Your Comment</Label>
@@ -435,7 +616,7 @@ class BlogComponent extends Component
                                 </FormGroup>
                             </Form>
                         </ModalBody>
-                        <ModalFooter>
+                        <ModalFooter className="forum-modal-footer">
                             <Button color="primary" type="submit" form="editCommentForm">Submit</Button>
                             <Button color="danger" className="ml-2" onClick={() => this.togglecommentModal()}>Cancel</Button>
                         </ModalFooter>
