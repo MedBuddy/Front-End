@@ -11,6 +11,8 @@ import BlogComponent from './Blog/blog'
 import Info from './Info/info'
 import VideoCall from './VideoCall/videoCall'
 import Doctor from './Doctor/doctor'
+import Approval from './Approval/approval'
+import Feedback from './Feedback/feedback'
 
 class Main extends Component {
 
@@ -66,6 +68,8 @@ class Main extends Component {
                     <Route path="/consult/:id" component={({match}) => <Doctor id={match.params.id} />} />
                     <Route exact path="/videoCall" component={() => <VideoCall />} />
                     <Route path="/about" component={() => <About />} />
+                    <Route path="/approval" component={() => <Approval />} />
+                    <Route path="/feedback" component={() => <Feedback />} />
                     <Redirect to="/home" />
                 </Switch>
                 <Info info={this.state.info} closeInfo={this.closeInfo} />

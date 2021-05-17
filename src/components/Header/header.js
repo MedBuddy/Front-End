@@ -65,6 +65,39 @@ class Header extends Component {
             )
         }
     }
+    renderAdminNavs()
+    {
+        if(localStorage.getItem('loginType') === 'admin')
+        {
+            return(
+                <>
+                    <NavItem>
+                        <NavLink className="nav-link d-flex align-items-center" to="/approval">
+                            <span className="material-icons">how_to_reg</span> 
+                            <span className="header-style-1"> Approval</span>
+                        </NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink className="nav-link d-flex align-items-center" to="/feedback">
+                            <span className="material-icons pt-1">rate_review</span>
+                            <span className="header-style-1"> Feedback</span>
+                        </NavLink>
+                    </NavItem>
+                </>
+            )
+        }   
+        else
+        {
+            return (
+                <NavItem>
+                    <NavLink className="nav-link" to="/consult">
+                        <span className="fa fa-stethoscope fa-lg"></span> 
+                        <span className="header-style-1"> Consult</span>
+                    </NavLink>
+                </NavItem>
+            )
+        }
+    }
 
     render(){
         return (
@@ -76,7 +109,7 @@ class Header extends Component {
                         <img src="/images/medbuddy_icon.png" alt="MedBuddy" width="55" height="50" />
                     </NavbarBrand>
                     <Collapse isOpen={this.state.isNavOpen}  navbar>
-                    <Nav navbar>
+                    <Nav navbar className="d-flex align-items-center">
                         <NavItem>
                             <NavLink className="nav-link" to="/home">
                                 <span className="fa fa-home fa-lg"></span>
@@ -90,17 +123,12 @@ class Header extends Component {
                             </NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink className="nav-link" to="/forum">
-                                <span className="fa fa-comment fa-lg"></span>
+                            <NavLink className="nav-link d-flex align-items-center" to="/forum">
+                                <span class="material-icons pt-1">question_answer</span>
                                 <span className="header-style-1"> Forum</span>
                             </NavLink>
                         </NavItem>
-                        <NavItem>
-                            <NavLink className="nav-link" to="/consult">
-                                <span className="fa fa-stethoscope fa-lg"></span> 
-                                <span className="header-style-1"> Consult</span>
-                            </NavLink>
-                        </NavItem>
+                        {this.renderAdminNavs()}
                         <NavItem>
                             <NavLink className="nav-link" to="/about">
                                 <span className="fa fa-info fa-lg"></span> 
