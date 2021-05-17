@@ -538,10 +538,10 @@ class DiscussionComponent extends Component{
     renderEditModal(){
         return (
             <Modal isOpen={this.state.editQuestionModal} toggle={this.toggleEditQuestionModal}>
-                <ModalHeader toggle={this.toggleEditQuestionModal}>
+                <ModalHeader toggle={this.toggleEditQuestionModal} className="forum-modal-header">
                     Edit question
                 </ModalHeader>
-                <ModalBody>
+                <ModalBody className="forum-modal-body">
                     <Form onSubmit={this.updateQuestion} id="updateQuestionForm">
                         <FormGroup>
                             <Label htmlFor="edittopic">Topic</Label>
@@ -560,7 +560,7 @@ class DiscussionComponent extends Component{
                         </FormGroup>
                     </Form>
                 </ModalBody>
-                <ModalFooter>
+                <ModalFooter className="forum-modal-footer">
                     <Button color="primary" type="submit" form="updateQuestionForm">Submit</Button>
                     <Button color="danger" onClick={this.toggleEditQuestionModal}>Cancel</Button>
                 </ModalFooter>
@@ -633,10 +633,10 @@ class DiscussionComponent extends Component{
                             
                             {this.renderReplies()}
                             <Modal isOpen={this.state.editModal} toggle={() => this.toggleEditModal()}>
-                                <ModalHeader toggle={() => this.toggleEditModal()}>
+                                <ModalHeader toggle={() => this.toggleEditModal()} className="forum-modal-header">
                                     Edit your reply
                                 </ModalHeader>
-                                <ModalBody>
+                                <ModalBody className="forum-modal-body">
                                     <Form onSubmit={this.updateReply} id="editReplyForm">
                                         <FormGroup>
                                             <Label htmlFor="editreply">Your Reply</Label>
@@ -645,7 +645,7 @@ class DiscussionComponent extends Component{
                                         </FormGroup>
                                     </Form>
                                 </ModalBody>
-                                <ModalFooter>
+                                <ModalFooter className="forum-modal-footer">
                                     <Button color="primary" type="submit" form="editReplyForm">Submit</Button>
                                     <Button color="danger" className="ml-2" onClick={() => this.toggleEditModal()}>Cancel</Button>
                                 </ModalFooter>
