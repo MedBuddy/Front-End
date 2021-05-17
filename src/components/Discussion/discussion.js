@@ -124,8 +124,8 @@ class DiscussionComponent extends Component{
         for(let i=0;i<this.state.files.length;i++)
             question.append('image', this.state.files[i])
         let removed = ''
-        for(let i in this.state.removedFiles)
-            removed += i + ' '
+        for(let i=0;i<this.state.removedFiles.length;i++)
+            removed += this.state.removedFiles[i] + ' '
         removed = removed.substring(0,removed.length-1)
         question.append('removed', removed)
 

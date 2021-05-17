@@ -31,9 +31,9 @@ class Doctor extends Component {
             window.location.href = '/login';
     }
 
-    toggleChat(){
+    toggleChat(display){
         this.setState({
-            chatDisplay: !this.state.chatDisplay
+            chatDisplay: display
         })
     }
 
@@ -143,7 +143,7 @@ class Doctor extends Component {
                     </div>
                     <div className="row">
                         <div className="col-6 offset-3">
-                            <Button color="primary" className="btn" onClick={this.toggleChat}>Chat</Button>
+                            <Button color="primary" className="btn" onClick={() => this.toggleChat(true)}>Chat</Button>
                             <Link to="/videoCall" target="_blank" className="btn btn-primary ml-5">Video Call</Link>
                         </div>
                     </div>
@@ -186,7 +186,7 @@ class Doctor extends Component {
         let chatComp = ''
         if(this.state.doctor){
             chatComp = 
-                <Chat display={this.state.chatDisplay} closeChat={this.toggleChat} sender={localStorage.getItem('username')}
+                <Chat display={this.state.chatDisplay} closeChat={() => this.toggleChat(false)} sender={localStorage.getItem('username')}
                       doctor={this.state.doctor.username} user={localStorage.getItem('username')} />
         }
         return (

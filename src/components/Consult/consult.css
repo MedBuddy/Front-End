@@ -17,6 +17,11 @@
 .consult-card:hover {
     transform: scale(1.03);
 }
+.consult-user-card {
+    background-color: rgba(255, 255, 255, 0.9);
+    margin: 10px;
+    padding: 0;
+}
 .consult-card-title {
     font-size: 20px;
     text-align: center;
@@ -30,4 +35,10 @@
     font-family: Itim;
     font-size: 35px;
     font-weight: bold;
+}
+.consult-user-btn {
+    transition: .5s;
+}
+.consult-user-btn:hover {
+    transform: scale(1.07);
 }
