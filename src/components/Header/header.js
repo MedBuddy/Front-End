@@ -38,7 +38,8 @@ class Header extends Component {
     }
 
     displayBtns(){      
-        if(!this.state.username){
+        if(!this.state.username)
+        {
             return (
                 <NavItem>
                     <NavLink className="nav-link header-loginbtn" to="/login">
@@ -47,13 +48,14 @@ class Header extends Component {
                 </NavItem>
             )
         }
-        else{
+        else
+        {
             return (
                 <>
                     <NavItem>
                         <div className="header-user">
-                            <img src={this.state.userIcon} alt="user-img" className="header-img"></img>
-                            <span className="header-username">{ this.state.username }</span>
+                            <img src={this.state.userIcon} alt="user-img" className="header-img" onClick={ () => window.location.href = '/profile' }></img>
+                            <span className="header-username" onClick={ () => window.location.href = '/profile' }>{ this.state.username }</span>
                         </div>
                     </NavItem>
                     <NavItem>

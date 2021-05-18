@@ -13,6 +13,7 @@ import VideoCall from './VideoCall/videoCall'
 import Doctor from './Doctor/doctor'
 import Approval from './Approval/approval'
 import Feedback from './Feedback/feedback'
+import Profile from './Profile/profile'
 
 class Main extends Component {
 
@@ -43,7 +44,7 @@ class Main extends Component {
             this.setState({
                 info: ''
             })
-        }, 5000)
+        }, 2200)
     }
 
     closeInfo(){
@@ -70,6 +71,7 @@ class Main extends Component {
                     <Route path="/about" component={() => <About />} />
                     <Route path="/approval" component={() => <Approval />} />
                     <Route path="/feedback" component={() => <Feedback />} />
+                    <Route path="/profile" component={() => <Profile />} />
                     <Redirect to="/home" />
                 </Switch>
                 <Info info={this.state.info} closeInfo={this.closeInfo} />

@@ -81,7 +81,7 @@ class Approval extends Component {
                             {doctor.email}
                         </div>
                         <div className="pt-1">
-                            <a href={doctor.license} target="_blank">View license</a>
+                            <a href={doctor.license} target="_blank" rel="noreferrer" >View license</a>
                         </div>
                         <div className="pt-3">
                             <span className="btn btn-success">Approve</span>

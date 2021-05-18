@@ -35,9 +35,11 @@
 }
 .header-user 
 {
+    
     margin-right: 10px;
 }
 .header-user > * {
+    cursor: pointer;
     margin: 5px
 }
 .header-img 
