@@ -15,13 +15,17 @@ class Doctor extends Component {
             reviews: [],
             chatDisplay: false,
             rating: 0,
-            myreview: false
+            myreview: -1,
+            editMode: false
         }
         this.fetchDoctorInfo = this.fetchDoctorInfo.bind(this)
         this.fetchReviews = this.fetchReviews.bind(this)
         this.toggleChat = this.toggleChat.bind(this)
         this.changeRating = this.changeRating.bind(this)
         this.postReview = this.postReview.bind(this)
+        this.deleteReview = this.deleteReview.bind(this)
+        this.toggleEdit = this.toggleEdit.bind(this)
+        this.editReview = this.editReview.bind(this)
     }
 
     componentDidMount(){
@@ -39,6 +43,13 @@ class Doctor extends Component {
     toggleChat(display){
         this.setState({
             chatDisplay: display
+        })
+    }
+
+    toggleEdit(){
+        this.setState({
+            editMode: !this.state.editMode,
+            rating: this.state.reviews[this.state.myreview].rating
         })
     }
 
@@ -98,13 +109,13 @@ class Doctor extends Component {
         .then((response) => response.json())
         .then((response) => {
             this.setState({
-                reviews: response
+                reviews: response.reverse()
             }, () => {
                 let username = localStorage.getItem('username')
-                this.state.reviews.forEach(review => {
+                this.state.reviews.forEach((review, index) => {
                     if(review.userId.username === username){
                         this.setState({
-                            myreview: true
+                            myreview: index
                         })
                     }
                 })
@@ -150,10 +161,89 @@ class Doctor extends Component {
                 reviews.splice(0, 0, response.review)
                 this.setState({
                     reviews: reviews,
-                    myreview: true
+                    myreview: 0,
+                    rating: 0
                 })
-                console.log(reviews)
+                this.comment.value = ''
             }
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    }
+
+    editReview(event){
+        event.preventDefault()
+        const review = {
+            rating: this.state.rating,
+            comment: this.editcomment.value
+        }
+        let token = localStorage.getItem('userToken')
+        fetch('/doctors/'+this.props.id+'/reviews/'+this.state.reviews[this.state.myreview]._id, {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(review)
+        })
+        .then((response) => {
+            if(response.ok)
+                return response
+            else
+            {
+                let error = new Error('Error: ' + response.status + ': ' + response.statusText)
+                error.response = response
+                throw error
+            }
+        }, err => {
+            let error = new Error(err)
+            throw error
+        })
+        .then((response) => response.json())
+        .then((response) => {
+            let reviews = this.state.reviews
+            reviews[this.state.myreview] = response
+            this.setState({
+                reviews: reviews,
+                rating: 0,
+                editMode: false
+            })
+            this.editcomment.value = ''
+        })
+        .catch(error => { 
+            console.log(error)
+        })
+    }
+
+    deleteReview(){
+        let token = localStorage.getItem('userToken')
+        fetch('/doctors/'+this.props.id+'/reviews/'+this.state.reviews[this.state.myreview]._id, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        })
+        .then((response) => {
+            if(response.ok)
+                return response
+            else
+            {
+                let error = new Error('Error: ' + response.status + ': ' + response.statusText)
+                error.response = response
+                throw error
+            }
+        }, err => {
+            let error = new Error(err)
+            throw error
+        })
+        .then((response) => {
+            let reviews = this.state.reviews
+            reviews.splice(this.state.myreview, 1)
+            this.setState({
+                reviews: reviews,
+                myreview: -1
+            })
         })
         .catch(error => {
             console.log(error)
@@ -225,28 +315,92 @@ class Doctor extends Component {
     renderReviews(){
         let reviewsDiv = ''
         if(this.state.reviews.length){
-            const reviews = this.state.reviews.map(review => (
-                <div className="review-container col-6">
-                    <div className="row">
-                        <div className="col-3 d-flex flex-column align-items-center">
-                            <div className="review-user-img">
-                                <img src={review.userId.image.url} alt={review.userId.username} />
-                            </div>
-                            <div className="review-username">
-                                { review.userId.username }
-                            </div>
+            const username = localStorage.getItem('username')
+            const reviews = this.state.reviews.map((review, index) => {
+                let d = new Date(Date.parse(review.createdAt))
+                let hh = d.getHours()
+                let mm = d.getMinutes()
+                if(hh < 10) hh = '0' + hh
+                if(mm < 10) mm = '0' + mm
+                let time = hh + ':' + mm
+                let signs = ''
+                let review_content = (
+                    <>
+                        <div className="review-rating">
+                            <ReactStars key={review._id} value={review.rating} edit={false} size={30} />
                         </div>
-                        <div className="col">
-                            <div className="review-rating">
-                                <ReactStars value={review.rating} edit={false} size={30} />
+                        <div className="review-comment">
+                            { review.comment }
+                        </div>
+                    </>
+                )
+                let date_time = (
+                    <div className="review-date">
+                        {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(d)+' '+time}
+                    </div>
+                )
+                if(review.userId.username === username){
+                    if(this.state.editMode){
+                        review_content = (
+                            <>
+                                <div className="review-rating">
+                                    <ReactStars key={index} value={this.state.rating} size={30} onChange={this.changeRating} />
+                                </div>
+                                <div className="review-comment">
+                                    <Form id="review-edit-form" onSubmit={this.editReview}>
+                                        <Input type="textarea" rows="2" className="review-comment-edit" defaultValue={review.comment} 
+                                            innerRef={(input) => this.editcomment = input} />
+                                    </Form>
+                                </div>
+                                <div className="mt-2">
+                                    <Button className="btn" color="info" type="submit" form="review-edit-form">Submit</Button>
+                                </div>
+                            </>
+                        )
+                        signs = (
+                            <div className="float-right mr-2">
+                                <span onClick={this.toggleEdit}>
+                                    <i className="fa fa-times review-sign"></i>
+                                </span>
                             </div>
-                            <div className="review-comment">
-                                { review.comment }
+                        )
+                        date_time = ''
+                    }
+                    else{
+                        signs = (
+                            <div className="float-right">
+                                <span className="pr-3" onClick={this.toggleEdit}>
+                                    <i className="fa fa-edit fa-md review-sign"></i>
+                                </span>
+                                <span onClick={this.deleteReview}>
+                                    <i className="fa fa-trash fa-md review-sign"></i>
+                                </span>
+                            </div>
+                        )
+                    }
+                }
+                return (
+                    <div className="col-5 m-4">
+                        <div className="review-container">
+                            <div className="row">
+                                <div className="col-3 d-flex flex-column align-items-center">
+                                    <div className="review-user-img">
+                                        <img src={review.userId.image.url} alt={review.userId.username} />
+                                    </div>
+                                    <div className="review-username">
+                                        { review.userId.username }
+                                    </div>
+                                </div>
+                                <div className="col">
+                                    { signs }
+                                    { review_content }
+                                    { date_time }
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            ))
+                )
+            })
 
             reviewsDiv = (
                 <>
@@ -255,7 +409,7 @@ class Doctor extends Component {
                             Reviews
                         </div>
                     </div>
-                    <div className="row p-3">
+                    <div className="row p-3 justify-content-center">
                         {reviews}
                     </div>
                 </>
@@ -264,7 +418,7 @@ class Doctor extends Component {
 
         return (
             <div className="container doctor-container p-2 pl-3 mt-4 mb-4">
-                <div className={"review-form-container "+(this.state.myreview?"d-none":"")}>
+                <div className={"review-form-container "+(this.state.myreview > -1?"d-none":"")}>
                     <Form onSubmit={this.postReview}>
                         <div className="your-review-title">Your Review</div>
                         <FormGroup>
@@ -291,7 +445,7 @@ class Doctor extends Component {
         let chatComp = ''
         if(this.state.doctor){
             chatComp = 
-                <Chat display={this.state.chatDisplay} closeChat={() => this.toggleChat(false)} sender={localStorage.getItem('username')}
+                <Chat display={this.state.chatDisplay} closeChat={() => this.toggleChat(false)}
                       doctor={this.state.doctor.username} user={localStorage.getItem('username')} />
         }
         return (

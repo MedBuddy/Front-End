@@ -112,11 +112,11 @@ class Consult extends Component {
     renderDoctors(){
         const doctors = this.state.doctors.map(doctor => {
             return(
-                <Card className="consult-card col-3" key={doctor._id} onClick={() => window.location.href = '/consult/'+doctor._id}>
+                <Card className="consult-card col-3 m-4" key={doctor._id} onClick={() => window.location.href = '/consult/'+doctor._id}>
                     <CardImg top className="consult-doctor-img" src={doctor.image.url} alt={doctor.username}></CardImg>
                     <CardBody className="consult-card-body">
                         <CardTitle className="consult-card-title">{doctor.firstname + ' ' + doctor.lastname}</CardTitle>
-                        <CardSubtitle className="consult-card-subtitle">{doctor.specialization}</CardSubtitle>
+                        <CardSubtitle className="consult-card-subtitle">{doctor.specialization || <br></br>}</CardSubtitle>
                         <CardText className="text-center">
                             <ReactStars value={doctor.rating} isHalf={true} edit={false} size="25" classNames="m-auto" />
                         </CardText>
@@ -162,7 +162,7 @@ class Consult extends Component {
         let chatComp = ''
         if(this.state.users.length){
             chatComp = 
-                <Chat display={this.state.chatDisplay} closeChat={() => this.toggleChat(false)} sender={localStorage.getItem('username')}
+                <Chat display={this.state.chatDisplay} closeChat={() => this.toggleChat(false)}
                     doctor={localStorage.getItem('username')} user={this.state.users[0].username} />
         }
 

@@ -11,7 +11,7 @@ class Chat extends Component{
         super(props)
         this.state = {
             roomId: this.props.doctor + '-' + this.props.user,
-            username: this.props.sender,
+            username: localStorage.getItem('username'),
             messages: []
         }
         this.sendMessage = this.sendMessage.bind(this)

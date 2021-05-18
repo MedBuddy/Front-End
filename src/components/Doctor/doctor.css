@@ -47,3 +47,17 @@
     font-size: 30px;
     font-weight: bold;
 }
+.review-date {
+    font-size: 12px;
+    font-weight: bold;
+    float: right;
+    color: rgb(102, 102, 102);
+}
+.review-sign {
+    transform: scale(1.1);
+    cursor: pointer;
+}
+.review-comment-edit {
+    resize: none;
+    width: 90%;
+}
