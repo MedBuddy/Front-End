@@ -4,11 +4,10 @@
 .approval-doctor-container
 {
     display: grid;
-    grid-gap: 20px;
-    
+    grid-gap: 30px;
     padding-left: 20px;
     padding-right: 20px;
-    grid-template-columns: repeat(3,auto);
+    grid-template-columns: repeat(2,auto);
     grid-template-rows: auto;
 }
 .approval-doctor
