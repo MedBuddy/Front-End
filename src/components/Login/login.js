@@ -261,6 +261,8 @@ class Login extends Component {
                 username: this.state.username,
                 email: this.state.email,
                 password: this.state.password,
+                firstname: this.state.firstname,
+                lastname: this.state.lastname,
                 type: this.getType(this.state.logintype)
             }
             console.log(user)
