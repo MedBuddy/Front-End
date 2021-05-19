@@ -13,6 +13,9 @@ class Profile extends Component
             loading: true,
             profile: [],
             readonly: true,
+            uploadBtnDisplay: "none",
+            file: null,
+            fileObj: null,
         }
 
         this.fetchProfile = this.fetchProfile.bind(this);
@@ -23,6 +26,9 @@ class Profile extends Component
         this.changeReadOnly = this.changeReadOnly.bind(this);
         this.renderButtons = this.renderButtons.bind(this);
         this.updateProfile = this.updateProfile.bind(this);
+        this.changeBtnDisplay = this.changeBtnDisplay.bind(this);
+        this.handleFileInput = this.handleFileInput.bind(this);
+        this.uploadProfilePic = this.uploadProfilePic.bind(this);
     }
 
     componentDidMount()
@@ -41,6 +47,24 @@ class Profile extends Component
         this.setState({
             readonly: !this.state.readonly
         })
+    }
+
+    changeBtnDisplay(display)
+    {
+        this.setState({
+            uploadBtnDisplay: display,
+            file: this.state.profile.image.url,
+            fileObj: null,
+        })
+    }
+
+    handleFileInput(event)
+    {
+        this.setState({
+            fileObj: event.target.files[0],
+            file: URL.createObjectURL(event.target.files[0]),
+        })
+        
     }
 
     fetchProfile()
@@ -68,13 +92,15 @@ class Profile extends Component
         .then((response) => response.json())
         .then((response) => {
             this.setState({
-                profile: response
+                profile: response,
+                file: response.image.url
             })
             setTimeout(() => {
                 this.setState({
                     loading: false,
                 });
               }, 200);
+            
         })
         .catch(error => {
             console.log(error)
@@ -127,8 +153,6 @@ class Profile extends Component
                         <option value="O-ve">O-ve</option>
                         <option value="AB+ve">AB+ve</option>
                         <option value="AB-ve">AB-ve</option>
-                        
-                        
                 </Input>
             )
         }
@@ -243,6 +267,41 @@ class Profile extends Component
     })
     }
 
+    uploadProfilePic()
+    {
+        const userToken = localStorage.getItem('userToken');
+        let profilePic = new FormData()
+        profilePic.append('image', this.state.fileObj)
+        fetch('/profile/imageUpload',{
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer '+userToken
+            },
+            body: profilePic
+        })
+        .then((response) => {
+            if(response.ok)
+            {
+                return response.json();
+            }
+            else
+            {
+                let error = new Error('Error: ' + response.status + ': ' + response.statusText)
+                error.response = response
+                console.log(typeof(response.status))
+                throw error
+            }
+        }, err => {
+            let error = new Error(err)
+            throw error
+        })
+        .then((response) => {
+            localStorage.setItem('userIcon',response.url)
+            window.location.reload();
+        })
+        .catch(error => console.log(error))
+    }
+
     renderProfile()
     {
         return(
@@ -254,8 +313,13 @@ class Profile extends Component
                 </div>
                 <div className="row mt-4">
                     <div className="col-3 offset-1 text-center">
-                        <img src={this.state.profile.image.url} alt={this.state.profile.username} className="profile-image mb-4" />
-                        <a href="" className="ml-4">Change photo</a>
+                        <img src={this.state.file} alt={this.state.profile.username} className="profile-image mb-4" />
+                        <div className="ml-4"><u className="profile-change-photo" onClick={() => this.changeBtnDisplay("block")}>Change photo</u></div>
+                        <div className={"profile-upload-btn mt-3 d-"+this.state.uploadBtnDisplay}>
+                            <Input type="file" accept="image/*" onChange={this.handleFileInput} />
+                            <div className="mt-3 mr-1 btn btn-primary" onClick={this.uploadProfilePic}>Upload</div>
+                            <div className="mt-3 btn btn-danger" onClick={() => this.changeBtnDisplay("none")}>Cancel</div>
+                        </div>
                     </div>
                     <div className="col-7 offset-1">
                         <Form className="w-75" id="updateProfileForm" onSubmit={this.updateProfile}>

@@ -42,3 +42,12 @@
 {
     font-size: 17px;
 }
+.profile-upload-btn
+{
+    text-align: left;
+}
+.profile-change-photo
+{
+    cursor: pointer;
+    color: rgba(0, 0, 255, 0.7);
+}
