@@ -32,6 +32,8 @@ function VideoCall(){
     })
 
     useEffect(() => {
+        setAudio(true)
+        setVideo(true)
         navigator.mediaDevices.getUserMedia({video: videoOn, audio: audioOn}) 
             .then(stream => {
                 stream.getTracks().forEach((track, index) => {
@@ -116,38 +118,38 @@ function VideoCall(){
     
     return (
         <>
-            <h1 style={{textAlign: 'center'}}>Video Call</h1>
+            <h1 style={{textAlign: 'center'}}>Video Consultation</h1>
             <div className="video-page-container">
                 <div className="video-container">
                     <div className="video">
-                        {stream && <video playsInline muted ref={myVideo} autoPlay style={{width: '300px', height: '300px'}} />}
+                        {stream && <video playsInline muted ref={myVideo} autoPlay />}
                     </div>
                     <div className="video">
                         {callAccepted && !callEnded ?
-                        <video playsInline ref={userVideo} autoPlay style={{width: '300px', height: '300px'}} /> : null}
+                        <video playsInline ref={userVideo} autoPlay /> : null}
                     </div>
-                    <div className="control-btns">
+                    {/* <div className="control-btns">
                         <Button className="btn btn-primary" onClick={() => setAudio(audio => audio = !audio)}>
                             Audio {audioOn?'On':'Off'}
                         </Button>
                         <Button className="btn btn-primary" onClick={() => setVideo(video => video = !video)}>
                             Video {videoOn?'On':'Off'}
                         </Button>
-                    </div>
+                    </div> */}
                 </div>
                 <div className="myId">
                     <Input id="filled-basic" value={name} onChange={e => setName(e.target.value)} style={{marginBottom: '20px'}} />
                     <CopyToClipboard text={myId} style={{marginBottom: '2rem'}}>
-                        <Button className="btn btn-primary">Copy ID</Button>
+                        <Button className="btn" color="info">Copy ID</Button>
                     </CopyToClipboard>
                     <Input id="filled-basic" value={idToCall} onChange={e => setIdToCall(e.target.value)} />
                     <div className="call-button">
                         {callAccepted && !callEnded ? (
-                            <Button className="btn btn-secondary" onClick={leaveCall}>
+                            <Button className="btn" color="danger" onClick={leaveCall}>
                                 End Call
                             </Button>
                             ) : (
-                            <Button className="btn btn-primary" onClick={() => callUser(idToCall)}>
+                            <Button className="btn" color="primary" onClick={() => callUser(idToCall)}>
                                 Call
                             </Button>
                         )}
@@ -157,7 +159,7 @@ function VideoCall(){
                     {receivingCall && !callAccepted ? (
                         <div className="caller">
                             <h1>{name} is calling...</h1>
-                            <Button className="btn btn-primary" onClick={answerCall}>
+                            <Button className="btn" color="primary" onClick={answerCall}>
                                 Answer
                             </Button>
                         </div>

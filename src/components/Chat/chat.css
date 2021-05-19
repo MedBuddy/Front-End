@@ -35,10 +35,18 @@
 .chat-msg {
     display: flex;
     border-radius: 5px;
-    background-color: blanchedalmond;
     width: fit-content;
     padding: 5px;
     margin-top: 10px;
+    color: white;
+}
+
+.my-msg {
+    background-color: rgb(9, 182, 3);
+}
+
+.other-msg {
+    background-color: rgb(1, 194, 130);
 }
 
 .msg-user {
@@ -53,4 +61,16 @@
 .chat-header > .close {
     color: white;
     cursor: pointer;
+}
+
+.msg-time {
+    font-size: 12px;
+    opacity: 0;
+    height: 0;
+    transition-duration: .5s;
+}
+
+.chat-msg:hover .msg-time {
+    opacity: 1;
+    height: 15px;
 }

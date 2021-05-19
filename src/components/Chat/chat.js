@@ -83,20 +83,36 @@ class Chat extends Component{
     }
 
     renderMessages(){
-        const messages = this.state.messages.map(message => (
-            <div className="chat-msg">
-                <div className="msg-user">{ message.sender }: </div>
-                <div className="msg-content">{ message.message }</div>
-            </div>
-        ))
+        const messages = this.state.messages.map(message => {
+            let d = new Date(Date.parse(message.createdAt))
+            let hh = d.getHours()
+            let mm = d.getMinutes()
+            if(hh < 10) hh = '0' + hh
+            if(mm < 10) mm = '0' + mm
+            let time = hh + ':' + mm
+
+            return (
+                <div className={"chat-msg d-block "+(this.state.username === message.sender?"ml-auto my-msg":"other-msg")}>
+                    {/* <div className="msg-user">{ message.sender }: </div> */}
+                    <div className="msg-content">{ message.message }</div>
+                    <div className="msg-time">
+                        <sub>
+                            {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(d)+' '+time}
+                        </sub>
+                    </div>
+                </div>
+            )
+        })
         return messages
     }
 
     render(){
+        let members = this.state.roomId.split('-')
+        let title = (members[0] === this.state.username? members[1]: members[0])
         return (
             <div className={"chat-box "+(this.props.display?'d-block':'d-none')}>
                 <div className="chat-header">
-                    Chat
+                    Chat - { title }
                     <div className="close" onClick={this.props.closeChat}>&times;</div>
                 </div>
                 <div className="chat-body" id="chat-body">

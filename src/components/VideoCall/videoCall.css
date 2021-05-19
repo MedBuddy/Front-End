@@ -4,16 +4,12 @@
 }
 
 .myId {
-	margin-right: 5rem;
+	height: 300px;
+	margin: 5rem 5rem;
 	border-radius: 5px;
-	background: #c9d6ff; /* fallback for old browsers */
-	background: -webkit-linear-gradient(to right, #e2e2e2, #c9d6ff); /* Chrome 10-25, Safari 5.1-6 */
-	background: linear-gradient(
-		to right,
-		#e2e2e2,
-		#c9d6ff
-	); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
+	background: #c9d6ff;
+	background: -webkit-linear-gradient(to right, #e2e2e2, #c9d6ff);
+	background: linear-gradient(to right,#e2e2e2,#c9d6ff);
 	padding: 2rem;
 	display: grid;
 	justify-content: center;
@@ -31,11 +27,16 @@
 	grid-template-rows: auto auto;
 	justify-content: center;
 	align-content: center;
-	margin-top: 10rem;
-	margin-left: 10rem;
+	margin-left: 5rem;
 }
 
 .caller {
 	text-align: center;
 	color: #fff;
+}
+
+.video > video {
+	--size: 550px;
+	height: var(--size);
+	width: var(--size);
 }
