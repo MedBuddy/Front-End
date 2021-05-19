@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Balsamiq+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kalam&display=swap');
+
+.profile-container
+{
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+    min-height: 78vh;
+    font-family: Balsamiq Sans;
+    padding: 10px;
+}
+.profile-heading
+{
+    font-size: 30px;
+    text-align: center;
+}
+.profile-image
+{
+    border-radius: 50%;
+    width: 300px;
+    height: 300px;
+}
+.profile-label
+{
+    font-size: 22px;
+    color: rgba(0, 0, 0, 0.8);
+}
+.profile-input-active
+{
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.7);
+}
+.profile-input-disabled
+{
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(255, 255, 255, 0.75) !important;
+    cursor: default;
+}
+.profile-edit-icon
+{
+    font-size: 17px;
+}
