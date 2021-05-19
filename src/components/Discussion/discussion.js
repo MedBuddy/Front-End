@@ -33,7 +33,6 @@ class DiscussionComponent extends Component{
     }
     
     componentDidMount(){
-        this.checkLogin();
         this.fetchQuestion();
     }
 
@@ -67,12 +66,6 @@ class DiscussionComponent extends Component{
         })
     }
 
-    checkLogin()
-    {
-        const userToken = localStorage.getItem('userToken');
-        if(!userToken)
-            window.location.href = '/login';
-    }
 
     fetchQuestion()
     {
@@ -570,7 +563,11 @@ class DiscussionComponent extends Component{
 
     render()
     {
-        if(this.state.loading === true)
+        if(!localStorage.getItem('userToken'))
+        {
+            window.location.href = '/login';
+        }
+        else if(this.state.loading === true)
         {
             
             return(

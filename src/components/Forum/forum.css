@@ -206,3 +206,10 @@
     color: white;
     cursor: pointer;
 }   
+.forum-no-questions
+{
+    font-family: Balsamiq Sans;
+    color: white;
+    font-size: 35px;
+    text-align: center;
+}

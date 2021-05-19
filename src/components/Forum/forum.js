@@ -139,36 +139,47 @@ class Forum extends Component {
     
     renderDiscussions()
     {
-        const questions = this.state.questions.map((question) => {
-            let d = new Date(Date.parse(question.createdAt));
-            let hh = parseInt(d.getHours());
-            let mm = parseInt(d.getMinutes());
-            if(hh<10) hh = '0'+hh;
-            if(mm<10) mm = '0'+mm;
-            let time = hh + ":" + mm;
-            return(
-                <Media className="forum-question-render mb-3" key={question._id} onClick={() => window.location.href = "/forum/"+question._id} >
-                    <Media left middle className="col-2 text-center forum-discussion-image-container">
-                        <Media object src={question.userIcon.url} alt={question.askedUserName} className="forum-discussion-image" />
-                        <Media body>{question.askedUserName}</Media>
-                    </Media>
-                    <Media body className="question-break">
-                        <Media heading className="pt-2">{question.title}</Media>
-                        <p>{question.content}</p>
-                    </Media>
-                    <Media right className="mt-auto mr-3 forum-discussion-date">
-                        <Media>
-                            ~ {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(d)+' ⏰'+time}
+        if(this.state.questions&&this.state.questions.length)
+        {
+            const questions = this.state.questions.map((question) => {
+                let d = new Date(Date.parse(question.createdAt));
+                let hh = parseInt(d.getHours());
+                let mm = parseInt(d.getMinutes());
+                if(hh<10) hh = '0'+hh;
+                if(mm<10) mm = '0'+mm;
+                let time = hh + ":" + mm;
+                return(
+                    <Media className="forum-question-render mb-3" key={question._id} onClick={() => window.location.href = "/forum/"+question._id} >
+                        <Media left middle className="col-2 text-center forum-discussion-image-container">
+                            <Media object src={question.userIcon.url} alt={question.askedUserName} className="forum-discussion-image" />
+                            <Media body>{question.askedUserName}</Media>
+                        </Media>
+                        <Media body className="question-break">
+                            <Media heading className="pt-2">{question.title}</Media>
+                            <p>{question.content}</p>
+                        </Media>
+                        <Media right className="mt-auto mr-3 forum-discussion-date">
+                            <Media>
+                                ~ {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(d)+' ⏰'+time}
+                            </Media>
                         </Media>
                     </Media>
+                )
+            })
+            return(
+                <Media list className="col-12">
+                    {questions}
                 </Media>
             )
-        })
-        return(
-            <Media list className="col-12">
-                {questions}
-            </Media>
-        )
+        }
+        else
+        {
+            return(
+                <div className="forum-no-questions">
+                    No such questions
+                </div>
+            )
+        }
     }
     checkLogin(x)
     {
@@ -286,7 +297,8 @@ class Forum extends Component {
     }
     changeDiscussionType(id)
     {
-        if(id !== this.state.discussionType)
+        let s=document.getElementById('forumSearchBar').value;
+        if(id !== this.state.discussionType||s)
         {
             let questions = this.state.allQuestions
             if(id === 1)
@@ -449,7 +461,7 @@ class Forum extends Component {
                                 { this.renderModal() }
                             </div>
                         </div>
-                        <div className="row mt-5">
+                        <div className="row justify-content-center mt-5">
                             {this.renderDiscussions()}
                         </div>
                         <div className="forum-goto-btn" onClick={() => window.scrollTo(0,0)} style={{display: this.state.display}}>
