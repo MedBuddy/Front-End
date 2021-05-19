@@ -1,7 +1,8 @@
 import { Component } from 'react';
 import Header from '../Header/header';
 import { ScaleLoader } from 'react-spinners';
-import { Media,Form,Input,Button,FormGroup,Label,Modal,ModalBody,ModalHeader,ModalFooter } from 'reactstrap';
+import { Media,Form,Input,Button,FormGroup,Label,Modal,ModalBody,ModalHeader,ModalFooter,
+         Carousel, CarouselItem, CarouselIndicators, CarouselControl } from 'reactstrap';
 import './blog.css'
 
 class BlogComponent extends Component
@@ -17,6 +18,8 @@ class BlogComponent extends Component
             commentIndex: -1,
             files: [],
             removedFiles: [],
+            activeIndex: 0,
+            animating: false
         }
 
         this.fetchBlog = this.fetchBlog.bind(this);
@@ -31,7 +34,10 @@ class BlogComponent extends Component
         this.handleFileInput = this.handleFileInput.bind(this);
         this.renderEditImages = this.renderEditImages.bind(this);
         this.removeImage = this.removeImage.bind(this);
-
+        this.previousSlide = this.previousSlide.bind(this)
+        this.nextSlide = this.nextSlide.bind(this)
+        this.goToSlide = this.goToSlide.bind(this)
+        this.setAnimating = this.setAnimating.bind(this)
     }
     
     componentDidMount()
@@ -230,15 +236,68 @@ class BlogComponent extends Component
         }
     }
 
+    previousSlide(){
+        if(this.state.animating) return
+        let blog = this.state.blog
+        if(blog.files.length > 1){
+            let index = this.state.activeIndex
+            index = (index === 0 ? blog.files.length : index) - 1
+            this.setState({
+                activeIndex: index
+            })
+        }
+    }
+
+    nextSlide(){
+        if(this.state.animating) return
+        let blog = this.state.blog
+        if(blog.files.length > 1){
+            let index = this.state.activeIndex
+            index = (index === blog.files.length - 1 ? 0 : index + 1)
+            this.setState({
+                activeIndex: index
+            })
+        }
+    }
+
+    goToSlide(index){
+        if(this.state.animating) return
+        this.setState({
+            activeIndex: index
+        })
+    }
+
+    setAnimating(animating){
+        this.setState({
+            animating: animating
+        })
+    }
+
     renderBlogFiles(blog)
     {
         if(blog)
         {
-            return(
-                <div className="mr-4">
-                    <img src={blog.userIcon.url} alt={blog.userIcon.url} />
-                </div>
-            )
+            if(blog.files.length){
+                let slides = blog.files.map(file => {
+                    return (
+                        <CarouselItem key={file} onExiting={() => this.setAnimating(true)} onExited={() => this.setAnimating(false)}>
+                            <img src={file} alt={blog.title} className="carousel-img" />
+                        </CarouselItem>
+                    )
+                })
+
+                return(
+                    <>
+                        <Carousel key={blog._id} activeIndex={this.state.activeIndex} next={this.nextSlide} previous={this.previousSlide} 
+                                  className="carousel-container">
+                            <CarouselIndicators items={blog.files} activeIndex={this.state.activeIndex} onClickHandler={this.goToSlide} />
+                                                { slides }
+                            <CarouselControl direction="prev" directionText="Previous" onClickHandler={this.previousSlide} />
+                            <CarouselControl direction="next" directionText="Next" onClickHandler={this.nextSlide} />
+                        </Carousel>
+                    </>
+                )
+            }
         }
         else
         {
@@ -315,35 +374,49 @@ class BlogComponent extends Component
             if(hh<10) hh = '0'+hh;
             if(mm<10) mm = '0'+mm;
             let time = hh + ":" + mm;
+            const blogImgs = 7
+            let curImg = Math.floor(Math.random() * blogImgs) + 1
+            let left = Math.floor(Math.random() * 2)
+            let w = 'full-width'
+            if(blog.files.length === 0)
+                w = 'small-width'
+
             return(
-                <div className="news-blog-container">
-                    {this.renderBlogFiles(blog)}
-                    <div className="news-content-container mt-2">
-                        <div className="d-flex mb-auto">
-                            <div>
-                                <img className="news-blog-profile-img mr-1" src={blog.userIcon.url} alt={blog.postedUserName} />
-                                {blog.postedUserName}
-                            </div>
-                            {this.renderBlogUpdateIcons(blog)}
+                <>
+                    <div className={(w === 'full-width'?'d-none':(left?'float-left':'float-right'))}>
+                        <img src={`/images/blog${curImg}.svg`} alt="blog-img" className="blog-default-img" />
+                    </div>
+                    <div className={"news-blog-container overflow-hidden " + w + (left?" ml-auto":" mr-auto")}>
+                        <div className="mr-4">
+                            {this.renderBlogFiles(blog)}
                         </div>
-                        <div className="mb-auto">
-                            <h3>{blog.title}</h3>
-                            <p>{blog.content}</p>
-                        </div>
-                        <div className="d-flex mb-auto">
-                            <div className="">
-                                <span className="news-icons d-flex aligm-items-center" onClick={this.updateLike}>
-                                    {this.renderLikeIcon(blog)} 
-                                    {blog.likes.length} Likes
-                                </span>
+                        <div className="news-content-container mt-2">
+                            <div className="d-flex mb-auto">
+                                <div>
+                                    <img className="news-blog-profile-img mr-1" src={blog.userIcon.url} alt={blog.postedUserName} />
+                                    {blog.postedUserName}
+                                </div>
+                                {this.renderBlogUpdateIcons(blog)}
                             </div>
-                            
-                            <div className="ml-auto pr-3">
-                                ~ {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(d)+' ⏰'+time}
+                            <div className="mb-auto">
+                                <h3>{blog.title}</h3>
+                                <p>{blog.content}</p>
+                            </div>
+                            <div className="d-flex mb-auto">
+                                <div className="">
+                                    <span className="news-icons d-flex aligm-items-center" onClick={this.updateLike}>
+                                        {this.renderLikeIcon(blog)} 
+                                        {blog.likes.length} Likes
+                                    </span>
+                                </div>
+                                
+                                <div className="ml-auto pr-3">
+                                    ~ {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(d)+' ⏰'+time}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </>
             )
         }
     }

@@ -67,3 +67,25 @@
 {
     color: rgb(194, 62, 62);
 }
+.carousel-container {
+    width: 300px;
+    overflow: hidden;
+}
+.carousel-img {
+    width: 300px;
+    height: 300px;
+}
+.full-width {
+    width: 100%;
+}
+.small-width {
+    width: calc(100% - 300px);
+}
+.blog-default-img {
+    width: 250px;
+    height: 250px;
+}
+.blog-content {
+    height: 100px;
+    overflow: hidden;
+}

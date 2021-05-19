@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import Header from '../Header/header';
 import './news.css';
-import { Input,Modal,ModalHeader,ModalBody,ModalFooter,Button,Form,FormGroup,Label } from 'reactstrap';
+import { Input,Modal,ModalHeader,ModalBody,ModalFooter,Button,Form,FormGroup,Label, 
+        Carousel, CarouselItem, CarouselIndicators, CarouselControl } from 'reactstrap';
 import { ScaleLoader } from 'react-spinners';
 
 class News extends Component {
@@ -15,6 +16,8 @@ class News extends Component {
             files: [],
             loading: true,
             blogType: 'My Blogs',
+            activeIndex: [],
+            animating: []
         }
         this.toggleBlogModal = this.toggleBlogModal.bind(this);   
         this.fetchBlogs = this.fetchBlogs.bind(this);
@@ -22,6 +25,10 @@ class News extends Component {
         this.handleFileInput = this.handleFileInput.bind(this);
         this.changeBlogType = this.changeBlogType.bind(this);
         this.updateLike = this.updateLike.bind(this);
+        this.previousSlide = this.previousSlide.bind(this)
+        this.nextSlide = this.nextSlide.bind(this)
+        this.goToSlide = this.goToSlide.bind(this)
+        this.setAnimating = this.setAnimating.bind(this)
     }
     componentDidMount()
     {
@@ -32,18 +39,34 @@ class News extends Component {
     {
         if(this.state.blogType === 'All Blogs')
         {
+            let indexes = []
+            let animating = []
+            this.state.allBlogs.forEach(b => {
+                indexes.push(0)
+                animating.push(false)
+            })
             this.setState({
                 blogType: 'My Blogs',
                 blogs: this.state.allBlogs,
+                activeIndex: indexes,
+                animating: animating
             })
         }
         else
         {
             const username = localStorage.getItem('username')
             let blogs = this.state.allBlogs.filter(q => q.postedUserName === username)
+            let indexes = []
+            let animating = []
+            blogs.forEach(b => {
+                indexes.push(0)
+                animating.push(false)
+            })
             this.setState({
                 blogType: 'All Blogs',
                 blogs: blogs,
+                activeIndex: indexes,
+                animating: animating
             })
         }
     }
@@ -79,9 +102,17 @@ class News extends Component {
         })
         .then((response) => {
             let blogs = response.reverse();
+            let indexes = []
+            let animating = []
+            blogs.forEach(b => {
+                indexes.push(0)
+                animating.push(false)
+            })
             this.setState({
                 blogs: blogs,
                 allBlogs: blogs,
+                activeIndex: indexes,
+                animating: animating
             })
             setTimeout(() => {
                 this.setState({
@@ -132,15 +163,78 @@ class News extends Component {
             })
         })
     }
-    renderBlogFiles(blog)
+
+    previousSlide(blogIndex){
+        if(this.state.animating[blogIndex]) return
+        let blog = this.state.blogs[blogIndex]
+        if(blog.files.length > 1){
+            let index = this.state.activeIndex[blogIndex]
+            index = (index === 0 ? blog.files.length : index) - 1
+            let indexes = this.state.activeIndex
+            indexes[blogIndex] = index
+            this.setState({
+                activeIndex: indexes
+            })
+        }
+    }
+
+    nextSlide(blogIndex){
+        if(this.state.animating[blogIndex]) return
+        let blog = this.state.blogs[blogIndex]
+        if(blog.files.length > 1){
+            let index = this.state.activeIndex[blogIndex]
+            index = (index === blog.files.length - 1 ? 0 : index + 1)
+            let indexes = this.state.activeIndex
+            indexes[blogIndex] = index
+            this.setState({
+                activeIndex: indexes
+            })
+        }
+    }
+
+    goToSlide(blogIndex, newIndex){
+        if(this.state.animating[blogIndex]) return
+        let indexes = this.state.activeIndex
+        indexes[blogIndex] = newIndex
+        this.setState({
+            activeIndex: indexes
+        })
+    }
+
+    setAnimating(blogIndex, animate){
+        let animating = this.state.animating
+        animating[blogIndex] = animate
+        this.setState({
+            animating: animating
+        })
+    }
+
+    renderBlogFiles(blog, blogIndex)
     {
         if(blog)
         {
-            return(
-                <div className="mr-4">
-                    <img src={blog.userIcon.url} alt={blog.userIcon.url} />
-                </div>
-            )
+            if(blog.files.length){
+                let slides = blog.files.map(file => {
+                    return (
+                        <CarouselItem key={file} onExiting={() => this.setAnimating(blogIndex, true)} onExited={() => this.setAnimating(blogIndex, false)}>
+                            <img src={file} alt={blog.title} className="carousel-img" />
+                        </CarouselItem>
+                    )
+                })
+
+                return(
+                    <>
+                        <Carousel key={blog._id} activeIndex={this.state.activeIndex[blogIndex]} next={() => this.nextSlide(blogIndex)} 
+                                    previous={() => this.previousSlide(blogIndex)} className="carousel-container">
+                            <CarouselIndicators items={blog.files} activeIndex={this.state.activeIndex[blogIndex]} 
+                                                onClickHandler={(newIndex) => this.goToSlide(blogIndex, newIndex)} />
+                                                { slides }
+                            <CarouselControl direction="prev" directionText="Previous" onClickHandler={() => this.previousSlide(blogIndex)} />
+                            <CarouselControl direction="next" directionText="Next" onClickHandler={() => this.nextSlide(blogIndex)} />
+                        </Carousel>
+                    </>
+                )
+            }
         }
         else
         {
@@ -151,9 +245,12 @@ class News extends Component {
     }
     renderBlogContent(blog)
     {
+        let content = blog.content
+        if(content.length > 290)
+            content = <>{content.substring(0, 290)}  <b style={{fontSize: '20px'}}>. . .</b></>
         return(
             <>
-                <p>{blog.content}</p>
+                <div className="blog-content">{content}</div>
                 <div className="btn btn-info mb-2"  onClick={() => window.location.href = '/news/'+blog._id}>View entire article</div>
             </>
         )
@@ -219,41 +316,57 @@ class News extends Component {
     }
     renderBlogs()
     {
-        const blogs = this.state.blogs.map((blog,index) => {
+        let left = true
+        const blogImgs = 7
+        let curImg = 0
+        const blogs = this.state.blogs.map((blog, index) => {
             let d = new Date(Date.parse(blog.createdAt));
             let hh = parseInt(d.getHours());
             let mm = parseInt(d.getMinutes());
             if(hh<10) hh = '0'+hh;
             if(mm<10) mm = '0'+mm;
             let time = hh + ":" + mm;
+            let w = 'full-width'
+            if(blog.files.length === 0){ 
+                w = 'small-width'
+                left = !left
+                curImg = Number(curImg % blogImgs) + 1
+            }
             return(
-                <div className="news-blog-container mt-4">
-                    {this.renderBlogFiles(blog)}
-                    <div className="news-content-container mt-2">
-                        <div className="d-flex mb-auto">
-                            <div>
-                                <img className="news-blog-profile-img mr-1" src={blog.userIcon.url} alt={blog.postedUserName} />
-                                {blog.postedUserName}
-                            </div>
-                            <div className="ml-auto pr-3">
-                                ~ {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(d)+' ⏰'+time}
-                            </div>
+                <div className="mt-5">
+                    <div className={(w === 'full-width'?'d-none':(left?'float-left':'float-right'))}>
+                        <img src={`/images/blog${curImg}.svg`} alt="blog-img" className="blog-default-img" />
+                    </div>
+                    <div className={"news-blog-container overflow-hidden " + w + (left?" ml-auto":" mr-auto")}>
+                        <div className="mr-4">
+                            {this.renderBlogFiles(blog, index)}
                         </div>
-                        <div className="mb-auto">
-                            <h3>{blog.title}</h3>
-                            {this.renderBlogContent(blog)}
-                        </div>
-                        <div className="d-flex mb-auto">
-                            <div>
-                                <span className="news-icons d-flex aligm-items-center" onClick={() => this.updateLike(index)}>
-                                    {this.renderLikeIcon(blog)} 
-                                    {blog.likes.length} Likes
-                                </span>
+                        <div className="news-content-container mt-2">
+                            <div className="d-flex mb-auto">
+                                <div>
+                                    <img className="news-blog-profile-img mr-1" src={blog.userIcon.url} alt={blog.postedUserName} />
+                                    {blog.postedUserName}
+                                </div>
+                                <div className="ml-auto pr-3">
+                                    ~ {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(d)+' ⏰'+time}
+                                </div>
                             </div>
-                            <div className="ml-auto pr-5">
-                                <span className="news-icons" onClick={() => window.location.href = '/news/'+blog._id}>
-                                    <i className="fa fa-comments fa-lg pr-1"></i>Comment
-                                </span>
+                            <div className="mb-auto">
+                                <h3>{blog.title}</h3>
+                                {this.renderBlogContent(blog)}
+                            </div>
+                            <div className="d-flex mb-auto">
+                                <div>
+                                    <span className="news-icons d-flex aligm-items-center" onClick={() => this.updateLike(index)}>
+                                        {this.renderLikeIcon(blog)} 
+                                        {blog.likes.length} Likes
+                                    </span>
+                                </div>
+                                <div className="ml-auto pr-5">
+                                    <span className="news-icons" onClick={() => window.location.href = '/news/'+blog._id}>
+                                        <i className="fa fa-comments fa-lg pr-1"></i>Comment
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>

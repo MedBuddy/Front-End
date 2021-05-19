@@ -317,8 +317,12 @@ class Profile extends Component
                         <div className="ml-4"><u className="profile-change-photo" onClick={() => this.changeBtnDisplay("block")}>Change photo</u></div>
                         <div className={"profile-upload-btn mt-3 d-"+this.state.uploadBtnDisplay}>
                             <Input type="file" accept="image/*" onChange={this.handleFileInput} />
-                            <div className="mt-3 mr-1 btn btn-primary" onClick={this.uploadProfilePic}>Upload</div>
-                            <div className="mt-3 btn btn-danger" onClick={() => this.changeBtnDisplay("none")}>Cancel</div>
+                            <div className="d-flex align-items-center">
+                                <div className="mt-3 mr-2 btn btn-primary d-flex align-items-center" onClick={this.uploadProfilePic}>
+                                    <span class="material-icons">file_upload</span>Upload
+                                </div>
+                                <div className="mt-3 btn btn-danger" onClick={() => this.changeBtnDisplay("none")}>Cancel</div>
+                            </div>
                         </div>
                     </div>
                     <div className="col-7 offset-1">

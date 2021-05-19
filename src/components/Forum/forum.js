@@ -15,7 +15,7 @@ class Forum extends Component {
             modal: false,
             discussionType: 1,
             loading: true,
-            display: 'none'
+            display: 'none',
         }
         this.searchTopic = this.searchTopic.bind(this);
         this.fetchDiscussions = this.fetchDiscussions.bind(this);
@@ -55,13 +55,51 @@ class Forum extends Component {
     
     searchTopic(event)
     {
-        if(event.charCode === 13)
+        if(event.charCode === 13 || event.button === 0)
         {
-            alert('enter pressed')
-        }
-        else if(event.button === 0)
-        {
-            alert('mouse clicked')
+            let i,j;
+            let questions = this.state.questions;
+            let search = document.getElementById('forumSearchBar').value;
+            let searchResults = [];
+            if(search.length)
+            {
+                search = search.toLowerCase().split(" ");
+                for(i=0;i<questions.length;i++)
+                {
+                    let title = questions[i].title.toLowerCase().split(" ");
+                    let content = questions[i].content.toLowerCase().split(" ");
+                    for(j=0;j<title.length;j++)
+                    {
+                        if(search.includes(title[j]))
+                        {
+                            searchResults.push(questions[i]);
+                            break;
+                        }
+                    }
+                    if(j===title.length)
+                    {
+                        for(j=0;j<content.length;j++)
+                        {
+                            if(search.includes(content[j]))
+                            {
+                                searchResults.push(questions[i]);
+                                break;
+                            }
+                        }
+                    }
+
+                }
+                this.setState({
+                    questions: searchResults
+                })
+            }
+            else
+            {
+                this.setState({
+                    questions: this.state.allQuestions,
+                })
+            }
+            
         }
     }
     
@@ -355,7 +393,8 @@ class Forum extends Component {
                             </div>
                             <div className="col-md-5 offset-md-2 d-flex align-items-center">
                                 
-                                <Input type="text" className="forum-search" placeholder="Search Topics" onKeyPress={this.searchTopic} />
+                                <Input type="text" id="forumSearchBar" name="forumSearchBar" autoComplete="off" className="forum-search" placeholder="Search Topics" onKeyPress={this.searchTopic} />
+                                
                                 <div className="forum-search-button" onClick={this.searchTopic}>
                                     <i className="fa fa-search"></i>
                                 </div>
