@@ -386,7 +386,7 @@ class BlogComponent extends Component
                     <div className={(w === 'full-width'?'d-none':(left?'float-left':'float-right'))}>
                         <img src={`/images/blog${curImg}.svg`} alt="blog-img" className="blog-default-img" />
                     </div>
-                    <div className={"news-blog-container overflow-hidden " + w + (left?" ml-auto":" mr-auto")}>
+                    <div className={"blog-blog-container " + w + (left?" ml-auto":" mr-auto")}>
                         <div className="mr-4">
                             {this.renderBlogFiles(blog)}
                         </div>

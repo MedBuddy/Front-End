@@ -87,8 +87,8 @@ class Feedback extends Component {
                                     {feedback.content}
                                 </div>
                                 <div className="pt-1">
-                                    Sent by <span className="feedback-name">{feedback.name+' '}</span>
-                                    From <span className="feedback-name">{feedback.email}</span>
+                                    <i class="fa fa-user"></i> <span className="feedback-name">{feedback.name+' '}</span>
+                                    <i class="fa fa-envelope"></i> <span className="feedback-name">{feedback.email}</span>
                                 </div>
                                 <div className="ml-auto pr-2">
                                     ~ {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(d)+' ⏰'+time}

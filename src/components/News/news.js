@@ -15,7 +15,7 @@ class News extends Component {
             blogs: [],
             files: [],
             loading: true,
-            blogType: 'My Blogs',
+            blogType: 'My Posts',
             activeIndex: [],
             animating: []
         }
@@ -46,7 +46,7 @@ class News extends Component {
                 animating.push(false)
             })
             this.setState({
-                blogType: 'My Blogs',
+                blogType: 'My Posts',
                 blogs: this.state.allBlogs,
                 activeIndex: indexes,
                 animating: animating
@@ -386,7 +386,7 @@ class News extends Component {
         return(
             <Modal isOpen={this.state.blogModal} toggle={this.toggleBlogModal}>
                 <ModalHeader toggle={this.toggleBlogModal} className="forum-modal-header">
-                    Post new Blog
+                    New Post
                 </ModalHeader>
                 <ModalBody className="forum-modal-body">
                     <Form onSubmit={this.postBlog} id="postBlogForm">
@@ -401,8 +401,8 @@ class News extends Component {
                                     name="blogContent" autoComplete="off" innerRef={(input) => this.blogContent = input} />
                         </FormGroup>
                         <FormGroup>
-                            <Label htmlFor="blogFiles">Files (max. 5)</Label>
-                            <Input type="file" id="blogFiles" name="blogFiles" multiple onChange={this.handleFileInput} />
+                            <Label htmlFor="blogFiles">Images (max. 3)</Label>
+                            <Input type="file" id="blogFiles" name="blogFiles" accept="image/*" multiple onChange={this.handleFileInput} />
                         </FormGroup>
                     </Form>
                 </ModalBody>
@@ -428,6 +428,7 @@ class News extends Component {
         }
         else
         {
+            let loginType = localStorage.getItem('loginType')
             return (
                 <>
                     <Header />
@@ -435,11 +436,11 @@ class News extends Component {
                         <div className="row mt-3">
                             <div className="offset-1 col-11">
                                 <div className="news-heading mt-3">
-                                    <u>POSTS and BLOGS</u>
+                                    <u>Articles</u>
                                 </div>
                             </div>
                         </div>
-                        <div className={(localStorage.getItem('loginType') === 'doctor')?"row mt-3 mb-3":"d-none mt-3"}>
+                        <div className={(loginType === 'doctor' || loginType === 'admin')?"row mt-3 mb-3":"d-none mt-3"}>
                             <div className="offset-1 col-3">
                                 <div className="news-blog-button" onClick={this.changeBlogType}>
                                     {this.state.blogType}
@@ -447,7 +448,7 @@ class News extends Component {
                             </div>
                             <div className="offset-4 col-3">
                                 <div className="news-blog-button" onClick={this.toggleBlogModal}>
-                                    Post new blog
+                                    New Post
                                 </div>
                             </div>
                         </div>

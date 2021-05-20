@@ -110,8 +110,12 @@ class Approval extends Component {
                             <a href={doctor.license} target="_blank" rel="noreferrer" >View license</a>
                         </div>
                         <div className="pt-3">
-                            <span className="btn btn-success" onClick={() => this.toggleapproveModal(index)}>Approve</span>
-                            <span className="btn btn-danger ml-2" onClick={() => this.togglerejectModal(index)}>Reject</span>
+                            <span className="btn btn-success" onClick={() => this.toggleapproveModal(index)}>
+                                <i class="fa fa-check"></i> Approve
+                            </span>
+                            <span className="btn btn-danger ml-2" onClick={() => this.togglerejectModal(index)}>
+                                <i class="fa fa-ban"></i> Reject
+                            </span>
                         </div>
                     </div>
                 )
@@ -237,12 +241,12 @@ class Approval extends Component {
         return(
             <Modal isOpen={this.state.rejectModal} toggle={() => this.togglerejectModal()}>
                 <ModalHeader toggle={() => this.togglerejectModal()} className="forum-modal-header">
-                    Reject Doctor
+                    Reject Account
                 </ModalHeader>
                 <ModalBody className="forum-modal-body">
                     <Form onSubmit={this.rejectDoctor} id="rejectDoctorForm">
                         <FormGroup>
-                            <Label htmlFor="reason">Reason for rejecting</Label>
+                            <Label htmlFor="reason">Reason for rejection</Label>
                             <Input type="textarea" id="reason" name="reason" className="forum-modal-textarea" rows="3" autoComplete="off" required 
                                 innerRef={(input) => this.reason = input} />
                         </FormGroup>
