@@ -113,7 +113,7 @@ class Profile extends Component
         {
             return(
                 <Input className={(this.state.readonly)?"profile-input-disabled col-8":"profile-input-active col-8"} type="text" 
-                    id="gender" name="gender" autoComplete="off" required defaultValue={this.state.profile.gender} readOnly={this.state.readonly}  />
+                    id="gender" name="gender" autoComplete="off" defaultValue={this.state.profile.gender} readOnly={this.state.readonly}  />
             )
         }
         else
@@ -136,7 +136,7 @@ class Profile extends Component
         {
             return(
                 <Input className={(this.state.readonly)?"profile-input-disabled col-8":"profile-input-active col-8"} type="text" 
-                    id="bloodgroup" name="bloodgroup" autoComplete="off" required defaultValue={this.state.profile.bloodgroup} readOnly={this.state.readonly}  />
+                    id="bloodgroup" name="bloodgroup" autoComplete="off" defaultValue={this.state.profile.bloodgroup} readOnly={this.state.readonly}  />
             )
         }
         else
@@ -342,7 +342,7 @@ class Profile extends Component
                             <FormGroup className="row align-items-center">
                                 <Label className="profile-label col-4" htmlFor="dob">DOB</Label>
                                 <Input className={(this.state.readonly)?"profile-input-disabled col-8":"profile-input-active col-8"} type="date" 
-                                    id="dob" name="dob" autoComplete="off" required defaultValue={(this.state.profile.dob==="")?"":this.state.profile.dob} 
+                                    id="dob" name="dob" autoComplete="off" defaultValue={(this.state.profile.dob==="")?"":this.state.profile.dob} 
                                     innerRef={(input) => this.dob = input} readOnly={this.state.readonly} />
                             </FormGroup>
                             <FormGroup className="row align-items-center">
@@ -356,7 +356,7 @@ class Profile extends Component
                             <FormGroup className="row align-items-center">
                                 <Label className="profile-label col-4" htmlFor="mobile">Mobile</Label>
                                 <Input className={(this.state.readonly)?"profile-input-disabled col-8":"profile-input-active col-8"} type="text" 
-                                    id="mobile" name="mobile" autoComplete="off" required defaultValue={this.state.profile.mobile} 
+                                    id="mobile" name="mobile" autoComplete="off" defaultValue={this.state.profile.mobile} 
                                     innerRef={(input) => this.mobile = input} readOnly={this.state.readonly} />
                             </FormGroup>
                             {this.renderDoctorForm()}
