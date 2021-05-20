@@ -44,7 +44,7 @@ class Main extends Component {
             this.setState({
                 info: ''
             })
-        }, 2200)
+        }, 2100)
     }
 
     closeInfo(){

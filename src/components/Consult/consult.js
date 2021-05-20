@@ -5,6 +5,7 @@ import './consult.css'
 import ReactStars from 'react-rating-stars-component'
 import Chat from '../Chat/chat'
 import { Link } from 'react-router-dom'
+import { ScaleLoader } from 'react-spinners'
 
 class Consult extends Component {
 
@@ -14,7 +15,8 @@ class Consult extends Component {
             doctors: [],
             users: [],
             loginType: '',
-            chatDisplay: false
+            chatDisplay: false,
+            loading: true,
         }
         this.fetchDoctors = this.fetchDoctors.bind(this)
         this.fetchUsers = this.fetchUsers.bind(this)
@@ -71,6 +73,11 @@ class Consult extends Component {
             this.setState({
                 doctors: response
             })
+            setTimeout(() => {
+                this.setState({
+                    loading: false,
+                });
+              }, 300);
         })
         .catch(error => {
             console.log(error)
@@ -103,7 +110,13 @@ class Consult extends Component {
             this.setState({
                 users: response
             })
+            setTimeout(() => {
+                this.setState({
+                    loading: false,
+                });
+              }, 200);
         })
+        
         .catch(error => {
             console.log(error)
         })
@@ -182,19 +195,34 @@ class Consult extends Component {
     }
 
     render(){
-        let doc_user = ''
-        if(this.state.loginType === 'user')
-            doc_user = this.renderDoctors()
-        else if(this.state.loginType === 'doctor')
-            doc_user = this.renderUsers()
-        return (
-            <>
-                <Header />
-                <div className="container consult-container pt-1 pl-5 pr-5 pb-5 mt-4">
-                    { doc_user }
-                </div>
-            </>
-        )
+        if(this.state.loading)
+        {
+            return(
+                <>
+                    <Header />
+                    <div className="container loader-container d-flex justify-content-center align-items-center">
+                        <ScaleLoader color="white" /> 
+                        <div className="forum-loading ml-3"> Loading details</div>
+                    </div>
+                </>
+            )
+        }
+        else
+        {
+            let doc_user = ''
+            if(this.state.loginType === 'user')
+                doc_user = this.renderDoctors()
+            else if(this.state.loginType === 'doctor')
+                doc_user = this.renderUsers()
+            return (
+                <>
+                    <Header />
+                    <div className="container consult-container pt-1 pl-5 pr-5 pb-5 mt-4">
+                        { doc_user }
+                    </div>
+                </>
+            )
+        }
     }
 }
 

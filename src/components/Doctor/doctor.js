@@ -5,6 +5,7 @@ import './doctor.css'
 import { Link } from 'react-router-dom'
 import Chat from '../Chat/chat'
 import ReactStars from 'react-rating-stars-component'
+import { ScaleLoader } from 'react-spinners'
 
 class Doctor extends Component {
 
@@ -16,7 +17,8 @@ class Doctor extends Component {
             chatDisplay: false,
             rating: 0,
             myreview: -1,
-            editMode: false
+            editMode: false,
+            loading: true
         }
         this.fetchDoctorInfo = this.fetchDoctorInfo.bind(this)
         this.fetchReviews = this.fetchReviews.bind(this)
@@ -79,6 +81,11 @@ class Doctor extends Component {
             this.setState({
                 doctor: response
             })
+            setTimeout(() => {
+                this.setState({
+                    loading: false,
+                });
+              }, 200);
         })
         .catch(error => {
             console.log(error)
@@ -442,20 +449,36 @@ class Doctor extends Component {
     }
 
     render(){
-        let chatComp = ''
-        if(this.state.doctor){
-            chatComp = 
-                <Chat display={this.state.chatDisplay} closeChat={() => this.toggleChat(false)}
-                      doctor={this.state.doctor.username} user={localStorage.getItem('username')} />
+        if(this.state.loading)
+        {
+            return(
+                <>
+                    <Header />
+                    <div className="container loader-container d-flex justify-content-center align-items-center">
+                        <ScaleLoader color="white" /> 
+                        <div className="forum-loading ml-3"> Loading Info</div>
+                    </div>
+                </>
+            )
         }
-        return (
-            <>
-                <Header />
-                { this.renderDoctorInfo() }
-                { this.renderReviews() }
-                { chatComp }
-            </>
-        )
+        else
+        {
+            let chatComp = ''
+            if(this.state.doctor){
+                chatComp = 
+                    <Chat display={this.state.chatDisplay} closeChat={() => this.toggleChat(false)}
+                        doctor={this.state.doctor.username} user={localStorage.getItem('username')} />
+            }
+            
+            return (
+                <>
+                    <Header />
+                    { this.renderDoctorInfo() }
+                    { this.renderReviews() }
+                    { chatComp }
+                </>
+            )
+        }
     }
 }
 
