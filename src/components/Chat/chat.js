@@ -22,13 +22,15 @@ class Chat extends Component{
         this.fetchMessages()
         socket.emit('connectToRoom', {roomId: this.state.roomId, newUser: this.state.username})
         socket.on('message', data => {
-            let messages = this.state.messages
-            messages.push(data)
-            this.setState({
-                messages: messages
-            })
-            let chatBody = document.getElementById('chat-body')
-            chatBody.scrollTop = chatBody.scrollHeight
+            if(data.roomId === this.state.roomId){
+                let messages = this.state.messages
+                messages.push(data)
+                this.setState({
+                    messages: messages
+                })
+                let chatBody = document.getElementById('chat-body')
+                chatBody.scrollTop = chatBody.scrollHeight
+            }
         })
     }
 
@@ -93,7 +95,6 @@ class Chat extends Component{
 
             return (
                 <div className={"chat-msg d-block "+(this.state.username === message.sender?"ml-auto my-msg":"other-msg")}>
-                    {/* <div className="msg-user">{ message.sender }: </div> */}
                     <div className="msg-content">{ message.message }</div>
                     <div className="msg-time">
                         <sub>

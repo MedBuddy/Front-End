@@ -17,10 +17,12 @@ class Consult extends Component {
             loginType: '',
             chatDisplay: false,
             loading: true,
+            chatUser: 0
         }
         this.fetchDoctors = this.fetchDoctors.bind(this)
         this.fetchUsers = this.fetchUsers.bind(this)
         this.toggleChat = this.toggleChat.bind(this)
+        this.changeChatUser = this.changeChatUser.bind(this)
     }
 
     componentDidMount(){
@@ -151,33 +153,36 @@ class Consult extends Component {
         )
     }
 
+    changeChatUser(index){
+        this.setState({
+            chatUser: index
+        })
+    }
+
     renderUsers(){
-        const users = this.state.users.map(user => {
+        const users = this.state.users.map((user, index) => {
             return(
-                <Card className="consult-user-card col-3" key={user._id}>
-                    <CardImg top className="consult-doctor-img" src={user.image.url} alt={user.username}></CardImg>
-                    <CardBody className="consult-card-body">
-                        <CardTitle className="consult-card-title">{user.firstname + ' ' + user.lastname}</CardTitle>
-                        <CardSubtitle className="consult-card-subtitle">{user.email}</CardSubtitle>
-                        <CardText className="d-flex justify-content-around mt-3">
-                            <Button color="primary" className="btn consult-user-btn" onClick={() => this.toggleChat(true)}>
-                                Chat
-                            </Button>
-                            <Link className="btn btn-primary consult-user-btn" to="/videoCall" target="_blank">
-                                Video Call
-                            </Link>
-                        </CardText>
-                    </CardBody>
-                </Card>
+                <>
+                    <Card className="consult-user-card col-3" key={user._id}>
+                        <CardImg top className="consult-doctor-img" src={user.image.url} alt={user.username}></CardImg>
+                        <CardBody className="consult-card-body">
+                            <CardTitle className="consult-card-title">{user.firstname + ' ' + user.lastname}</CardTitle>
+                            <CardSubtitle className="consult-card-subtitle">{user.email}</CardSubtitle>
+                            <CardText className="d-flex justify-content-around mt-3">
+                                <Button color="primary" className="btn consult-user-btn" onClick={() => {this.toggleChat(true);this.changeChatUser(index)}}>
+                                    Chat
+                                </Button>
+                                <Link className="btn btn-primary consult-user-btn" to="/videoCall" target="_blank">
+                                    Video Call
+                                </Link>
+                            </CardText>
+                        </CardBody>
+                    </Card>
+                    <Chat display={this.state.chatDisplay && this.state.chatUser === index} closeChat={() => this.toggleChat(false)}
+                            doctor={localStorage.getItem('username')} user={user.username} />
+                </>
             )
         })
-
-        let chatComp = ''
-        if(this.state.users.length){
-            chatComp = 
-                <Chat display={this.state.chatDisplay} closeChat={() => this.toggleChat(false)}
-                    doctor={localStorage.getItem('username')} user={this.state.users[0].username} />
-        }
 
         return (
             <>
@@ -189,7 +194,6 @@ class Consult extends Component {
                 <div className="row">
                     { users }
                 </div>
-                { chatComp }
             </>
         )
     }
