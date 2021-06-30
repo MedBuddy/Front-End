@@ -3,6 +3,7 @@ import Header from '../Header/header';
 import { Media,Form,FormGroup,Input,Label,Button,Modal,ModalBody,ModalHeader,ModalFooter } from 'reactstrap';
 import  './discussion.css';
 import { ScaleLoader } from 'react-spinners';
+import { hostUrl } from '../../host';
 
 class DiscussionComponent extends Component{
     constructor(props)
@@ -70,7 +71,7 @@ class DiscussionComponent extends Component{
     fetchQuestion()
     {
         let qid = this.props.id; 
-        fetch('/queries/'+qid, {
+        fetch(hostUrl+'/queries/'+qid, {
             method:'GET'
         })
         .then((response) => {
@@ -122,7 +123,7 @@ class DiscussionComponent extends Component{
         removed = removed.substring(0,removed.length-1)
         question.append('removed', removed)
 
-        fetch('/queries/'+this.state.question._id,{
+        fetch(hostUrl+'/queries/'+this.state.question._id,{
             method: 'PUT',
             headers: {
                 'Authorization': 'Bearer '+userToken
@@ -200,7 +201,7 @@ class DiscussionComponent extends Component{
     deleteQuestion()
     {
         const userToken = localStorage.getItem('userToken');
-        fetch('/queries/'+this.state.question._id,{
+        fetch(hostUrl+'/queries/'+this.state.question._id,{
             method: 'DELETE',
             headers :{
                 'Authorization': 'Bearer '+userToken
@@ -274,7 +275,7 @@ class DiscussionComponent extends Component{
         event.preventDefault()
         const userToken = localStorage.getItem('userToken');
         const content = { content:this.reply.value }
-        fetch('/queries/'+this.props.id+'/replies',{
+        fetch(hostUrl+'/queries/'+this.props.id+'/replies',{
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer '+userToken,
@@ -312,7 +313,7 @@ class DiscussionComponent extends Component{
     {
         const userToken = localStorage.getItem('userToken');
         const content = { voteType: voteType }
-        fetch('/queries/'+this.props.id+'/replies/'+replyid+'/votes',{
+        fetch(hostUrl+'/queries/'+this.props.id+'/replies/'+replyid+'/votes',{
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer '+userToken,
@@ -351,7 +352,7 @@ class DiscussionComponent extends Component{
         const replyId = this.state.question.replies[this.state.replyIndex]._id
         const userToken = localStorage.getItem('userToken');
         const content = { content: this.editreply.value }
-        fetch('/queries/'+this.props.id+'/replies/'+replyId,{
+        fetch(hostUrl+'/queries/'+this.props.id+'/replies/'+replyId,{
             method: 'PUT',
             headers: {
                 'Authorization': 'Bearer '+userToken,
@@ -387,7 +388,7 @@ class DiscussionComponent extends Component{
     deleteReply(replyId)
     {
         const userToken = localStorage.getItem('userToken');
-        fetch('/queries/'+this.props.id+'/replies/'+replyId,{
+        fetch(hostUrl+'/queries/'+this.props.id+'/replies/'+replyId,{
             method: 'DELETE',
             headers: {
                 'Authorization': 'Bearer '+userToken,

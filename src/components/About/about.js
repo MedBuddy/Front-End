@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Card, CardImg, CardBody, CardTitle, CardText, CardFooter, CardLink, Form, FormGroup, Input, Label} from 'reactstrap'
 import Header from '../Header/header'
 import  './about.css'
+import { hostUrl } from '../../host'
 
 const developers = [
     {
@@ -112,7 +113,7 @@ class About extends Component {
         this.name.value = ''
         this.email.value = ''
         this.feedback.value = ''
-        fetch('/feedback', {
+        fetch(hostUrl+'/feedback', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

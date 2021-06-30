@@ -4,6 +4,7 @@ import './news.css';
 import { Input,Modal,ModalHeader,ModalBody,ModalFooter,Button,Form,FormGroup,Label, 
         Carousel, CarouselItem, CarouselIndicators, CarouselControl } from 'reactstrap';
 import { ScaleLoader } from 'react-spinners';
+import { hostUrl } from '../../host';
 
 class News extends Component {
     constructor(props)
@@ -84,7 +85,7 @@ class News extends Component {
     }
     fetchBlogs()
     {
-        fetch('/posts',{
+        fetch(hostUrl+'/posts/',{
             method: 'GET'
         })
         .then((response) => {
@@ -131,7 +132,7 @@ class News extends Component {
         blog.append('content', this.blogContent.value)
         for(let i=0;i<this.state.files.length;i++)
             blog.append('image',this.state.files[i])
-        fetch('/posts',{
+        fetch(hostUrl+'/posts',{
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer '+userToken
@@ -283,7 +284,7 @@ class News extends Component {
         let blogs = this.state.blogs;
         const userToken = localStorage.getItem('userToken');
         
-        fetch('/posts/'+blogs[index]._id+'/likes',{
+        fetch(hostUrl+'/posts/'+blogs[index]._id+'/likes',{
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer '+userToken,

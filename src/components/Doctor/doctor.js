@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import Chat from '../Chat/chat'
 import ReactStars from 'react-rating-stars-component'
 import { ScaleLoader } from 'react-spinners'
-
+import { hostUrl } from '../../host';
 class Doctor extends Component {
 
     constructor(props){
@@ -57,7 +57,7 @@ class Doctor extends Component {
 
     fetchDoctorInfo(){
         let token = localStorage.getItem('userToken')
-        fetch('/doctors/'+this.props.id, {
+        fetch(hostUrl+'/doctors/'+this.props.id, {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + token
@@ -94,7 +94,7 @@ class Doctor extends Component {
 
     fetchReviews(){
         let token = localStorage.getItem('userToken')
-        fetch('/doctors/'+this.props.id+'/reviews', {
+        fetch(hostUrl+'/doctors/'+this.props.id+'/reviews', {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + token
@@ -140,7 +140,7 @@ class Doctor extends Component {
             comment: this.comment.value
         }
         let token = localStorage.getItem('userToken')
-        fetch('/doctors/'+this.props.id+'/reviews', {
+        fetch(hostUrl+'/doctors/'+this.props.id+'/reviews', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -186,7 +186,7 @@ class Doctor extends Component {
             comment: this.editcomment.value
         }
         let token = localStorage.getItem('userToken')
-        fetch('/doctors/'+this.props.id+'/reviews/'+this.state.reviews[this.state.myreview]._id, {
+        fetch(hostUrl+'/doctors/'+this.props.id+'/reviews/'+this.state.reviews[this.state.myreview]._id, {
             method: 'PUT',
             headers: {
                 'Authorization': 'Bearer ' + token,
@@ -225,7 +225,7 @@ class Doctor extends Component {
 
     deleteReview(){
         let token = localStorage.getItem('userToken')
-        fetch('/doctors/'+this.props.id+'/reviews/'+this.state.reviews[this.state.myreview]._id, {
+        fetch(hostUrl+'/doctors/'+this.props.id+'/reviews/'+this.state.reviews[this.state.myreview]._id, {
             method: 'DELETE',
             headers: {
                 'Authorization': 'Bearer ' + token

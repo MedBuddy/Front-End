@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import './chat.css'
 import io from 'socket.io-client'
 import { Form, Input, Button } from 'reactstrap'
+import { hostUrl, chatUrl } from '../../host'
 
-const socket = io.connect('http://localhost:5001')
+const socket = io.connect(chatUrl)
 
 class Chat extends Component{
 
@@ -40,7 +41,7 @@ class Chat extends Component{
             doctor: this.props.doctor,
             user: this.props.user
         }
-        fetch('/doctors/messages', {
+        fetch(hostUrl+'/doctors/messages', {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + token,

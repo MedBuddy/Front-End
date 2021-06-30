@@ -4,8 +4,9 @@ import Peer from 'simple-peer'
 import io from 'socket.io-client'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { Input, Button } from 'reactstrap'
+import { videoCallUrl } from '../../host'
 
-const socket = io.connect('http://localhost:5000')
+const socket = io.connect(videoCallUrl)
 
 function VideoCall(){
 

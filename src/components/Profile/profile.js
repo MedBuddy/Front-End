@@ -3,6 +3,7 @@ import Header from '../Header/header';
 import { ScaleLoader } from 'react-spinners';
 import { Form,Input,Label,Button,FormGroup } from 'reactstrap';
 import './profile.css';
+import { hostUrl } from '../../host';
 
 class Profile extends Component
 {
@@ -70,7 +71,7 @@ class Profile extends Component
     fetchProfile()
     {
         const userToken = localStorage.getItem('userToken');
-        fetch('/profile/details', {
+        fetch(hostUrl+'/profile/details', {
             method:'GET',
             headers: {
                 'Authorization': 'Bearer ' + userToken
@@ -234,7 +235,7 @@ class Profile extends Component
             }
         }
         
-        fetch('/profile/details',{
+        fetch(hostUrl+'/profile/details',{
             method: 'PUT',
             headers: {
                 'Authorization': 'Bearer '+userToken,
@@ -272,7 +273,7 @@ class Profile extends Component
         const userToken = localStorage.getItem('userToken');
         let profilePic = new FormData()
         profilePic.append('image', this.state.fileObj)
-        fetch('/profile/imageUpload',{
+        fetch(hostUrl+'/profile/imageUpload',{
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer '+userToken

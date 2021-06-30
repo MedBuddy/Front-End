@@ -1,7 +1,8 @@
 import { Component } from 'react';
 import Header from '../Header/header';
 import { ScaleLoader } from 'react-spinners';
-import './feedback.css'
+import './feedback.css';
+import { hostUrl } from '../../host';
 
 class Feedback extends Component {
     constructor(props)
@@ -22,7 +23,7 @@ class Feedback extends Component {
     fetchFeedbacks()
     {
         const userToken = localStorage.getItem('userToken');
-        fetch('feedback/', {
+        fetch(hostUrl+'/feedback/', {
             method:'GET',
             headers: {
                 'Authorization': 'Bearer ' + userToken

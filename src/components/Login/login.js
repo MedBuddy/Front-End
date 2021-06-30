@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Form,FormGroup,Label,Input,Nav,NavItem,TabContent,TabPane,Button } from 'reactstrap'
 import './login.css'
+import { hostUrl } from '../../host';
 
 const emailRegex = [
     {
@@ -146,7 +147,7 @@ class Login extends Component {
                 password: this.state.password,
                 type: this.getType(this.state.logintype)
             }
-            fetch('account/login', {
+            fetch(hostUrl+'/account/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -266,7 +267,7 @@ class Login extends Component {
                 type: this.getType(this.state.logintype)
             }
             console.log(user)
-            fetch('account/signup', {
+            fetch(hostUrl+'/account/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -385,7 +386,7 @@ class Login extends Component {
                 otp: this.state.otp,
                 type: this.getType(this.state.logintype)
             }
-            fetch('account/otp', {
+            fetch(hostUrl+'/account/otp', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -447,7 +448,7 @@ class Login extends Component {
         let req = new FormData()
         req.append('userId', this.state.userId)
         req.append('license', this.state.license)
-        fetch('doctors/license', {
+        fetch(hostUrl+'/doctors/license', {
             method: 'POST',
             body: req
         })

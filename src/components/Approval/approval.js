@@ -3,6 +3,7 @@ import Header from '../Header/header';
 import { ScaleLoader } from 'react-spinners';
 import { Modal,ModalHeader,ModalBody,ModalFooter,Form,Label,Input,FormGroup,Button } from 'reactstrap';
 import './approval.css';
+import { hostUrl } from '../../host'
 
 class Approval extends Component {
     constructor(props)
@@ -48,7 +49,7 @@ class Approval extends Component {
     fetchDoctors()
     {
         const userToken = localStorage.getItem('userToken');
-        fetch('doctors/unverified', {
+        fetch(hostUrl+'/doctors/unverified', {
             method:'GET',
             headers: {
                 'Authorization': 'Bearer ' + userToken
@@ -146,7 +147,7 @@ class Approval extends Component {
             doctorId: doctors[this.state.doctorIndex]._id,
             specialization: this.specialization.value,
         }
-        fetch('/admin/acceptDoctor',{
+        fetch(hostUrl+'/admin/acceptDoctor',{
             method: 'PUT',
             headers:{
                 'Authorization': 'Bearer ' + userToken,
@@ -184,7 +185,7 @@ class Approval extends Component {
             doctorId: doctors[this.state.doctorIndex]._id,
             reason: this.reason.value,
         }
-        fetch('/admin/rejectDoctor',{
+        fetch(hostUrl+'/admin/rejectDoctor',{
             method: 'PUT',
             headers:{
                 'Authorization': 'Bearer ' + userToken,

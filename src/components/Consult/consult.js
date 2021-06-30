@@ -6,6 +6,7 @@ import ReactStars from 'react-rating-stars-component'
 import Chat from '../Chat/chat'
 import { Link } from 'react-router-dom'
 import { ScaleLoader } from 'react-spinners'
+import { hostUrl } from '../../host'
 
 class Consult extends Component {
 
@@ -51,7 +52,7 @@ class Consult extends Component {
 
     fetchDoctors(){
         let token = localStorage.getItem('userToken')
-        fetch('/doctors', {
+        fetch(hostUrl+'/doctors', {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + token
@@ -88,7 +89,7 @@ class Consult extends Component {
 
     fetchUsers(){
         let token = localStorage.getItem('userToken')
-        fetch('/doctors/chats', {
+        fetch(hostUrl+'/doctors/chats', {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + token

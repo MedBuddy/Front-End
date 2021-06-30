@@ -4,6 +4,7 @@ import { ScaleLoader } from 'react-spinners';
 import { Media,Form,Input,Button,FormGroup,Label,Modal,ModalBody,ModalHeader,ModalFooter,
          Carousel, CarouselItem, CarouselIndicators, CarouselControl } from 'reactstrap';
 import './blog.css'
+import { hostUrl } from '../../host'
 
 class BlogComponent extends Component
 {
@@ -103,7 +104,7 @@ class BlogComponent extends Component
     fetchBlog()
     {
         let id = this.props.id; 
-        fetch('/posts/'+id, {
+        fetch(hostUrl+'/posts/'+id, {
             method:'GET'
         })
         .then((response) => {
@@ -156,7 +157,7 @@ class BlogComponent extends Component
         removed = removed.substring(0,removed.length-1)
         blog.append('removed', removed)
 
-        fetch('/posts/'+this.state.blog._id,{
+        fetch(hostUrl+'/posts/'+this.state.blog._id,{
             method: 'PUT',
             headers: {
                 'Authorization': 'Bearer '+userToken
@@ -189,7 +190,7 @@ class BlogComponent extends Component
     deleteBlog()
     {
         const userToken = localStorage.getItem('userToken');
-        fetch('/posts/'+this.state.blog._id,{
+        fetch(hostUrl+'/posts/'+this.state.blog._id,{
             method: 'DELETE',
             headers :{
                 'Authorization': 'Bearer '+userToken
@@ -328,7 +329,7 @@ class BlogComponent extends Component
         let blog = this.state.blog;
         const userToken = localStorage.getItem('userToken');
         
-        fetch('/posts/'+blog._id+'/likes',{
+        fetch(hostUrl+'/posts/'+blog._id+'/likes',{
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer '+userToken,
@@ -424,7 +425,7 @@ class BlogComponent extends Component
     deleteComment(commentId)
     {
         const userToken = localStorage.getItem('userToken');
-        fetch('/posts/'+this.props.id+'/comments/'+commentId,{
+        fetch(hostUrl+'/posts/'+this.props.id+'/comments/'+commentId,{
             method: 'DELETE',
             headers: {
                 'Authorization': 'Bearer '+userToken,
@@ -460,7 +461,7 @@ class BlogComponent extends Component
         const commentId = this.state.blog.comments[this.state.commentIndex]._id
         const userToken = localStorage.getItem('userToken');
         const content = { content: this.editComment.value }
-        fetch('/posts/'+this.props.id+'/comments/'+commentId,{
+        fetch(hostUrl+'/posts/'+this.props.id+'/comments/'+commentId,{
             method: 'PUT',
             headers: {
                 'Authorization': 'Bearer '+userToken,
@@ -568,7 +569,7 @@ class BlogComponent extends Component
         event.preventDefault()
         const userToken = localStorage.getItem('userToken');
         const content = { content:this.blogComment.value }
-        fetch('/posts/'+this.props.id+'/comments',{
+        fetch(hostUrl+'/posts/'+this.props.id+'/comments',{
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer '+userToken,

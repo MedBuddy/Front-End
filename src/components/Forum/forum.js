@@ -3,6 +3,7 @@ import Header from '../Header/header';
 import { ScaleLoader } from 'react-spinners';
 import  './forum.css';
 import { Input,Card,CardBody,CardText,Media,Modal,ModalHeader,ModalBody,ModalFooter,Button,Form,FormGroup,Label } from 'reactstrap';
+import { hostUrl } from '../../host';
 
 class Forum extends Component {
     constructor(props)
@@ -105,7 +106,7 @@ class Forum extends Component {
     
     fetchDiscussions()
     {
-        fetch('queries/', {
+        fetch(hostUrl+'/queries/', {
             method:'GET'
         })
         .then((response) => {
@@ -210,7 +211,7 @@ class Forum extends Component {
         question.append('content', this.question.value)
         for(let i=0;i<this.state.files.length;i++)
             question.append('image',this.state.files[i])
-        fetch('queries/',{
+        fetch(hostUrl+'/queries/',{
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer '+userToken
@@ -256,11 +257,11 @@ class Forum extends Component {
         if(this.state.questions)
         {
             let questions = this.state.allQuestions;
-            let d = new Date();
+            /* let d = new Date();
             questions = questions.filter(question => {
                 let days = (d - new Date(Date.parse(question.createdAt)))/(1000*60*60*24)
                 return (days <= 30)
-            })
+            }) */
             questions.sort(
                 (a,b) => {
                     if(a.replies.length > b.replies.length)
@@ -305,13 +306,14 @@ class Forum extends Component {
             {
                 questions.sort(
                     (a,b) => {
-                        if(a.createdAt > b.createdAt)
+                        if(new Date(Date.parse(a.createdAt)) > new Date(Date.parse(b.createdAt)))
                             return -1;
-                        else if(a.createdAt < b.createdAt)
+                        else if(new Date(Date.parse(a.createdAt)) < new Date(Date.parse(b.createdAt)))
                             return 1;
                         return 0;
                     }
                 )
+                console.log(questions)
             }   
             else if(id === 2)
             {
