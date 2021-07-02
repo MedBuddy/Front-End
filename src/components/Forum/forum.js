@@ -124,10 +124,10 @@ class Forum extends Component {
             })
             .then(response => response.json())
             .then((response) => {
-                let questions = response.reverse()
+                response.reverse()
                 this.setState({
-                    allQuestions: questions,
-                    questions: questions,
+                    allQuestions: response,
+                    questions: response,
                 })
                 setTimeout(() => {
                     this.setState({
@@ -256,12 +256,12 @@ class Forum extends Component {
     {
         if(this.state.questions)
         {
-            let questions = this.state.allQuestions;
-            /* let d = new Date();
-            questions = questions.filter(question => {
+            let d = new Date();
+            let questions = this.state.allQuestions.filter(question => {
                 let days = (d - new Date(Date.parse(question.createdAt)))/(1000*60*60*24)
-                return (days <= 30)
-            }) */
+                //return (days <= 30)
+                return true
+            })
             questions.sort(
                 (a,b) => {
                     if(a.replies.length > b.replies.length)
